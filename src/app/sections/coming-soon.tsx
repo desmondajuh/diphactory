@@ -267,10 +267,10 @@ export default function ComingSoon() {
             </span> */}
             <Image
               alt=""
-              src="/images/icon.png"
-              width={32}
-              height={32}
-              className="grayscale opacity-80"
+              src="/images/icon.jpg"
+              width={62}
+              height={62}
+              className="object-cover"
             />
           </div>
 
