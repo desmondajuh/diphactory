@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-const LAUNCH_DATE = new Date(Date.now() + 47 * 24 * 60 * 60 * 1000);
+const LAUNCH_DATE = new Date(Date.now() + 17 * 24 * 60 * 60 * 1000);
 
 interface TimeLeft {
   d: number;
@@ -313,7 +313,7 @@ export default function ComingSoon() {
               textAlign: "center",
             }}
           >
-            Photography · Fine Art Prints · Limited Editions
+            Photography · Art Prints · Multimedia
           </p>
 
           {/* Countdown */}
