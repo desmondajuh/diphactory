@@ -1,17 +1,13 @@
 "use client";
 
-import { ServicesCTA } from "../components/services-cta";
-import { ServiceHero } from "../components/service-hero";
-// import { ServiceCard } from "../components/service-card";
-// import { ServiceCards } from "../sections/service-cards";
-// import { ServicesGrid } from "../components/services-grid";
 import { ReactLenis } from "lenis/react";
 import { PageHero } from "@/components/shared/page-hero";
+import { Contact2 } from "./contact2";
 
-export default function ServicesPage() {
+export default function ContactView() {
   return (
     <ReactLenis root>
-      <div className="min-h-screen bg-[#0e0e0e] text-white relative overflow-hidden">
+      <div className="min-h-screen relative overflow-hidden">
         {/* Grain */}
         <div
           className="pointer-events-none fixed inset-0 opacity-[0.03] z-50"
@@ -21,13 +17,10 @@ export default function ServicesPage() {
         />
 
         {/* Hero */}
-        <PageHero title="Services" />
-        <ServiceHero />
-        <ServicesCTA />
-
-        {/* <ServiceCards /> */}
-        {/* Services Grid */}
-        {/* <ServicesGrid /> */}
+        <PageHero title="Contact DIP" />
+        <div className="max-w-7xl mx-auto">
+          <Contact2 />
+        </div>
       </div>
     </ReactLenis>
   );

@@ -7,7 +7,7 @@ export const FullImageSection = () => {
     // overflow-hidden prevents zoomed image spilling outside
     <div className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center">
       <Image
-        src="/images/gallery/parallax-bg-1.jpg"
+        src="/images/bg/parallax-bg-1.jpg"
         alt="Diphactory – digital designer and 3D renderer"
         fill
         priority
@@ -42,7 +42,7 @@ export const FullImageSection2 = () => {
   return (
     <div className="relative h-[120vh] w-full flex flex-col items-center justify-center gap-6 bg-white">
       <Image
-        src="/images/gallery/parallax-bg-1.jpg"
+        src="/images/bg/parallax-bg-1.jpg"
         alt="Diphactory – digital designer and 3D renderer"
         fill
         priority

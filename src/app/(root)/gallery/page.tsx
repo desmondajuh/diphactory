@@ -1,4 +1,5 @@
 import { BUSINESS_URL, BUSINESS_TYPE, BUSINESS_NAME } from "@/constants";
+import GalleryView from "@/features/gallery/views/gallery-view";
 import type { Metadata } from "next";
 
 const structuredData = {
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
 export default function GalleryPage() {
   return (
     <>
-      <h1 className="text-4xl font-bold mb-8">Photography Gallery</h1>
+      <GalleryView />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -1,4 +1,5 @@
 import { BUSINESS_NAME, BUSINESS_TYPE, BUSINESS_URL } from "@/constants";
+import ContactView from "@/features/contact/views/contact-view";
 import type { Metadata } from "next";
 import Script from "next/script";
 
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <h1 className="text-4xl font-bold mb-8">Photography Contact</h1>
+      <ContactView />
 
       <Script
         id="structured-data"

@@ -1,24 +1,28 @@
-import { ProcessScroll } from "@/sections/process-raw";
+// import { ProcessScroll } from "@/sections/process-raw";
+import { ProcessScroll } from "@/features/landing/sections/process-scroll";
 import { HeroSection } from "@/features/landing/sections/hero-section";
 import { CarouselSection } from "@/features/landing/sections/carousel-section";
 import { DifferenceSection } from "@/features/landing/sections/difference-section";
 import { FullImageSection } from "@/features/landing/sections/full-image-section";
 import { ParallaxStickySection } from "@/features/landing/sections/parallax-sticky-section";
+import { ReactLenis } from "lenis/react";
 
 export const HomeView = () => {
   return (
     <>
-      <HeroSection
-        imageSrc="/images/hero-bg4.jpg"
-        imageAlt="Diphactory – digital designer and 3D renderer"
-      />
-      <ParallaxStickySection
-        stickySection={<FullImageSection />}
-        overlaySection={<CarouselSection />}
-        peekAmount="5vh"
-      />
-      <DifferenceSection />
-      <ProcessScroll />
+      <ReactLenis root>
+        <HeroSection
+          imageSrc="/images/hero-bg4.jpg"
+          imageAlt="Diphactory – digital designer and 3D renderer"
+        />
+        <ParallaxStickySection
+          stickySection={<FullImageSection />}
+          overlaySection={<CarouselSection />}
+          peekAmount="5vh"
+        />
+        <DifferenceSection />
+        <ProcessScroll />
+      </ReactLenis>
     </>
   );
 };

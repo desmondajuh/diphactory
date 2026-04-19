@@ -10,6 +10,7 @@ import { ReactLenis } from "lenis/react";
 import Image from "next/image";
 import Link from "next/link";
 import { LensRuler } from "@/components/icons/ruler";
+import ParallaxImage from "@/components/shared/parallax-image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -106,7 +107,7 @@ const ContentLabel = ({
   totalSteps,
 }: ContentLabelProps) => {
   return (
-    <>
+    <div className="relative w-full h-full">
       {/* ── Ruler ── */}
       <Ruler />
 
@@ -119,6 +120,12 @@ const ContentLabel = ({
         priority={step === 1}
         className="object-cover object-center"
       />
+
+      {/* <ParallaxImage
+        src={imageUrl}
+        alt={`Process step ${step} – ${label}`}
+        className="relative"
+      /> */}
 
       {/* ── Base gradient – bottom legibility ── */}
       <div
@@ -227,7 +234,7 @@ const ContentLabel = ({
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

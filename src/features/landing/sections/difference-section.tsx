@@ -2,6 +2,7 @@
 import { FocusBrackets } from "@/components/icons/focus-bracket";
 import { LensRuler } from "@/components/icons/ruler";
 import AvatarGroup from "@/components/shared/avatar-group";
+import ParallaxImage from "@/components/shared/parallax-image";
 import { Button } from "@/components/ui/button";
 import { BUSINESS_INSTAGRAM_URL } from "@/constants";
 import { ArrowDown } from "lucide-react";
@@ -108,12 +109,16 @@ export function DifferenceSection() {
             className="group relative overflow-hidden rounded-[20px]"
             style={{ aspectRatio: "3/2.2" }}
           >
-            <Image
+            {/* <Image
               src="/images/gallery/9.jpg"
               alt="Photography – woman in red standing in golden field"
               fill
               sizes="(max-width: 900px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105"
+            /> */}
+            <ParallaxImage
+              src="/images/gallery/9.jpg"
+              alt="Photography – woman in red standing in golden field"
             />
             {/* Gradient overlay */}
             <div

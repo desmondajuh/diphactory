@@ -1,8 +1,8 @@
 import { BUSINESS_NAME } from "@/constants";
 
-export const Footer = () => {
+export const Footer2 = () => {
   return (
-    <footer className="relative py-6 min-h-[30vh] px-6 border-t border-accent-red bg-black text-white flex flex-col justify-end overflow-hidden">
+    <footer className="relative py-6 min-h-[30vh] px-6 border-t flex flex-col justify-end overflow-hidden">
       <div className="absolute inset-0 top-0 z-0 w-full flex justify-center">
         <h1
           className="text-5xl select-none pointer-events-none leading-none tracking-tighter"
@@ -18,9 +18,7 @@ export const Footer = () => {
       </div>
       <div className="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-4">
         <div className="flex items-center gap-3">
-          <span className="font-serif text-2xl tracking-wide">
-            {BUSINESS_NAME}
-          </span>
+          <span className="text-2xl tracking-wide">{BUSINESS_NAME}</span>
         </div>
         <div className="flex gap-8 text-sm">
           <a
@@ -39,5 +37,19 @@ export const Footer = () => {
         <p className="text-sm">© 2026 {BUSINESS_NAME}. All rights reserved.</p>
       </div>
     </footer>
+  );
+};
+
+export const Footer = () => {
+  return (
+    <div className="flex items-center justify-between border-t border-border px-6 py-4 md:px-10">
+      <p className="text-xs text-muted-foreground">
+        © 2026 Diphactory. All rights reserved.
+      </p>
+      <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+        <span className="text-accent-red">⚡</span>
+        Typically responds within 24–48 hours
+      </span>
+    </div>
   );
 };

@@ -1,14 +1,11 @@
 "use client";
 
-import { ServicesCTA } from "../components/services-cta";
-import { ServiceHero } from "../components/service-hero";
-// import { ServiceCard } from "../components/service-card";
-// import { ServiceCards } from "../sections/service-cards";
-// import { ServicesGrid } from "../components/services-grid";
 import { ReactLenis } from "lenis/react";
 import { PageHero } from "@/components/shared/page-hero";
+import { MasonryGallery } from "../sections/masonry-gallery";
+import { MasonryGallery2 } from "../sections/masonry";
 
-export default function ServicesPage() {
+export default function GalleryView() {
   return (
     <ReactLenis root>
       <div className="min-h-screen bg-[#0e0e0e] text-white relative overflow-hidden">
@@ -21,13 +18,9 @@ export default function ServicesPage() {
         />
 
         {/* Hero */}
-        <PageHero title="Services" />
-        <ServiceHero />
-        <ServicesCTA />
-
-        {/* <ServiceCards /> */}
-        {/* Services Grid */}
-        {/* <ServicesGrid /> */}
+        <PageHero title="DIP Gallery" />
+        <MasonryGallery />
+        {/* <MasonryGallery2 /> */}
       </div>
     </ReactLenis>
   );

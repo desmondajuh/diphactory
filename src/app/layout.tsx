@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Inter,
+  // Anton
+} from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Script from "next/script";
@@ -18,6 +23,12 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
+// export const anton = Anton({
+//   subsets: ["latin"],
+//   weight: ["400"], // ✅ REQUIRED
+//   variable: "--font-display",
+// });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -53,6 +64,7 @@ export default function RootLayout({
         "antialiased",
         geistSans.variable,
         geistMono.variable,
+        // anton.variable,
         "font-sans",
         inter.variable,
       )}
@@ -66,7 +78,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col dark">{children}</body>
     </html>
   );
 }
