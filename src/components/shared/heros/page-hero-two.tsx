@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import { SectionBadge } from "../section-badge";
 
+type HeroVariant = "left" | "center" | "right";
+
 interface PageHeroProps {
   label?: string;
   title?: {
@@ -10,7 +12,23 @@ interface PageHeroProps {
   subTitle?: string;
   className?: string;
   badge?: string;
+  variant?: HeroVariant;
 }
+
+const variantStyles = {
+  left: {
+    container: "text-left justify-start items-start",
+    inner: "max-w-xl items-start",
+  },
+  center: {
+    container: "text-center justify-center items-center mx-auto",
+    inner: "max-w-2xl items-center",
+  },
+  right: {
+    container: "text-right justify-end items-end ml-auto",
+    inner: "max-w-xl items-end",
+  },
+};
 
 export const PageHeroTwo = ({
   label = "Page",
@@ -21,11 +39,13 @@ export const PageHeroTwo = ({
   subTitle,
   badge,
   className,
+  variant = "left",
 }: PageHeroProps) => {
   return (
     <section
       className={cn(
-        "relative overflow-hidden border-b border-border px-6 py-16 md:px-12",
+        "relative flex overflow-hidden border-b border-border px-6 py-16 md:px-12",
+        variantStyles[variant].container,
         className,
       )}
     >
@@ -38,11 +58,13 @@ export const PageHeroTwo = ({
         {label}
       </span>
 
-      <div className="relative">
+      <div
+        className={cn("relative flex flex-col", variantStyles[variant].inner)}
+      >
         {badge && (
           <SectionBadge
             label={badge}
-            className="mb-3"
+            className="mb-3 w-fit"
             icon={
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
             }

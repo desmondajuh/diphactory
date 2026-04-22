@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SharedAlbumView } from "@/features/albums/shared/shared-album-view";
 
 export const metadata: Metadata = {
   title: "Client Album | Private Gallery",
@@ -25,17 +26,17 @@ export const metadata: Metadata = {
     ],
   },
   robots: {
-    index: false, // 🔥 IMPORTANT for private galleries
+    index: false,
     follow: false,
   },
 };
 
-export default function Page({ params }: { params: { id: string } }) {
-  return (
-    <>
-      <h1 className="text-4xl font-bold mb-8">
-        Photography Album ID: {params.id}
-      </h1>
-    </>
-  );
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return <SharedAlbumView slug={id} />;
 }

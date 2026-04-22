@@ -22,7 +22,7 @@ export function PageHero({
       style={{ minHeight: "60svh" }}
       aria-label="pageHero"
     >
-      {/* <div className="absolute inset-0 z-5 bg-linear-to-b from-black/62 via-transparent to-black/55" /> */}
+      <div className="absolute inset-0 z-5 bg-linear-to-b from-black/72 via-transparent to-black/55" />
       {/* ── Full-bleed portrait ── */}
       <div className="absolute inset-0 z-0">
         {/* <Image

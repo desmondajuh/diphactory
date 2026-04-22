@@ -200,8 +200,9 @@ export function DifferenceSection() {
                     src={img.src}
                     alt={img.alt}
                     fill
-                    sizes="10vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    // sizes="10vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110 w-full h-auto"
                   />
                 </div>
               ))}

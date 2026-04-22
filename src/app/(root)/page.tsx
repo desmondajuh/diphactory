@@ -9,7 +9,6 @@ import {
   BUSINESS_TYPE,
   BUSINESS_URL,
 } from "@/constants";
-
 import { HomeView } from "@/features/landing/views/home-view";
 
 const structuredData = {
@@ -19,12 +18,6 @@ const structuredData = {
   image: `${BUSINESS_URL}/og/home.jpg`,
   url: BUSINESS_URL,
   telephone: BUSINESS_TELEPHONE,
-  // address: {
-  //   "@type": "PostalAddress",
-  //   addressLocality: "Your City",
-  //   addressRegion: "Texas",
-  //   addressCountry: "US",
-  // },
   address: BUSINESS_ADDRESS,
   sameAs: [BUSINESS_INSTAGRAM_URL, BUSINESS_TWITTER_URL],
   description:

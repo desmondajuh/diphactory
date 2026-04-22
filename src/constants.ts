@@ -1,3 +1,4 @@
+export const APP_NAME = "Diai Image Phactory";
 export const BUSINESS_NAME = "Diai Image Phactory";
 export const BUSINESS_URL = "https://diphactory.com";
 export const BUSINESS_LOGO = "https://diphactory.com/images/logo.png";

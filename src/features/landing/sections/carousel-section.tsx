@@ -255,7 +255,8 @@ export const CarouselSection = () => {
                   src={card.src}
                   alt={card.alt}
                   fill
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-cover hover:scale-105 transition-transform duration-200"
                 />
 
                 {/* Enhancement 2: Active card — subtle highlight ring */}

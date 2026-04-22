@@ -1,3 +1,4 @@
+import "@/lib/orpc.server"; //prerendering for SSR
 import type { Metadata } from "next";
 import {
   Geist,
@@ -17,18 +18,21 @@ import {
   BUSINESS_URL,
 } from "@/constants";
 
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+import { Toaster } from "@/components/ui/sonner";
+import { ORPCQueryProvider } from "@/lib/orpc-rq.client";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
-// export const anton = Anton({
-//   subsets: ["latin"],
-//   weight: ["400"], // ✅ REQUIRED
-//   variable: "--font-display",
-// });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -78,7 +82,17 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col dark">{children}</body>
+      <body className="min-h-full flex flex-col dark">
+        {/* Prevents upload button from flickering on first render */}
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+        <NuqsAdapter>
+          <ORPCQueryProvider>
+            <Toaster />
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </ORPCQueryProvider>
+        </NuqsAdapter>
+      </body>
     </html>
   );
 }

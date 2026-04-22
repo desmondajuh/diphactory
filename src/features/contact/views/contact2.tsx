@@ -30,8 +30,13 @@ export const Contact2 = () => {
       <PageHeroTwo
         label="CONTACT US"
         badge="Available for bookings"
+        title={{
+          first: "WE BUILD",
+          second: "EXPERIENCES.",
+        }}
         subTitle="Every great image starts with a conversation. Tell me about your
           vision and let's make it real."
+        variant="left"
       />
 
       {/* ── BODY ── */}
