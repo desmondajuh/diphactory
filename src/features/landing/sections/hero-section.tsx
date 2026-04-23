@@ -25,19 +25,19 @@ export function HeroSection({
       <div className="absolute inset-0 z-5 bg-linear-to-b from-black/72 via-transparent to-black/55" />
       {/* ── Full-bleed portrait ── */}
       <div className="absolute inset-0 z-0">
-        {/* <Image
+        <Image
           src={imageSrc || "/images/hero-bg.png"}
           alt={imageAlt || "Diphactory – digital designer and photographer"}
           fill
           priority
           sizes="100vw"
-          className="object-cover object-top opacity-80"
+          className="md:hidden object-cover object-top opacity-80"
           style={{ objectPosition: "50% 15%" }}
-        /> */}
+        />
         <ParallaxImage
           src={imageSrc}
           alt={imageAlt}
-          className="object-cover object-center opacity-80"
+          className="hidden md:block object-cover object-center opacity-80"
           scale={1.1}
           // style={{ objectPosition: "50% 15%" }}
         />
@@ -83,12 +83,12 @@ export function HeroSection({
               className="font-black uppercase leading-[0.88] tracking-tight text-white select-none"
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "clamp(4rem, 14vw, 13rem)",
+                fontSize: "clamp(4rem, 13vw, 14rem)",
                 lineHeight: 0.88,
               }}
             >
               Diphactory
-              <span className="text-accent-red">*</span>
+              <span className="xhidden xmd:block text-accent-red">*</span>
             </h1>
           </BlockRevealAnime>
 

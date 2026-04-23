@@ -10,12 +10,18 @@ interface ParallaxStickySectionProps {
   overlaySection: React.ReactNode;
   /** How much the overlay peeks before fully entering. Default "10vh" */
   peekAmount?: string;
+
+  /** Background color transition */
+  bgFrom?: string;
+  bgTo?: string;
 }
 
 export function ParallaxStickySection({
   stickySection,
   overlaySection,
   peekAmount = "10vh",
+  bgFrom = "#000000",
+  bgTo = "#808080", // grey
 }: ParallaxStickySectionProps) {
   const peerAmountValue = parseFloat(peekAmount);
   const peerAmountUnit = peekAmount.replace(peerAmountValue.toString(), "");
@@ -29,6 +35,12 @@ export function ParallaxStickySection({
     target: wrapperRef,
     offset: ["start start", "end end"],
   });
+
+  const backgroundColor = useTransform(
+    scrollYProgress,
+    [0.25, 0.92],
+    [bgFrom, bgTo],
+  );
 
   // Zoom: 1 → 1.18 as overlay scrolls in
   const imageScale = useTransform(scrollYProgress, [0.35, 1], [1, 0.58]);
@@ -70,9 +82,10 @@ export function ParallaxStickySection({
             opacity: overlayOpacity,
             position: "absolute",
             inset: 0,
-            background: "rgba(0,0,0,1)",
+            // background: "rgba(0,0,0,1)",
+            backgroundColor, // 👈 animated color
             zIndex: 2,
-            willChange: "opacity",
+            willChange: "opacity, background-color",
             pointerEvents: "none",
           }}
         />

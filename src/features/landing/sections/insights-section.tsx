@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Post {
   id: number;
@@ -57,16 +58,24 @@ const posts: Post[] = [
   },
 ];
 
-const VISIBLE = 3; // cards visible at once
+// const VISIBLE = 3; // cards visible at once
+// const isDesktop = typeof window !== "undefined" && window.innerWidth >= 1024;
+// const VISIBLE = isDesktop ? 3 : posts.length;
 
 export default function LatestInsights() {
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const animating = useRef(false);
 
+  const isMobile = useIsMobile();
+  const isDesktop = !isMobile;
+
+  const VISIBLE = isDesktop ? 3 : posts.length;
+
   const maxIndex = posts.length - VISIBLE;
 
   const slide = (dir: "prev" | "next") => {
+    // if (!isDesktop) return;
     if (animating.current) return;
     const next =
       dir === "next" ? Math.min(index + 1, maxIndex) : Math.max(index - 1, 0);
@@ -100,9 +109,6 @@ export default function LatestInsights() {
         <div className="absolute -top-20 -left-20 w-105 h-105 rounded-full bg-gray-100/80" />
         <div className="absolute -bottom-10 -right-10 w-[320px] h-80 rounded-full bg-gray-100/60" />
       </div>
-
-      {/* Red dot */}
-      <div className="absolute top-10 left-44 w-3 h-3 rounded-full bg-accent-red" />
 
       {/* Header */}
       <div className="relative flex flex-col items-center text-center mb-14">
@@ -162,7 +168,7 @@ export default function LatestInsights() {
           </button>
 
           {/* Nav buttons */}
-          <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => slide("prev")}
               disabled={index === 0}
@@ -198,9 +204,19 @@ export default function LatestInsights() {
       </div>
 
       {/* Cards */}
-      <div ref={trackRef} className="grid grid-cols-3 gap-5">
+      <div
+        ref={trackRef}
+        className="max-w-7xl mx-auto
+    flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory
+    md:grid md:grid-cols-2 md:overflow-visible
+    lg:grid-cols-3
+  "
+      >
         {visible.map((post) => (
-          <article key={post.id} className="flex flex-col cursor-pointer group">
+          <article
+            key={post.id}
+            className="snap-start flex flex-col cursor-pointer group min-w-[80%] sm:min-w-[60%] md:min-w-0"
+          >
             {/* Image */}
             <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden">
               <Image
@@ -208,7 +224,7 @@ export default function LatestInsights() {
                 alt={post.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover  w-full h-full transition-transform duration-500 group-hover:scale-105"
               />
             </div>
 

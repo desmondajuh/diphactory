@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { CarouselTitle } from "@/features/landing/components/carousel-title";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ImageCard {
   src: string;
@@ -174,9 +175,15 @@ export const CarouselSection = () => {
   // Enhancement 2: Active card state
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
+  const isMobile = useIsMobile();
+
   const handleCardClick = (i: number) => {
     setActiveIndex((prev) => (prev === i ? null : i));
   };
+
+  const visibleCards = isMobile
+    ? FAN_CARDS.slice(3, 6) // center-focused subset
+    : FAN_CARDS;
 
   return (
     <section
@@ -184,8 +191,16 @@ export const CarouselSection = () => {
       className="relative overflow-hidden py-20 min-h-screen"
     >
       <CarouselTitle />
-      <div className="mt-16 flex justify-center items-end gap-3 perspective-distant">
-        {FAN_CARDS.map((card, i) => {
+      <div
+        // className="mt-16 flex justify-center items-end gap-3 perspective-distant"
+        className={cn(
+          "mt-16 flex items-end",
+          isMobile
+            ? "overflow-x-auto gap-4 px-4"
+            : "justify-center gap-3 perspective-distant",
+        )}
+      >
+        {visibleCards.map((card, i) => {
           const distFromCenter = Math.abs(i - CENTER_INDEX);
           const isActive = activeIndex === i;
           const hasActive = activeIndex !== null;
@@ -271,18 +286,15 @@ export const CarouselSection = () => {
                 )}
               </div>
 
-              {/* Enhancement 5: Card reflection */}
-              <div
-                className="pointer-events-none absolute left-0 right-0 opacity-20"
-                aria-hidden="true"
-                style={{
-                  // Sit just below the card, accounting for the transform translateY
-                  // top: `${200 * (0.2 * card.heightOffset) + 300}px`,
-                  top: mirrorOffset,
-                  // height: `80px`,
-                  // top: `${(card.height ?? 480)}px`,
-                  height: `${Math.round((card.height ?? 180) * 0.38)}px`,
-                  transform: `
+              {/* Enhancement 5: Card reflection on desktop */}
+              {!isMobile && (
+                <div
+                  className="pointer-events-none absolute left-0 right-0 opacity-20"
+                  aria-hidden="true"
+                  style={{
+                    top: mirrorOffset,
+                    height: `${Math.round((card.height ?? 180) * 0.38)}px`,
+                    transform: `
                     perspective(1200px)
                     rotateY(${card.rotateY}deg)
                     skewY(${card.skewY * 0.3}deg)
@@ -290,37 +302,38 @@ export const CarouselSection = () => {
                     translateY(${card.heightOffset * 4}px)
                     scaleY(-1)
                   `,
-                  // transformOrigin: "top center",
-                  overflow: "hidden",
-                  borderRadius: "0 0 16px 16px",
-                }}
-              >
-                {/* Reflected image */}
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    height: "100%",
+                    // transformOrigin: "top center",
+                    overflow: "hidden",
+                    borderRadius: "0 0 16px 16px",
                   }}
                 >
-                  <Image
-                    src={card.src}
-                    alt=""
-                    fill
-                    className="object-cover object-top"
-                    aria-hidden="true"
-                  />
-                  {/* Gradient mask to fade the reflection out */}
+                  {/* Reflected image */}
                   <div
                     style={{
-                      position: "absolute",
-                      inset: 0,
-                      background:
-                        "linear-gradient(to top, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.70) 50%, rgba(255,255,255,1) 100%)",
+                      position: "relative",
+                      width: "100%",
+                      height: "100%",
                     }}
-                  />
+                  >
+                    <Image
+                      src={card.src}
+                      alt=""
+                      fill
+                      className="object-cover object-top"
+                      aria-hidden="true"
+                    />
+                    {/* Gradient mask to fade the reflection out */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "linear-gradient(to top, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.70) 50%, rgba(255,255,255,1) 100%)",
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           );
         })}

@@ -4,10 +4,15 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function ImageCTA() {
+interface ImageCTAProps {
+  className?: string;
+}
+
+export function ImageCTA({ className }: ImageCTAProps) {
   const sectionRef = useRef(null);
   const bgRef = useRef(null);
 
@@ -37,11 +42,16 @@ export function ImageCTA() {
 
   return (
     /* Outer frame — white bg + padding + rounded border (matches screenshot) */
-    <div className="w-full bg-white p-5 border border-gray-200">
+    <div
+      className={cn(
+        "relative w-full bg-white p-5 border border-gray-200",
+        className,
+      )}
+    >
       {/* Inner section — clips the zooming bg */}
       <section
         ref={sectionRef}
-        className="relative w-full h-90 overflow-hidden rounded-lg"
+        className="relative w-full h-70 overflow-hidden rounded-lg"
       >
         {/* Background image layer — this is what GSAP scales */}
         <div
@@ -63,15 +73,15 @@ export function ImageCTA() {
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
           {/* Logotype */}
           <div
-            className="flex items-center font-black text-white uppercase text-shadow-2xs"
+            className="flex items-center gap-2 font-black text-white uppercase text-shadow-2xs text-center"
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "clamp(36px, 6vw, 56px)",
             }}
           >
-            DIAI IMAGE PHACTORY
+            <span className="w-fit">DIAI IMAGE PHACTORY</span>
             <span
-              className="text-red-600 ml-0.5 leading-none"
+              className="hidden md:block text-red-600 ml-0.5 leading-none"
               style={{ fontSize: "0.75em" }}
             >
               ✦

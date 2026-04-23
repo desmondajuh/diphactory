@@ -106,10 +106,10 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
         minWidth: "800px",
       }}
       className={cn(
-        "relative z-60 mx-auto hidden w-full xmax-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-6 md:px-10 lg:px-14 py-3 lg:flex dark:bg-transparent [background:linear-gradient(45deg,#08141110,#021710_50%,#08141110)_padding-box,conic-gradient(from_var(--border-angle),rgba(16,185,129,0.20)_80%,#10b981_86%,#6ee7b7_90%,#10b981_94%,rgba(16,185,129,0.08))_border-box]",
-        "shadow-[0_0_40px_rgba(16,185,129,0.15)] rounded-full border border-transparent animate-border",
+        "relative z-60 mx-auto hidden w-full xmax-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-6 md:px-10 lg:px-14 py-3 lg:flex dark:bg-transparent ",
+        "shadow-lg rounded-full border border-transparent animate-border",
         visible ? "" : "mt-2",
-        "bg-white/80",
+        // "bg-white/80",
         className,
       )}
     >
@@ -191,7 +191,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
       }}
       className={cn(
         "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden",
-        visible && "bg-white/80 dark:bg-emerald-950/80",
+        visible && "bg-white/80 dark:bg-accent-red/5",
         className,
       )}
     >
@@ -263,7 +263,7 @@ export const NavbarLogo = () => {
     >
       {/* <Gem className="h-5 w-5 text-emerald-400" /> */}
       <Image
-        src="/images/logo.png"
+        src="/logos/logo.png"
         alt="DIP"
         width={32}
         height={32}

@@ -43,7 +43,7 @@ export function DifferenceSection() {
         <div className="flex flex-col justify-center gap-0 pt-2 md:col-span-2 lg:col-span-1">
           {/* Headline */}
           <h2
-            className="mb-8 font-light leading-[0.92] tracking-[-0.03em] text-white"
+            className="text-center md:text-left mb-8 font-light leading-[0.92] tracking-[-0.03em] text-white"
             style={{
               fontSize: "clamp(3rem, 7.5vw, 6rem)",
               fontFamily: "var(--font-display)",
@@ -53,8 +53,8 @@ export function DifferenceSection() {
           </h2>
 
           {/* Body + scroll button */}
-          <div className="flex flex-col gap-5 pl-12">
-            <p className="max-w-60 text-sm leading-[1.7] text-white/45">
+          <div className="flex flex-col items-center md:items-start gap-5 md:pl-12">
+            <p className="max-w-60 text-center md:text-left text-sm leading-[1.7] text-white/45">
               Through my lens, I capture raw emotions, authentic connections,
               and fleeting details that transform your moments into lasting,
               unforgettable stories.

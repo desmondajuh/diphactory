@@ -65,21 +65,6 @@ const PANELS = [
 function Ruler() {
   return (
     <div className="absolute top-0 left-0 right-0 z-20" aria-hidden="true">
-      {/* <div className="flex w-full px-7 pt-2 pb-0.5">
-        {Array.from({ length: 9 }, (_, i) => i + 3).map((n) => (
-          <div key={n} className="flex flex-1 flex-col items-center">
-            <span className="mb-1 text-[8px] font-semibold tracking-wide text-white/18">
-              {String(n).padStart(2, "0")}
-            </span>
-            <div className="h-2.5 w-px bg-white/18" />
-            <div className="mt-px flex w-full justify-around px-0.5">
-              {Array.from({ length: 7 }).map((_, j) => (
-                <div key={j} className="h-1.5 w-px bg-white/8" />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div> */}
       <LensRuler borderPosition="bottom" className="mt-2" />
     </div>
   );
@@ -120,12 +105,6 @@ const ContentLabel = ({
         priority={step === 1}
         className="object-cover object-center"
       />
-
-      {/* <ParallaxImage
-        src={imageUrl}
-        alt={`Process step ${step} – ${label}`}
-        className="relative"
-      /> */}
 
       {/* ── Base gradient – bottom legibility ── */}
       <div
@@ -245,6 +224,7 @@ function ScrollIndicator() {
     <div
       className="scroll-indicator fixed left-7 top-1/2 -translate-y-1/2 z-9999 flex-col items-center gap-3 opacity-0 pointer-events-none hidden lg:flex"
       id="scroll-indicator"
+      style={{ opacity: 0 }} // ← hard default, GSAP overrides this
       aria-hidden="true"
     >
       {/* "My Process" vertical label */}
@@ -332,17 +312,89 @@ export const ProcessScroll = () => {
 
   useGSAP(
     () => {
-      const sections =
-        document.querySelectorAll<HTMLElement>(".scroll-section");
+      const sections = gsap.utils.toArray<HTMLElement>(".scroll-section");
       const indicator = document.getElementById("scroll-indicator");
 
       // ── Fade in the side indicator once page loads ──
+      // gsap.to(indicator, {
+      //   opacity: 1,
+      //   pointerEvents: "auto",
+      //   duration: 0.8,
+      //   delay: 0.5,
+      //   ease: "power2.out",
+      // });
+      gsap.set(indicator, { opacity: 0, x: -8, pointerEvents: "none" });
+
+      // Replace with this:
+      ScrollTrigger.create({
+        trigger: containerRef.current, // the whole process section wrapper
+        start: "top 80%",
+        end: "bottom 20%",
+        onEnter: () =>
+          gsap.to(indicator, {
+            opacity: 1,
+            pointerEvents: "auto",
+            duration: 0.5,
+            ease: "power2.out",
+          }),
+        onLeave: () =>
+          gsap.to(indicator, {
+            opacity: 0,
+            pointerEvents: "none",
+            duration: 0.4,
+            ease: "power2.in",
+          }),
+        onEnterBack: () =>
+          gsap.to(indicator, {
+            opacity: 1,
+            pointerEvents: "auto",
+            duration: 0.5,
+            ease: "power2.out",
+          }),
+        onLeaveBack: () =>
+          gsap.to(indicator, {
+            opacity: 0,
+            pointerEvents: "none",
+            duration: 0.4,
+            ease: "power2.in",
+          }),
+      });
+
+      // Set initial state
+      gsap.set(indicator, { opacity: 0, x: -8, pointerEvents: "none" });
+
+      // In onEnter / onEnterBack:
       gsap.to(indicator, {
         opacity: 1,
+        x: 0,
         pointerEvents: "auto",
-        duration: 0.8,
-        delay: 0.5,
+        duration: 0.5,
         ease: "power2.out",
+      });
+
+      // In onLeave / onLeaveBack:
+      gsap.to(indicator, {
+        opacity: 0,
+        x: -8,
+        pointerEvents: "none",
+        duration: 0.4,
+        ease: "power2.in",
+      });
+
+      // ─────────────────────────────────────────────
+      // ✅ GLOBAL SNAP CONTROLLER (THE IMPORTANT PART)
+      // ─────────────────────────────────────────────
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top top",
+        end: "bottom bottom",
+
+        snap: {
+          snapTo: 1 / (sections.length - 1),
+          duration: { min: 0.2, max: 0.6 },
+          delay: 0.05,
+          ease: "power1.inOut",
+        },
       });
 
       sections.forEach((section, index) => {
@@ -451,7 +503,8 @@ export const ProcessScroll = () => {
         if (index < sections.length - 1) {
           ScrollTrigger.create({
             trigger: section,
-            start: "bottom bottom",
+            // start: "bottom bottom",
+            start: "top top",
             end: "bottom top",
             pin: true,
             pinSpacing: false,
@@ -463,8 +516,17 @@ export const ProcessScroll = () => {
   );
 
   return (
-    <div className="relative overflow-hidden">
-      <ReactLenis root options={{ autoRaf: false }} ref={lenisRef} />
+    <div className="relative">
+      <ReactLenis
+        root
+        // options={{ autoRaf: false }}
+        options={{
+          autoRaf: false,
+          lerp: 0.08, // slightly tighter
+          wheelMultiplier: 0.9, // less aggressive scroll
+        }}
+        ref={lenisRef}
+      />
 
       {/* Side scroll indicator — outside containerRef so it's fixed relative to viewport */}
       <ScrollIndicator />
