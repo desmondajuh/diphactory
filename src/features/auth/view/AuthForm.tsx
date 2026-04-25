@@ -83,7 +83,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
                 type="text"
                 autoComplete="name"
                 placeholder="Enter your full name"
-                className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 transition-all focus:border-emerald-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 transition-all focus:border-accent-red/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-accent-red/20"
               />
             </div>
           </div>
@@ -102,7 +102,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
               type="email"
               autoComplete="email"
               placeholder="Enter your email"
-              className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 transition-all focus:border-emerald-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 transition-all focus:border-accent-red/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-accent-red/20"
             />
           </div>
         </div>
@@ -119,7 +119,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
             {!isSignUp && (
               <Link
                 href="#"
-                className="text-xs font-medium text-emerald-400 transition-colors hover:text-emerald-300"
+                className="text-xs font-medium text-accent-red transition-colors hover:text-accent-red-300"
               >
                 Forgot password?
               </Link>
@@ -135,12 +135,12 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
               placeholder={
                 isSignUp ? "Create a password" : "Enter your password"
               }
-              className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-11 text-sm text-white placeholder:text-white/30 transition-all focus:border-emerald-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-11 text-sm text-white placeholder:text-white/30 transition-all focus:border-accent-red/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-accent-red/20"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-red/50 rounded"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
@@ -169,7 +169,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
                 type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 placeholder="Confirm your password"
-                className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 transition-all focus:border-emerald-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="h-11 w-full rounded-lg border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 transition-all focus:border-accent-red/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-accent-red/20"
               />
             </div>
           </div>
@@ -178,7 +178,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         {/* Submit button */}
         <button
           type="submit"
-          className="glow-button mt-2 flex h-11 w-full items-center justify-center rounded-lg text-sm font-semibold text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 active:scale-[0.98]"
+          className="bg-accent-red mt-2 flex h-11 w-full items-center justify-center rounded-lg text-sm font-semibold text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-red/50 active:scale-[0.98]"
         >
           {isSignUp ? "Create Account" : "Sign In"}
         </button>
@@ -191,7 +191,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
             Already have an account?{" "}
             <Link
               href="/sign-in"
-              className="font-medium text-emerald-400 transition-colors hover:text-emerald-300"
+              className="font-medium text-accent-red transition-colors hover:text-accent-red-300"
             >
               Sign in
             </Link>
@@ -201,7 +201,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
             Don&apos;t have an account?{" "}
             <Link
               href="/sign-up"
-              className="font-medium text-emerald-400 transition-colors hover:text-emerald-300"
+              className="font-medium text-accent-red transition-colors hover:text-accent-red-300"
             >
               Create one
             </Link>

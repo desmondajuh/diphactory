@@ -72,7 +72,7 @@ export function FAQSection() {
         {/* Top border */}
         <div className="border-t border-gray-200 mb-12" />
 
-        <div className="flex gap-8">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
           {/* Left label */}
           <div className="w-auto shrink-0 flex items-start gap-2 pt-1">
             <div className="flex flex-col">

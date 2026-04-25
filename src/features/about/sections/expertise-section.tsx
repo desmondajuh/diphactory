@@ -29,7 +29,7 @@ const ExpertIcon = () => {
 
 export function ExpertiseSection() {
   return (
-    <section className="w-full bg-secondary px-6 py-12 md:px-12 md:py-16">
+    <section className="w-full bg-white/90 px-6 py-12 md:px-12 md:py-16">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16">
         {/* ── Left: Image ── */}
         <div className="w-full md:w-[54%] shrink-0 relative">

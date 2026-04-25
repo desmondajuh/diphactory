@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-// import { Logo } from "./logo";
 import {
   Navbar,
   NavBody,
@@ -13,8 +12,16 @@ import {
   MobileNavMenu,
 } from "@/features/landing/components/nav/resizable-navbar";
 import Link from "next/link";
+import { Logo } from "./logo";
+import { ActionButtons } from "./action-buttons";
+// import { useSession } from "@/lib/auth-client";
 
-export function NavbarClient() {
+interface NavbarClientProps {
+  isLoggedIn?: boolean;
+  role?: string;
+}
+
+export function NavbarClient({ isLoggedIn, role }: NavbarClientProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -28,11 +35,12 @@ export function NavbarClient() {
   return (
     <Navbar>
       <NavBody>
-        <NavbarLogo />
+        {/* <NavbarLogo /> */}
+        <Logo />
         <NavItems items={navItems} />
-        {/* <div className="z-50 flex items-center gap-4">
-          <ActionButtons user={user} isAdmin={isAdmin} />
-        </div> */}
+        <div className="z-50 flex items-center gap-4">
+          <ActionButtons isLoggedIn={isLoggedIn} role={role} />
+        </div>
       </NavBody>
 
       <MobileNav>
@@ -58,9 +66,9 @@ export function NavbarClient() {
               <span className="block">{item.name}</span>
             </Link>
           ))}
-          {/* <div className="z-50 flex w-full flex-col gap-4">
-            <ActionButtons user={user} isAdmin={isAdmin} />
-          </div> */}
+          <div className="z-50 flex w-full flex-col gap-4">
+            <ActionButtons isLoggedIn={isLoggedIn} role={role} />
+          </div>
         </MobileNavMenu>
       </MobileNav>
     </Navbar>

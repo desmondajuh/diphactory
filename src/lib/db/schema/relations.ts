@@ -91,3 +91,10 @@ export const clientRecordsRelations = relations(clients, ({ one, many }) => ({
   }),
   albums: many(albums),
 }));
+
+export const leadsRelations = relations(leads, ({ one }) => ({
+  album: one(albums, {
+    fields: [leads.albumId],
+    references: [albums.id],
+  }),
+}));

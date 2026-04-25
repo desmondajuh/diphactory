@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -29,19 +29,36 @@ const formSchema = z.object({
 
 interface CreateAlbumFormProps {
   onCreated?: () => void;
+  initialClientId?: string;
+  initialTitle?: string;
+  submitLabel?: string;
 }
 
-export const CreateAlbumForm = ({ onCreated }: CreateAlbumFormProps) => {
+export const CreateAlbumForm = ({
+  onCreated,
+  initialClientId,
+  initialTitle,
+  submitLabel = "Create album",
+}: CreateAlbumFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      title: initialTitle ?? "",
       visibility: "private",
       description: "",
       shootDate: "",
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      title: initialTitle ?? "",
+      visibility: "private",
+      description: "",
+      shootDate: "",
+    });
+  }, [form, initialTitle, initialClientId]);
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
@@ -49,6 +66,7 @@ export const CreateAlbumForm = ({ onCreated }: CreateAlbumFormProps) => {
     try {
       const result = await client.albums.create({
         title: values.title,
+        clientId: initialClientId,
         visibility: values.visibility,
         description: values.description || undefined,
         shootDate: values.shootDate ? new Date(values.shootDate) : undefined,
@@ -61,7 +79,7 @@ export const CreateAlbumForm = ({ onCreated }: CreateAlbumFormProps) => {
       );
 
       form.reset({
-        title: "",
+        title: initialTitle ?? "",
         visibility: "private",
         description: "",
         shootDate: "",
@@ -184,7 +202,7 @@ export const CreateAlbumForm = ({ onCreated }: CreateAlbumFormProps) => {
             Creating album
           </>
         ) : (
-          "Create album"
+          submitLabel
         )}
       </Button>
     </form>

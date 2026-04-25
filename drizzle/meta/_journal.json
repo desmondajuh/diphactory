@@ -15,6 +15,20 @@
       "when": 1776822000000,
       "tag": "0001_schema_alignment",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776999600000,
+      "tag": "0002_album_manager_code_and_tools",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777003200000,
+      "tag": "0003_bookings_table",
+      "breakpoints": true
     }
   ]
 }

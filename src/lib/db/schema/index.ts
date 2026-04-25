@@ -8,6 +8,7 @@ export * from "./categories";
 export * from "./reviews";
 export * from "./testimonials";
 export * from "./contacts";
+export * from "./bookings";
 
 export * from "./leads";
 export * from "./albums";

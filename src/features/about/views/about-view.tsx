@@ -20,7 +20,7 @@ export default function AboutPage() {
         />
 
         {/* Hero */}
-        <PageHero title="About Dip" />
+        <PageHero title="About Dip" imageSrc="images/bg/bride-portrait.jpg" />
         <ExpertiseSection />
         <FAQSection />
         <ImageCTA />

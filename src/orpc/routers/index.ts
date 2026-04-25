@@ -5,6 +5,9 @@ import { albumsRouter } from "./albums";
 import { imagesRouter } from "./images";
 import { accessRouter } from "./access";
 import { favoritesRouter } from "./favorites";
+import { clientsRouter } from "./clients";
+import { leadsRouter } from "./leads";
+import { bookingsRouter } from "./bookings";
 import { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
 
 // export const router = {
@@ -24,6 +27,9 @@ export const router = base.router({
   images: imagesRouter,
   access: accessRouter,
   favorites: favoritesRouter,
+  clients: clientsRouter,
+  leads: leadsRouter,
+  bookings: bookingsRouter,
 });
 
 export type Router = typeof router;

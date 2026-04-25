@@ -14,18 +14,29 @@ import {
 import { useSafeLogout } from "@/hooks/use-safe-logout";
 import { authClient } from "@/lib/auth-client";
 import {
+  ChartNoAxesCombinedIcon,
+  ContactRoundIcon,
   FolderKanbanIcon,
-  Grid2x2Icon,
+  Globe2Icon,
   HomeIcon,
   ImagesIcon,
+  InboxIcon,
+  NotebookTabsIcon,
+  ShieldCheckIcon,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { MainUserMenu } from "./main-user-menu";
 
 const item = [
   {
-    title: "Home",
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: ChartNoAxesCombinedIcon,
+  },
+  {
+    title: "Website",
     url: "/",
     icon: HomeIcon,
   },
@@ -34,9 +45,15 @@ const item = [
     url: "/gallery",
     icon: ImagesIcon,
   },
+  {
+    title: "Shared Albums",
+    url: "/album",
+    icon: Globe2Icon,
+  },
 ];
 
 export const MainSidebar = () => {
+  const pathname = usePathname();
   const { data: session, isPending: userIsPending } = authClient.useSession();
   const { logout, isLoading: logoutIsLoading } = useSafeLogout();
   const dashboardItems =
@@ -47,12 +64,35 @@ export const MainSidebar = () => {
             url: "/dashboard/albums",
             icon: FolderKanbanIcon,
           },
+          {
+            title: "Clients",
+            url: "/dashboard/clients",
+            icon: ContactRoundIcon,
+          },
+          {
+            title: "Leads",
+            url: "/dashboard/leads",
+            icon: InboxIcon,
+          },
         ]
+      : session?.user.role === "super_admin" || session?.user.role === "admin"
+        ? [
+            {
+              title: "Control Center",
+              url: "/dashboard/admin",
+              icon: ShieldCheckIcon,
+            },
+            {
+              title: "Bookings",
+              url: "/dashboard/bookings",
+              icon: NotebookTabsIcon,
+            },
+          ]
       : [
           {
-            title: "My Collections",
-            url: "/dashboard/albums",
-            icon: Grid2x2Icon,
+            title: "Dashboard Home",
+            url: "/dashboard",
+            icon: ChartNoAxesCombinedIcon,
           },
         ];
 
@@ -86,8 +126,12 @@ export const MainSidebar = () => {
             <SidebarMenu>
               {item.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="py-5">
-                  <Link href={item.url}>
+                  <SidebarMenuButton
+                    asChild
+                    className="py-5"
+                    isActive={pathname === item.url}
+                  >
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -101,13 +145,21 @@ export const MainSidebar = () => {
         {session && (
           <SidebarGroup>
             <SidebarGroupLabel>
-              {session.user.role === "photographer" ? "Studio" : "Workspace"}
+              {session.user.role === "photographer"
+                ? "Studio"
+                : session.user.role === "super_admin"
+                  ? "Super Admin"
+                  : "Admin"}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {dashboardItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild className="py-5">
+                    <SidebarMenuButton
+                      asChild
+                      className="py-5"
+                      isActive={pathname === item.url}
+                    >
                       <Link href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>

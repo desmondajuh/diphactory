@@ -5,12 +5,39 @@ import { nanoid } from "nanoid";
 import { z } from "zod";
 import {
   clientProcedure,
+  protectedProcedure,
   publicProcedure,
   photographerProcedure,
 } from "@/orpc/base";
 import { albumImages, albums, clients, images } from "@/lib/db/schema";
 import { utapi } from "@/lib/uploadthing";
 import { slugify } from "@/utils/slugify";
+
+async function getManageableAlbum(
+  db: typeof import("@/lib/db").db,
+  {
+    albumId,
+    userId,
+    role,
+  }: {
+    albumId: string;
+    userId: string;
+    role: string;
+  },
+) {
+  const album = await db.query.albums.findFirst({
+    where:
+      role === "photographer"
+        ? and(eq(albums.id, albumId), eq(albums.ownerId, userId))
+        : eq(albums.id, albumId),
+  });
+
+  if (!album) {
+    throw new ORPCError("NOT_FOUND");
+  }
+
+  return album;
+}
 
 const list = photographerProcedure
   .input(
@@ -81,6 +108,7 @@ const create = photographerProcedure
         type: "shoot",
         visibility: input.visibility,
         accessCode,
+        accessCodePlain: plainCode,
         shootDate: input.shootDate,
         description: input.description,
       })
@@ -89,13 +117,26 @@ const create = photographerProcedure
     return { ...album, plainCode };
   });
 
-const getById = photographerProcedure
+const getById = protectedProcedure
   .input(z.object({ albumId: z.string().uuid() }))
   .handler(async ({ input, context }) => {
     const { db, user } = context;
 
+    if (
+      user.role !== "photographer" &&
+      user.role !== "admin" &&
+      user.role !== "super_admin"
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You do not have access to manage albums",
+      });
+    }
+
     const album = await db.query.albums.findFirst({
-      where: and(eq(albums.id, input.albumId), eq(albums.ownerId, user.id)),
+      where:
+        user.role === "photographer"
+          ? and(eq(albums.id, input.albumId), eq(albums.ownerId, user.id))
+          : eq(albums.id, input.albumId),
       with: {
         clientRecord: true,
         albumImages: {
@@ -149,6 +190,8 @@ const update = photographerProcedure
       .set({
         ...rest,
         accessCode: nextAccessCode,
+        accessCodePlain:
+          nextVisibility === "public" ? null : existing.accessCodePlain,
         updatedAt: new Date(),
       })
       .where(eq(albums.id, albumId))
@@ -205,18 +248,26 @@ const deleteAlbum = photographerProcedure
     };
   });
 
-const regenerateCode = photographerProcedure
+const regenerateCode = protectedProcedure
   .input(z.object({ albumId: z.string().uuid() }))
   .handler(async ({ input, context }) => {
     const { db, user } = context;
 
-    const existing = await db.query.albums.findFirst({
-      where: and(eq(albums.id, input.albumId), eq(albums.ownerId, user.id)),
-    });
-
-    if (!existing) {
-      throw new ORPCError("NOT_FOUND");
+    if (
+      user.role !== "photographer" &&
+      user.role !== "admin" &&
+      user.role !== "super_admin"
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You do not have access to manage private album codes",
+      });
     }
+
+    const existing = await getManageableAlbum(db, {
+      albumId: input.albumId,
+      userId: user.id,
+      role: user.role,
+    });
 
     if (existing.visibility !== "private") {
       throw new ORPCError("BAD_REQUEST", {
@@ -230,6 +281,7 @@ const regenerateCode = photographerProcedure
       .update(albums)
       .set({
         accessCode: await hash(plainCode, 10),
+        accessCodePlain: plainCode,
         updatedAt: new Date(),
       })
       .where(eq(albums.id, input.albumId));

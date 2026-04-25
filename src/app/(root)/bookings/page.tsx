@@ -48,10 +48,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
+type PageProps = {
+  searchParams: Promise<{
+    session?: string;
+  }>;
+};
+
+export default async function Page({ searchParams }: PageProps) {
+  const resolvedParams = await searchParams;
+
+  const initialSession = resolvedParams.session?.toLowerCase() ?? null;
+
   return (
     <>
-      <BookingPage />
+      <BookingPage initialSession={initialSession} />
       <Script
         id="structured-data-bookings"
         type="application/ld+json"

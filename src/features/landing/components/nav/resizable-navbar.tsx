@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-import { ArrowRight, Gem } from "lucide-react";
+import { ArrowRight, Gem, UserIcon } from "lucide-react";
 import {
   motion,
   AnimatePresence,
@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import React, { useRef, useState } from "react";
+import { ActionButtons } from "./action-buttons";
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -125,7 +126,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
     <motion.div
       onMouseLeave={() => setHovered(null)}
       className={cn(
-        "absolute inset-0 hidden flex-1 flex-row items-center justify-end space-x-2 text-sm font-medium text-zinc-600 transition duration-200 px-6 md:px-10 lg:px-14 hover:text-zinc-800 lg:flex lg:space-x-2",
+        "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 px-6 md:px-10 lg:px-14 hover:text-zinc-800 lg:flex lg:space-x-2",
         className,
       )}
     >
@@ -153,19 +154,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
         </Link>
       ))}
       {/* CTA Button */}
-      <a
-        href="/contact"
-        className="group flex items-center gap-2.5 rounded-full border border-accent-red bg-accent-red px-3 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-transparent hover:text-white"
-        aria-label="Get in touch"
-      >
-        <span
-          className="flex h-6 w-6 items-center justify-center rounded-full bg-white transition-all duration-300 group-hover:bg-accent-red group-hover:border group-hover:border-white"
-          aria-hidden="true"
-        >
-          <ArrowRight className="h-3 w-3 text-accent-red transition-colors duration-300 group-hover:text-white" />
-        </span>
-        Get in touch
-      </a>
+      {/* <ActionButtons /> */}
     </motion.div>
   );
 };

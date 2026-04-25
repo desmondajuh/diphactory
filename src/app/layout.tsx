@@ -26,6 +26,7 @@ import { ORPCQueryProvider } from "@/lib/orpc-rq.client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -88,7 +89,7 @@ export default function RootLayout({
         <NuqsAdapter>
           <ORPCQueryProvider>
             <Toaster />
-            {children}
+            <TooltipProvider>{children}</TooltipProvider>
             <ReactQueryDevtools initialIsOpen={false} />
           </ORPCQueryProvider>
         </NuqsAdapter>

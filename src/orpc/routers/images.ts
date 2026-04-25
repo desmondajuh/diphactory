@@ -1,26 +1,61 @@
 import { ORPCError } from "@orpc/server";
-import { and, eq, or } from "drizzle-orm";
+import { and, count, eq, or } from "drizzle-orm";
 import { z } from "zod";
 import {
   clientProcedure,
+  protectedProcedure,
   photographerProcedure,
   publicProcedure,
 } from "@/orpc/base";
 import { albumAccesses, albumImages, albums, images } from "@/lib/db/schema";
 import { utapi } from "@/lib/uploadthing";
 
-const listByAlbum = photographerProcedure
+async function getManageableAlbum(
+  db: typeof import("@/lib/db").db,
+  {
+    albumId,
+    userId,
+    role,
+  }: {
+    albumId: string;
+    userId: string;
+    role?: string | null;
+  },
+) {
+  const album = await db.query.albums.findFirst({
+    where:
+      role === "photographer"
+        ? and(eq(albums.id, albumId), eq(albums.ownerId, userId))
+        : eq(albums.id, albumId),
+  });
+
+  if (!album) {
+    throw new ORPCError("NOT_FOUND");
+  }
+
+  return album;
+}
+
+const listByAlbum = protectedProcedure
   .input(z.object({ albumId: z.string().uuid() }))
   .handler(async ({ input, context }) => {
     const { db, user } = context;
 
-    const album = await db.query.albums.findFirst({
-      where: and(eq(albums.id, input.albumId), eq(albums.ownerId, user.id)),
-    });
-
-    if (!album) {
-      throw new ORPCError("NOT_FOUND");
+    if (
+      user.role !== "photographer" &&
+      user.role !== "admin" &&
+      user.role !== "super_admin"
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You do not have access to manage album images",
+      });
     }
+
+    await getManageableAlbum(db, {
+      albumId: input.albumId,
+      userId: user.id,
+      role: user.role,
+    });
 
     return db.query.albumImages.findMany({
       where: eq(albumImages.albumId, input.albumId),
@@ -42,13 +77,11 @@ const addToAlbum = photographerProcedure
   .handler(async ({ input, context }) => {
     const { db, user } = context;
 
-    const album = await db.query.albums.findFirst({
-      where: and(eq(albums.id, input.albumId), eq(albums.ownerId, user.id)),
+    await getManageableAlbum(db, {
+      albumId: input.albumId,
+      userId: user.id,
+      role: user.role,
     });
-
-    if (!album) {
-      throw new ORPCError("NOT_FOUND");
-    }
 
     const ownedImages = await db.query.images.findMany({
       where: eq(images.uploadedById, user.id),
@@ -65,13 +98,18 @@ const addToAlbum = photographerProcedure
       });
     }
 
+    const [{ value: existingCount }] = await db
+      .select({ value: count() })
+      .from(albumImages)
+      .where(eq(albumImages.albumId, input.albumId));
+
     await db
       .insert(albumImages)
       .values(
         input.imageIds.map((imageId, index) => ({
           albumId: input.albumId,
           imageId,
-          sortOrder: index,
+          sortOrder: existingCount + index,
         })),
       )
       .onConflictDoNothing();
@@ -161,6 +199,79 @@ const deleteImage = photographerProcedure
     await db.delete(images).where(eq(images.id, input.imageId));
 
     return { success: true };
+  });
+
+const removeFromAlbum = protectedProcedure
+  .input(
+    z.object({
+      albumId: z.string().uuid(),
+      imageId: z.string().uuid(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    const { db, user } = context;
+
+    if (
+      user.role !== "photographer" &&
+      user.role !== "admin" &&
+      user.role !== "super_admin"
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You do not have access to manage album images",
+      });
+    }
+
+    await getManageableAlbum(db, {
+      albumId: input.albumId,
+      userId: user.id,
+      role: user.role,
+    });
+
+    const albumImage = await db.query.albumImages.findFirst({
+      where: and(
+        eq(albumImages.albumId, input.albumId),
+        eq(albumImages.imageId, input.imageId),
+      ),
+      with: {
+        image: true,
+      },
+    });
+
+    if (!albumImage) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "This image is not attached to the album",
+      });
+    }
+
+    if (
+      user.role === "photographer" &&
+      albumImage.image.uploadedById !== user.id
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You can only manage images you uploaded",
+      });
+    }
+
+    await db
+      .delete(albumImages)
+      .where(
+        and(
+          eq(albumImages.albumId, input.albumId),
+          eq(albumImages.imageId, input.imageId),
+        ),
+      );
+
+    const [{ value: remainingUsageCount }] = await db
+      .select({ value: count() })
+      .from(albumImages)
+      .where(eq(albumImages.imageId, input.imageId));
+
+    if (remainingUsageCount === 0) {
+      await utapi.deleteFiles(albumImage.image.utKey);
+      await db.delete(images).where(eq(images.id, input.imageId));
+    }
+
+    return { success: true, deletedAsset: remainingUsageCount === 0 };
   });
 
 const reorder = photographerProcedure
@@ -264,6 +375,7 @@ export const imagesRouter = {
   addToAlbum,
   addToCollection,
   deleteImage,
+  removeFromAlbum,
   reorder,
   listAccessibleAlbum,
 };

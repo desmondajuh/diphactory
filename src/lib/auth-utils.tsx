@@ -23,6 +23,40 @@ export const adminIsRequired = async () => {
   return session;
 };
 
+export const photographerIsRequired = async () => {
+  const session = await authIsRequired();
+
+  if (session.user.role !== "photographer") {
+    redirect("/dashboard");
+  }
+
+  return session;
+};
+
+export const albumManagerIsRequired = async () => {
+  const session = await authIsRequired();
+
+  if (
+    session.user.role !== "photographer" &&
+    session.user.role !== "admin" &&
+    session.user.role !== "super_admin"
+  ) {
+    redirect("/dashboard");
+  }
+
+  return session;
+};
+
+export const superAdminIsRequired = async () => {
+  const session = await authIsRequired();
+
+  if (session.user.role !== "super_admin") {
+    redirect("/dashboard");
+  }
+
+  return session;
+};
+
 export const isAdminUser = async () => {
   const session = await getSession();
   return (

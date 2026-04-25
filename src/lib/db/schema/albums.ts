@@ -42,6 +42,7 @@ export const albums = pgTable(
     type: albumTypeEnum("type").notNull().default("shoot"),
     visibility: albumVisibilityEnum("visibility").notNull().default("private"),
     accessCode: text("access_code"),
+    accessCodePlain: text("access_code_plain"),
     isActive: boolean("is_active").notNull().default(true),
     shootDate: timestamp("shoot_date"),
     expiresAt: timestamp("expires_at"),
