@@ -9,6 +9,8 @@ import { clientsRouter } from "./clients";
 import { leadsRouter } from "./leads";
 import { bookingsRouter } from "./bookings";
 import { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
+import { testimonialsRouter } from "./testimonials";
+import { galleryRouter } from "./gallery";
 
 // export const router = {
 //   workspace: {
@@ -23,13 +25,15 @@ import { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
 
 export const router = base.router({
   user: userRouter,
+  leads: leadsRouter,
   albums: albumsRouter,
   images: imagesRouter,
   access: accessRouter,
-  favorites: favoritesRouter,
+  gallery: galleryRouter,
   clients: clientsRouter,
-  leads: leadsRouter,
   bookings: bookingsRouter,
+  favorites: favoritesRouter,
+  testimonials: testimonialsRouter,
 });
 
 export type Router = typeof router;

@@ -4,12 +4,13 @@ import { cn } from "@/lib/utils";
 
 interface LogoProps {
   className?: string;
+  logoUrl?: string;
 }
 
-export function Logo({ className = "" }: LogoProps) {
+export function Logo({ className = "", logoUrl }: LogoProps) {
   return (
     <Link
-      href="/"
+      href={logoUrl || "/"}
       className={cn(
         "relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black",
         className,

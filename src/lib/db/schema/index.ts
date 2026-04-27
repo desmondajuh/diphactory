@@ -7,6 +7,7 @@ export * from "./guest";
 export * from "./categories";
 export * from "./reviews";
 export * from "./testimonials";
+export * from "./gallery";
 export * from "./contacts";
 export * from "./bookings";
 

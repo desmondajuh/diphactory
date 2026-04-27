@@ -1,5 +1,5 @@
 import { BUSINESS_URL, BUSINESS_TYPE, BUSINESS_NAME } from "@/constants";
-import GalleryView from "@/features/gallery/views/gallery-view";
+import GalleryView from "@/features/gallery/views/gallery-view2";
 import type { Metadata } from "next";
 
 const structuredData = {

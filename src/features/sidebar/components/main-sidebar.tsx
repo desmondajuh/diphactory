@@ -23,11 +23,13 @@ import {
   InboxIcon,
   NotebookTabsIcon,
   ShieldCheckIcon,
+  MessageSquareText,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { MainUserMenu } from "./main-user-menu";
+import { Logo } from "@/features/landing/components/nav/logo";
 
 const item = [
   {
@@ -87,14 +89,24 @@ export const MainSidebar = () => {
               url: "/dashboard/bookings",
               icon: NotebookTabsIcon,
             },
+            {
+              title: "Testimonials",
+              url: "/dashboard/admin/bookings",
+              icon: MessageSquareText,
+            },
+            {
+              title: "Gallery",
+              url: "/dashboard/admin/gallery",
+              icon: ImagesIcon,
+            },
           ]
-      : [
-          {
-            title: "Dashboard Home",
-            url: "/dashboard",
-            icon: ChartNoAxesCombinedIcon,
-          },
-        ];
+        : [
+            {
+              title: "Dashboard Home",
+              url: "/dashboard",
+              icon: ChartNoAxesCombinedIcon,
+            },
+          ];
 
   return (
     <Sidebar collapsible="icon">
@@ -105,15 +117,7 @@ export const MainSidebar = () => {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild className="py-5">
-                <Link href="/">
-                  <Image
-                    src="/logos/logo.png"
-                    alt="Logo"
-                    width={24}
-                    height={24}
-                  />
-                  <span>DIP + oRPC</span>
-                </Link>
+                <Logo />
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

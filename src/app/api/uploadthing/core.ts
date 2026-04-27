@@ -21,6 +21,16 @@ async function requirePhotographer() {
   return session.user;
 }
 
+async function requireAdmin() {
+  const session = await getSession();
+  if (!session) throw new Error("Unauthorized");
+  if (session.user.role !== "admin" && session.user.role !== "super_admin") {
+    throw new Error("Forbidden");
+  }
+
+  return session.user;
+}
+
 export const ourFileRouter = {
   shootPhotoUploader: f({
     image: {
@@ -69,6 +79,15 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ file }) => {
       return { url: file.ufsUrl };
+    }),
+
+  galleryUploader: f({ image: { maxFileSize: "8MB", maxFileCount: 10 } })
+    .middleware(async () => {
+      const user = await requirePhotographer();
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      return { url: file.ufsUrl, key: file.key, name: file.name };
     }),
 
   imageUploader: f({
