@@ -96,12 +96,12 @@ const remove = protectedProcedure
       });
     }
 
-    const image = await db.query.images.findFirst({
+    const image = await db.query.gallery.findFirst({
       where: eq(gallery.id, input.id),
     });
 
     if (!image) {
-      throw new ORPCError("NOT_FOUND");
+      throw new ORPCError("NOT_FOUND", { message: "Image not found" });
     }
 
     await utapi.deleteFiles(image.utKey);

@@ -12,17 +12,6 @@ import { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
 import { testimonialsRouter } from "./testimonials";
 import { galleryRouter } from "./gallery";
 
-// export const router = {
-//   workspace: {
-//     list: listWorkspace,
-//   },
-//   users: userRouter,
-//   albums: albumsRouter,
-//   images: imagesRouter,
-//   access: accessRouter,
-//   favorites: favoritesRouter,
-// };
-
 export const router = base.router({
   user: userRouter,
   leads: leadsRouter,

@@ -32,6 +32,7 @@ async function requireAdmin() {
 }
 
 export const ourFileRouter = {
+  // album image uploader
   shootPhotoUploader: f({
     image: {
       maxFileSize: "16MB",
@@ -70,6 +71,7 @@ export const ourFileRouter = {
       return { imageId: image.id, url: file.ufsUrl };
     }),
 
+  // photographer avatar uploader
   photographerAvatar: f({
     image: { maxFileSize: "4MB", maxFileCount: 1 },
   })
@@ -81,9 +83,10 @@ export const ourFileRouter = {
       return { url: file.ufsUrl };
     }),
 
+  // image gallery uploader
   galleryUploader: f({ image: { maxFileSize: "8MB", maxFileCount: 10 } })
     .middleware(async () => {
-      const user = await requirePhotographer();
+      const user = await requireAdmin();
       return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
@@ -113,30 +116,6 @@ export const ourFileRouter = {
       console.log("Upload complete for userId:", metadata.userId);
       console.log("file url", file.ufsUrl);
       return { uploadedBy: metadata.userId };
-    }),
-
-  swatchUploader: f({
-    image: {
-      maxFileSize: "4MB",
-      maxFileCount: 1,
-    },
-  })
-    .middleware(async ({ req }) => {
-      const session = await auth.api.getSession({
-        headers: req.headers,
-      });
-
-      if (!session?.user) {
-        throw new UploadThingError(
-          "You must be signed in to upload product images.",
-        );
-      }
-
-      return { userId: session.user.id };
-    })
-    .onUploadComplete(async ({ file }) => {
-      console.log("Swatch uploaded:", file.url);
-      return { url: file.url };
     }),
 } satisfies FileRouter;
 

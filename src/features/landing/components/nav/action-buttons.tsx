@@ -24,7 +24,7 @@ export const ActionButtons = ({ role, isLoggedIn }: ActionButtonsProps) => {
   } else if (role === "admin") {
     userUrl = "/dashboard/admin";
   } else if (role === "client") {
-    userUrl = "/client";
+    userUrl = "/gallery";
   } else if (role === "photographer") {
     userUrl = "/dashboard";
   }

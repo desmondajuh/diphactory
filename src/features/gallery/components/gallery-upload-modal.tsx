@@ -46,7 +46,7 @@ export function GalleryUploadModal({ onClose, onUploaded }: Props) {
         results.map((res, i) =>
           client.gallery.create({
             utKey: res.key,
-            utUrl: res.url,
+            utUrl: res.ufsUrl,
             filename: files[i].name,
             mimeType: files[i].type,
             sizeBytes: files[i].size,

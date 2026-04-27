@@ -13,105 +13,25 @@ import {
 } from "@/components/ui/sidebar";
 import { useSafeLogout } from "@/hooks/use-safe-logout";
 import { authClient } from "@/lib/auth-client";
-import {
-  ChartNoAxesCombinedIcon,
-  ContactRoundIcon,
-  FolderKanbanIcon,
-  Globe2Icon,
-  HomeIcon,
-  ImagesIcon,
-  InboxIcon,
-  NotebookTabsIcon,
-  ShieldCheckIcon,
-  MessageSquareText,
-} from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { MainUserMenu } from "./main-user-menu";
 import { Logo } from "@/features/landing/components/nav/logo";
-
-const item = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: ChartNoAxesCombinedIcon,
-  },
-  {
-    title: "Website",
-    url: "/",
-    icon: HomeIcon,
-  },
-  {
-    title: "Portfolio",
-    url: "/gallery",
-    icon: ImagesIcon,
-  },
-  {
-    title: "Shared Albums",
-    url: "/album",
-    icon: Globe2Icon,
-  },
-];
+import { UserRole } from "@/lib/permissions";
+import { sidebarGroups } from "@/datas/sidebar-config";
 
 export const MainSidebar = () => {
   const pathname = usePathname();
   const { data: session, isPending: userIsPending } = authClient.useSession();
   const { logout, isLoading: logoutIsLoading } = useSafeLogout();
-  const dashboardItems =
-    session?.user.role === "photographer"
-      ? [
-          {
-            title: "Albums",
-            url: "/dashboard/albums",
-            icon: FolderKanbanIcon,
-          },
-          {
-            title: "Clients",
-            url: "/dashboard/clients",
-            icon: ContactRoundIcon,
-          },
-          {
-            title: "Leads",
-            url: "/dashboard/leads",
-            icon: InboxIcon,
-          },
-        ]
-      : session?.user.role === "super_admin" || session?.user.role === "admin"
-        ? [
-            {
-              title: "Control Center",
-              url: "/dashboard/admin",
-              icon: ShieldCheckIcon,
-            },
-            {
-              title: "Bookings",
-              url: "/dashboard/bookings",
-              icon: NotebookTabsIcon,
-            },
-            {
-              title: "Testimonials",
-              url: "/dashboard/admin/bookings",
-              icon: MessageSquareText,
-            },
-            {
-              title: "Gallery",
-              url: "/dashboard/admin/gallery",
-              icon: ImagesIcon,
-            },
-          ]
-        : [
-            {
-              title: "Dashboard Home",
-              url: "/dashboard",
-              icon: ChartNoAxesCombinedIcon,
-            },
-          ];
+
+  const role = session?.user.role as UserRole | undefined;
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader />
       <SidebarContent>
+        {/* Logo */}
         <SidebarGroup />
         <SidebarGroupContent>
           <SidebarMenu>
@@ -124,57 +44,33 @@ export const MainSidebar = () => {
         </SidebarGroupContent>
         <SidebarGroup />
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {item.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    className="py-5"
-                    isActive={pathname === item.url}
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Dynamic Groups */}
+        {sidebarGroups
+          .filter((group) => role && group.roles.includes(role))
+          .map((group) => (
+            <SidebarGroup key={group.label}>
+              <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
 
-        {session && (
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              {session.user.role === "photographer"
-                ? "Studio"
-                : session.user.role === "super_admin"
-                  ? "Super Admin"
-                  : "Admin"}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {dashboardItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      className="py-5"
-                      isActive={pathname === item.url}
-                    >
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {group.items.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        className="py-5"
+                        isActive={pathname === item.url}
+                      >
+                        <Link href={item.url}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
