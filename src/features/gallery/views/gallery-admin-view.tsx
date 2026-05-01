@@ -9,12 +9,14 @@ import { GalleryUploadModal } from "../components/gallery-upload-modal";
 import { GalleryEditModal } from "../components/gallery-edit-modal";
 import { GalleryDeleteModal } from "../components/gallery-delete-modal";
 import { GalleryAdminGrid } from "../components/gallery-admin-grid";
+import { AlbumOption } from "@/types/router-types";
 
 interface Props {
   initialImages: GALLERY_IMAGE_TYPE[];
+  albums: AlbumOption[];
 }
 
-export function GalleryAdminView({ initialImages }: Props) {
+export function GalleryAdminView({ initialImages, albums }: Props) {
   const [images, setImages] = useState(initialImages);
   const [uploading, setUploading] = useState(false);
   const [editing, setEditing] = useState<GALLERY_IMAGE_TYPE | null>(null);
@@ -60,6 +62,7 @@ export function GalleryAdminView({ initialImages }: Props) {
 
       {uploading && (
         <GalleryUploadModal
+          albums={albums}
           onClose={() => setUploading(false)}
           onUploaded={async () => {
             setUploading(false);
@@ -70,6 +73,7 @@ export function GalleryAdminView({ initialImages }: Props) {
 
       {editing && (
         <GalleryEditModal
+          albums={albums}
           image={editing}
           onClose={() => setEditing(null)}
           onSaved={async () => {

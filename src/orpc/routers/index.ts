@@ -11,6 +11,9 @@ import { bookingsRouter } from "./bookings";
 import { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
 import { testimonialsRouter } from "./testimonials";
 import { galleryRouter } from "./gallery";
+import { carouselRouter } from "./components/carousel";
+import { faqRouter } from "./components/faq";
+import { sectionsRouter } from "./components/sections";
 
 export const router = base.router({
   user: userRouter,
@@ -23,12 +26,16 @@ export const router = base.router({
   bookings: bookingsRouter,
   favorites: favoritesRouter,
   testimonials: testimonialsRouter,
+
+  carousel: carouselRouter,
+  faq: faqRouter,
+  sections: sectionsRouter,
 });
 
 export type Router = typeof router;
 
 export type Inputs = InferRouterInputs<Router>;
-type UserGetByIdInput = Inputs["user"]["getById"];
+// type UserGetByIdInput = Inputs["user"]["getById"];
 
 export type Outputs = InferRouterOutputs<Router>;
-type UserGetByIdOutput = Inputs["user"]["getById"];
+// type UserGetByIdOutput = Inputs["user"]["getById"];

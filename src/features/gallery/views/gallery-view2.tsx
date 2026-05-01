@@ -5,7 +5,14 @@ import { client } from "@/lib/orpc";
 import { GalleryGrid } from "../components/gallery-grid";
 
 export default async function GalleryView() {
-  const images = await client.gallery.list();
+  // const images = await client.gallery.list();
+  const [images, albums] = await Promise.all([
+    client.gallery.list(),
+    client.albums.listPublicGallery(),
+  ]);
+
+  // build albumId → slug lookup map
+  const albumSlugs = Object.fromEntries(albums.map((a) => [a.id, a.slug]));
 
   const categories = [
     "All",
@@ -30,7 +37,11 @@ export default async function GalleryView() {
         </p>
       </div>
 
-      <GalleryGrid images={images} categories={categories} />
+      <GalleryGrid
+        images={images}
+        categories={categories}
+        albumSlugs={albumSlugs}
+      />
     </section>
   );
 }

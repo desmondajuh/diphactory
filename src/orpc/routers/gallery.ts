@@ -110,6 +110,33 @@ const remove = protectedProcedure
     return { success: true, utKey: input.utKey };
   });
 
+// add this to your existing galleryRouter
+const assignToAlbum = protectedProcedure
+  .input(
+    z.object({
+      imageIds: z.array(z.string().uuid()),
+      albumId: z.string().uuid().nullable(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    const { db, user } = context;
+
+    if (user.role !== "admin" && user.role !== "super_admin") {
+      throw new ORPCError("FORBIDDEN");
+    }
+
+    await Promise.all(
+      input.imageIds.map((id) =>
+        db
+          .update(gallery)
+          .set({ albumId: input.albumId })
+          .where(eq(gallery.id, id)),
+      ),
+    );
+
+    return { success: true };
+  });
+
 export const galleryRouter = {
   list,
   listByCategory,
@@ -117,4 +144,5 @@ export const galleryRouter = {
   create,
   update,
   remove,
+  assignToAlbum,
 };

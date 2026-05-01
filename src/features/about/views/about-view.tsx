@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import { ReactLenis } from "lenis/react";
 import { PageHero } from "@/components/shared/page-hero";
@@ -6,8 +6,10 @@ import { ImageCTA } from "@/components/shared/image-cta";
 import { FAQSection } from "@/features/landing/sections/faq-section";
 import LatestInsights from "@/features/landing/sections/insights-section";
 import { ExpertiseSection } from "@/features/about/sections/expertise-section";
+import { client } from "@/lib/orpc";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const faqs = await client.faq.list();
   return (
     <ReactLenis root>
       <div className="min-h-screen bg-[#0e0e0e] text-white relative overflow-hidden">
@@ -22,7 +24,7 @@ export default function AboutPage() {
         {/* Hero */}
         <PageHero title="About Dip" imageSrc="images/bg/bride-portrait.jpg" />
         <ExpertiseSection />
-        <FAQSection />
+        <FAQSection faqs={faqs} />
         <ImageCTA />
         <LatestInsights />
       </div>

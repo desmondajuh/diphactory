@@ -13,11 +13,15 @@ import {
 } from "drizzle-zod";
 import { z } from "zod";
 import { users } from "./user";
+import { albums } from "./albums";
 
 export const gallery = pgTable(
   "gallery",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    albumId: uuid("album_id").references(() => albums.id, {
+      onDelete: "set null",
+    }),
     title: text("title"),
     description: text("description"),
     category: text("category"),
@@ -35,7 +39,10 @@ export const gallery = pgTable(
     blurDataUrl: text("blur_data_url"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (table) => [index("gallery_uploader_idx").on(table.uploadedById)],
+  (table) => [
+    index("gallery_uploader_idx").on(table.uploadedById),
+    index("gallery_album_idx").on(table.albumId),
+  ],
 );
 
 export const gallerySelectSchema = createSelectSchema(gallery);

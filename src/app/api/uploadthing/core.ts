@@ -4,6 +4,7 @@ import { UploadThingError } from "uploadthing/server";
 import { auth, getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { images } from "@/lib/db/schema";
+import { requireMinRoleUploadThing } from "@/lib/auth/adapters";
 
 const f = createUploadthing();
 
@@ -40,7 +41,8 @@ export const ourFileRouter = {
     },
   })
     .middleware(async () => {
-      const user = await requirePhotographer();
+      // const user = await requirePhotographer();
+      const user = await requireMinRoleUploadThing("photographer");
       return { uploadedById: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
@@ -100,17 +102,9 @@ export const ourFileRouter = {
     },
   })
     .middleware(async ({ req }) => {
-      const session = await auth.api.getSession({
-        headers: req.headers,
-      });
+      const user = await requireMinRoleUploadThing("photographer");
 
-      if (!session?.user) {
-        throw new UploadThingError(
-          "You must be signed in to upload product images.",
-        );
-      }
-
-      return { userId: session.user.id };
+      return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("Upload complete for userId:", metadata.userId);

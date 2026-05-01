@@ -6,15 +6,18 @@ import { toast } from "sonner";
 import { useUploadThing } from "@/lib/uploadthing-client";
 import { client } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
+import { AlbumOption } from "@/types/router-types";
 
 interface Props {
+  albums: AlbumOption[];
   onClose: () => void;
   onUploaded: () => void;
 }
 
-export function GalleryUploadModal({ onClose, onUploaded }: Props) {
+export function GalleryUploadModal({ onClose, onUploaded, albums }: Props) {
   const [files, setFiles] = useState<File[]>([]);
   const [category, setCategory] = useState("");
+  const [albumId, setAlbumId] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -51,6 +54,7 @@ export function GalleryUploadModal({ onClose, onUploaded }: Props) {
             mimeType: files[i].type,
             sizeBytes: files[i].size,
             category: category || null,
+            albumId: albumId || null,
           }),
         ),
       );
@@ -139,17 +143,38 @@ export function GalleryUploadModal({ onClose, onUploaded }: Props) {
           </div>
         )}
 
-        {/* Category */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold uppercase tracking-widest text-white/40">
-            Category
-          </label>
-          <input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="e.g. Wedding, Portrait, Commercial"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/30 placeholder:text-white/20"
-          />
+        <div className="grid grid-cols-2 gap-4">
+          {/* Album selector */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-widest text-white/40">
+              Album
+            </label>
+            <select
+              value={albumId}
+              onChange={(e) => setAlbumId(e.target.value)}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/30"
+            >
+              <option value="">No album</option>
+              {albums.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Category */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold uppercase tracking-widest text-white/40">
+              Category
+            </label>
+            <input
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="e.g. Wedding, Portrait, Commercial"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/30 placeholder:text-white/20"
+            />
+          </div>
         </div>
 
         {/* Actions */}

@@ -18,7 +18,7 @@ export const DashboardAlbumsView = () => {
       <AlbumCreateModal onCreated={() => setRefreshKey((value) => value + 1)} />
       <div className="flex w-full flex-col gap-5">
         <AlbumsBreadcrumbs />
-        <section className="rounded-[1.75rem] border border-border/70 bg-gradient-to-br from-card via-card to-muted/50 p-6 shadow-sm">
+        <section className="rounded-[1.75rem] border border-border/70 bg-linear-to-br from-card via-card to-muted/50 p-6 shadow-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl space-y-3">
               <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
@@ -33,9 +33,9 @@ export const DashboardAlbumsView = () => {
               </p>
             </div>
             <Button className="w-fit" onClick={() => setModalOpen(true)}>
-            <PlusIcon className="size-4" />
+              <PlusIcon className="size-4" />
               New album
-          </Button>
+            </Button>
           </div>
         </section>
         <DashboardAlbumsList refreshKey={refreshKey} />

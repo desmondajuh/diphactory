@@ -8,6 +8,8 @@ import { favorites } from "./favorites";
 import { clients } from "./clients";
 import { leads } from "./leads";
 import { albumImages } from "./album-images";
+import { gallery } from "./gallery";
+import { sections, statItems, featureItems } from "./components";
 
 export const usersRelations = relations(users, ({ many }) => ({
   ownedAlbums: many(albums, { relationName: "owner" }),
@@ -96,5 +98,31 @@ export const leadsRelations = relations(leads, ({ one }) => ({
   album: one(albums, {
     fields: [leads.albumId],
     references: [albums.id],
+  }),
+}));
+
+export const galleryRelations = relations(gallery, ({ one }) => ({
+  album: one(albums, {
+    fields: [gallery.albumId],
+    references: [albums.id],
+  }),
+}));
+
+export const sectionsRelations = relations(sections, ({ many }) => ({
+  statItems: many(statItems),
+  featureItems: many(featureItems),
+}));
+
+export const statItemsRelations = relations(statItems, ({ one }) => ({
+  section: one(sections, {
+    fields: [statItems.sectionId],
+    references: [sections.id],
+  }),
+}));
+
+export const featureItemsRelations = relations(featureItems, ({ one }) => ({
+  section: one(sections, {
+    fields: [featureItems.sectionId],
+    references: [sections.id],
   }),
 }));

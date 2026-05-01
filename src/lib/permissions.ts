@@ -11,3 +11,11 @@ export const isAdmin = (role?: UserRole | null) =>
 
 export const isPhotographer = (role?: UserRole | null) =>
   role === "photographer";
+
+export function canViewAllAlbums(role?: string | null) {
+  return role === "admin" || role === "super_admin";
+}
+
+export function canManageAlbums(role?: string | null) {
+  return role === "admin" || role === "super_admin" || role === "photographer";
+}

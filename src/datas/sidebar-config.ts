@@ -30,7 +30,7 @@ type SidebarGroupConfig = {
 export const sidebarGroups: SidebarGroupConfig[] = [
   {
     label: "Menu",
-    roles: ["client", "photographer", "admin", "super_admin"],
+    roles: ["client", "photographer"],
     items: [
       {
         title: "Dashboard",
@@ -96,7 +96,26 @@ export const sidebarGroups: SidebarGroupConfig[] = [
         url: "/dashboard/admin/testimonials",
         icon: MessageSquareText,
       },
-      { title: "Gallery", url: "/dashboard/admin/gallery", icon: ImagesIcon },
+      {
+        title: "Gallery",
+        url: "/dashboard/admin/gallery",
+        icon: ImagesIcon,
+      },
+      {
+        title: "Faq",
+        url: "/dashboard/admin/templates/faq",
+        icon: ImagesIcon,
+      },
+      {
+        title: "Sections",
+        url: "/dashboard/admin/templates/sections",
+        icon: ImagesIcon,
+      },
+      {
+        title: "Carousel",
+        url: "/dashboard/admin/templates/carousel",
+        icon: ImagesIcon,
+      },
     ],
   },
 ];

@@ -3,20 +3,43 @@
 
 import { useState } from "react";
 import NextImage from "next/image";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { GALLERY_IMAGE_TYPE } from "@/lib/db/schema";
+import { Lightbox } from "./lightbox";
 
 interface Props {
   images: GALLERY_IMAGE_TYPE[];
   categories: string[];
+  albumSlugs: Record<string, string>; // albumId → slug
 }
 
-export function GalleryGrid({ images, categories }: Props) {
+export function GalleryGrid({ images, categories, albumSlugs }: Props) {
   const [active, setActive] = useState("All");
-  const [lightbox, setLightbox] = useState<GALLERY_IMAGE_TYPE | null>(null);
+  const [lightboxId, setLightboxId] = useState<string | null>(null);
+  const router = useRouter();
+  // const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const filtered =
     active === "All" ? images : images.filter((i) => i.category === active);
+
+  const handleImageClick = (image: GALLERY_IMAGE_TYPE, idx: number) => {
+    if (image.albumId && albumSlugs[image.albumId]) {
+      // console.log(albumSlugs[image.albumId]);
+      router.push(`/gallery/${albumSlugs[image.albumId]}`);
+    } else {
+      // setLightboxIndex(idx);
+      setLightboxId(image.id);
+    }
+  };
+
+  // build images without albums for lightbox
+  // const noAlbumImages = filtered.filter(
+  //   (i) => !i.albumId || !albumSlugs[i.albumId],
+  // );
+  const lightboxIndex = lightboxId
+    ? filtered.findIndex((i) => i.id === lightboxId)
+    : null;
 
   return (
     <>
@@ -42,11 +65,11 @@ export function GalleryGrid({ images, categories }: Props) {
 
       {/* Masonry grid */}
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 max-w-7xl mx-auto">
-        {filtered.map((image) => (
+        {filtered.map((image, idx) => (
           <div
             key={image.id}
             className="group relative mb-4 break-inside-avoid overflow-hidden rounded-xl cursor-pointer"
-            onClick={() => setLightbox(image)}
+            onClick={() => handleImageClick(image, idx)}
           >
             <NextImage
               src={image.utUrl}
@@ -58,6 +81,14 @@ export function GalleryGrid({ images, categories }: Props) {
               blurDataURL={image.blurDataUrl ?? undefined}
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300" />
+
+            {/* Album indicator badge */}
+            {image.albumId && albumSlugs[image.albumId] && (
+              <div className="absolute top-3 left-3 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium text-white/70 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                View album →
+              </div>
+            )}
+
             {image.title && (
               <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                 <p className="text-sm font-medium text-white">{image.title}</p>
@@ -72,47 +103,17 @@ export function GalleryGrid({ images, categories }: Props) {
         ))}
       </div>
 
-      {/* Lightbox */}
-      {lightbox && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            onClick={() => setLightbox(null)}
-            className="absolute top-5 right-5 text-white/40 hover:text-white transition-colors text-sm"
-          >
-            ✕ Close
-          </button>
-          <div
-            className="relative max-w-5xl max-h-[85vh] w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <NextImage
-              src={lightbox.utUrl}
-              alt={lightbox.title ?? lightbox.filename}
-              width={lightbox.width ?? 1200}
-              height={lightbox.height ?? 900}
-              className="rounded-xl object-contain max-h-[85vh] w-full"
-              placeholder={lightbox.blurDataUrl ? "blur" : "empty"}
-              blurDataURL={lightbox.blurDataUrl ?? undefined}
-            />
-            {(lightbox.title || lightbox.description) && (
-              <div className="mt-3 text-center">
-                {lightbox.title && (
-                  <p className="text-sm font-medium text-white">
-                    {lightbox.title}
-                  </p>
-                )}
-                {lightbox.description && (
-                  <p className="text-xs text-white/40 mt-1">
-                    {lightbox.description}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={filtered}
+          // images={noAlbumImages}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxId(null)}
+          enableSlideshow
+          enableThumbnails
+          enableDownload
+          enableZoom
+        />
       )}
     </>
   );

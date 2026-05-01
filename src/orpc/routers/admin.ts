@@ -9,7 +9,13 @@ import {
   publicProcedure,
   photographerProcedure,
 } from "@/orpc/base";
-import { albumImages, albums, clients, images } from "@/lib/db/schema";
+import {
+  albumImages,
+  albums,
+  albumUpdateSchema,
+  clients,
+  images,
+} from "@/lib/db/schema";
 import { utapi } from "@/lib/uploadthing";
 import { slugify } from "@/utils/slugify";
 
@@ -36,16 +42,6 @@ async function getManageableAlbum(
         : undefined,
   });
 
-  // const album = await db.query.albums.findFirst({
-  //   where:
-  //     role === "photographer"
-  //       ? and(
-  //         eq(albums.id, albumId),
-  //         eq(albums.ownerId, userId)
-  //       )
-  //       : eq(albums.id, albumId),
-  // });
-
   if (!album) {
     throw new ORPCError("NOT_FOUND");
   }
@@ -53,64 +49,61 @@ async function getManageableAlbum(
   return album;
 }
 
-// Public gallery — list all public active shoot albums with cover image
-const listPublicGallery = publicProcedure.handler(async ({ context }) => {
-  const { db } = context;
-
-  return db.query.albums.findMany({
-    where: (a, { eq, and }) =>
-      and(
-        eq(a.visibility, "public"),
-        eq(a.isActive, true),
-        eq(a.type, "shoot"),
-      ),
-    orderBy: (a, { desc }) => [desc(a.shootDate)],
-    with: {
-      albumImages: {
-        limit: 1,
-        orderBy: (ai, { asc }) => [asc(ai.sortOrder)],
-        with: {
-          image: {
-            columns: {
-              utUrl: true,
-              blurDataUrl: true,
-              width: true,
-              height: true,
-            },
-          },
-        },
-      },
-    },
-  });
-});
-
-// Public gallery — get single album by slug with all images
-const getPublicBySlug = publicProcedure
-  .input(z.object({ slug: z.string().min(1) }))
+// Admin — set cover image
+const setCover = protectedProcedure
+  .input(z.object({ albumId: z.string().uuid(), imageId: z.string().uuid() }))
   .handler(async ({ input, context }) => {
-    const { db } = context;
+    const { db, user } = context;
 
-    const album = await db.query.albums.findFirst({
-      where: (a, { eq, and }) =>
-        and(
-          eq(a.slug, input.slug),
-          eq(a.isActive, true),
-          eq(a.visibility, "public"),
-        ),
-      with: {
-        albumImages: {
-          orderBy: (ai, { asc }) => [asc(ai.sortOrder)],
-          with: {
-            image: true,
-          },
-        },
-      },
-    });
+    if (user.role !== "admin" && user.role !== "super_admin") {
+      throw new ORPCError("FORBIDDEN");
+    }
 
-    if (!album)
-      throw new ORPCError("NOT_FOUND", { message: "Album not found" });
+    const [updated] = await db
+      .update(albums)
+      .set({ coverImageId: input.imageId })
+      .where(eq(albums.id, input.albumId))
+      .returning();
 
-    return album;
+    return updated;
+  });
+
+// Admin — delete album
+const remove = protectedProcedure
+  .input(z.object({ id: z.string().uuid() }))
+  .handler(async ({ input, context }) => {
+    const { db, user } = context;
+
+    if (user.role !== "admin" && user.role !== "super_admin") {
+      throw new ORPCError("FORBIDDEN");
+    }
+
+    await db.delete(albums).where(eq(albums.id, input.id));
+
+    return { success: true };
+  });
+
+// Admin — update album
+const update = protectedProcedure
+  .input(albumUpdateSchema.required({ id: true }))
+  .handler(async ({ input, context }) => {
+    const { db, user } = context;
+
+    if (user.role !== "admin" && user.role !== "super_admin") {
+      throw new ORPCError("FORBIDDEN");
+    }
+
+    const { id, ...data } = input;
+
+    const [updated] = await db
+      .update(albums)
+      .set(data)
+      .where(eq(albums.id, id))
+      .returning();
+
+    if (!updated) throw new ORPCError("NOT_FOUND");
+
+    return updated;
   });
 
 const list = photographerProcedure
@@ -229,7 +222,7 @@ const getById = protectedProcedure
     return album;
   });
 
-const update = photographerProcedure
+const updateOld = photographerProcedure
   .input(
     z.object({
       albumId: z.string().uuid(),
@@ -449,6 +442,4 @@ export const albumsRouter = {
   regenerateCode,
   createCollection,
   getSharedBySlug,
-  listPublicGallery, // ← new
-  getPublicBySlug, // ← new
 };
