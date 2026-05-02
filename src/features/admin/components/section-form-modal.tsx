@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 // features/admin/sections/components/section-form-modal.tsx
 "use client";
 
@@ -20,6 +21,8 @@ interface FeatureRow {
   icon: string;
   title: string;
   description: string;
+  image: string;
+  imageUtKey: string;
   ctaText: string;
   ctaLink: string;
   sortOrder: number;
@@ -42,12 +45,15 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
     sectionType: (section?.sectionType ?? "hero") as SectionType,
     sectionName: section?.sectionName ?? "",
     slug: section?.slug ?? "",
+    badge: section?.badge ?? "",
     title: section?.title ?? "",
     subtitle: section?.subtitle ?? "",
     description: section?.description ?? "",
     image: section?.image ?? "",
+    imageUtKey: section?.imageUtKey ?? "",
     imageAlt: section?.imageAlt ?? "",
     bgImage: section?.bgImage ?? "",
+    bgImageUtKey: section?.bgImageUtKey ?? "",
     ctaText: section?.ctaText ?? "",
     ctaLink: section?.ctaLink ?? "",
     ctaSecondaryText: section?.ctaSecondaryText ?? "",
@@ -64,12 +70,16 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
     })) ?? [],
   );
 
+  const [featureUploading, setFeatureUploading] = useState<number | null>(null);
+
   const [features, setFeatures] = useState<FeatureRow[]>(
     section?.featureItems.map((f) => ({
       id: f.id,
       icon: f.icon ?? "",
       title: f.title,
       description: f.description ?? "",
+      image: f.image ?? "",
+      imageUtKey: f.imageUtKey ?? "",
       ctaText: f.ctaText ?? "",
       ctaLink: f.ctaLink ?? "",
       sortOrder: f.sortOrder,
@@ -81,15 +91,46 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
     value: (typeof form)[K],
   ) => setForm((prev) => ({ ...prev, [key]: value }));
 
-  const handleImageUpload = async (field: "image" | "bgImage", file: File) => {
+  const handleImageUpload = async (
+    field: "image" | "bgImage",
+    utKeyField: "imageUtKey" | "bgImageUtKey",
+    file: File,
+  ) => {
     setUploadingField(field);
     try {
       const results = await startUpload([file]);
-      if (results?.[0]) setField(field, results[0].ufsUrl);
+      //   if (results?.[0]) setField(field, results[0].ufsUrl);
+      if (results?.[0]) {
+        setForm((prev) => ({
+          ...prev,
+          [field]: results[0].ufsUrl,
+          [utKeyField]: results[0].key, // ← save the key
+        }));
+      }
     } catch {
       toast.error("Upload failed");
     } finally {
       setUploadingField(null);
+    }
+  };
+
+  const handleFeatureImageUpload = async (index: number, file: File) => {
+    setFeatureUploading(index);
+    try {
+      const results = await startUpload([file]);
+      if (results?.[0]) {
+        setFeatures((prev) =>
+          prev.map((f, j) =>
+            j === index
+              ? { ...f, image: results[0].ufsUrl, imageUtKey: results[0].key }
+              : f,
+          ),
+        );
+      }
+    } catch {
+      toast.error("Upload failed");
+    } finally {
+      setFeatureUploading(null);
     }
   };
 
@@ -102,6 +143,8 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
     try {
       const payload = {
         ...form,
+        imageUtKey: form.imageUtKey || null,
+        bgImageUtKey: form.bgImageUtKey || null,
         statItems: form.sectionType === "stats" ? stats : undefined,
         featureItems: form.sectionType === "features" ? features : undefined,
       };
@@ -121,7 +164,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
     }
   };
 
-  const needsImage = ["hero", "about"].includes(form.sectionType);
+  const needsImage = ["hero", "about", "features"].includes(form.sectionType);
   const needsBgImage = ["hero", "cta"].includes(form.sectionType);
   const needsStats = form.sectionType === "stats";
   const needsFeatures = form.sectionType === "features";
@@ -181,6 +224,14 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
 
         {/* Content fields */}
         <div className="space-y-4">
+          <Field label="Badge">
+            <input
+              value={form.badge}
+              onChange={(e) => setField("title", e.target.value)}
+              className={inputCls}
+              placeholder="Section badge"
+            />
+          </Field>
           <Field label="Title">
             <input
               value={form.title}
@@ -215,7 +266,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
             value={form.image}
             altValue={form.imageAlt}
             onAltChange={(v) => setField("imageAlt", v)}
-            onUpload={(f) => handleImageUpload("image", f)}
+            onUpload={(f) => handleImageUpload("image", "imageUtKey", f)}
             uploading={uploadingField === "image"}
           />
         )}
@@ -223,7 +274,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
           <ImageUploadField
             label="Background image"
             value={form.bgImage}
-            onUpload={(f) => handleImageUpload("bgImage", f)}
+            onUpload={(f) => handleImageUpload("bgImage", "bgImageUtKey", f)}
             uploading={uploadingField === "bgImage"}
           />
         )}
@@ -342,6 +393,8 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
                       icon: "",
                       title: "",
                       description: "",
+                      image: "",
+                      imageUtKey: "",
                       ctaText: "",
                       ctaLink: "",
                       sortOrder: prev.length,
@@ -369,6 +422,36 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
                     ✕ Remove
                   </button>
                 </div>
+
+                {/* Image upload */}
+                <div className="flex items-center gap-3">
+                  {feature.image && (
+                    <img
+                      src={feature.image}
+                      alt=""
+                      className="w-14 h-14 rounded-lg object-cover border border-white/10 shrink-0"
+                    />
+                  )}
+                  <label
+                    className={`flex-1 flex items-center justify-center rounded-xl border border-dashed border-white/10 px-4 py-2.5 text-xs text-white/30 hover:border-white/25 hover:text-white/60 transition-all cursor-pointer ${featureUploading === i ? "animate-pulse" : ""}`}
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="sr-only"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleFeatureImageUpload(i, f);
+                      }}
+                    />
+                    {featureUploading === i
+                      ? "Uploading..."
+                      : feature.image
+                        ? "Replace image"
+                        : "Upload image"}
+                  </label>
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <input
                     value={feature.icon}

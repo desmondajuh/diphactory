@@ -29,6 +29,7 @@ export function NavbarClient({ isLoggedIn, role }: NavbarClientProps) {
     { name: "Services", link: "/services", number: "02" },
     { name: "Works", link: "/gallery", number: "03" },
     { name: "Testimonials", link: "/testimonials", number: "04" },
+    { name: "Contact", link: "/contact", number: "05" },
     // ...(isAdmin ? [{ name: "Admin", link: "/admin/products" }] : []),
   ];
 

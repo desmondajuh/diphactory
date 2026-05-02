@@ -95,6 +95,7 @@ export const ourFileRouter = {
       return { url: file.ufsUrl, key: file.key, name: file.name };
     }),
 
+  // simple image upload route
   imageUploader: f({
     image: {
       maxFileSize: "4MB",

@@ -11,6 +11,7 @@ import { bookingsRouter } from "./bookings";
 import { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
 import { testimonialsRouter } from "./testimonials";
 import { galleryRouter } from "./gallery";
+import { blogRouter } from "./blog";
 import { carouselRouter } from "./components/carousel";
 import { faqRouter } from "./components/faq";
 import { sectionsRouter } from "./components/sections";
@@ -30,6 +31,7 @@ export const router = base.router({
   carousel: carouselRouter,
   faq: faqRouter,
   sections: sectionsRouter,
+  blog: blogRouter,
 });
 
 export type Router = typeof router;

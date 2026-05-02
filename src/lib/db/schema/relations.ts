@@ -11,6 +11,8 @@ import { albumImages } from "./album-images";
 import { gallery } from "./gallery";
 import { sections, statItems, featureItems } from "./components";
 
+import { blogPosts, blogCategories, blogTags, blogPostTags } from "./blog";
+
 export const usersRelations = relations(users, ({ many }) => ({
   ownedAlbums: many(albums, { relationName: "owner" }),
   collections: many(albums, { relationName: "collectionOwner" }),
@@ -124,5 +126,39 @@ export const featureItemsRelations = relations(featureItems, ({ one }) => ({
   section: one(sections, {
     fields: [featureItems.sectionId],
     references: [sections.id],
+  }),
+}));
+
+// blog
+// lib/db/schema/relations.ts — add these
+
+export const blogPostsRelations = relations(blogPosts, ({ one, many }) => ({
+  author: one(users, { fields: [blogPosts.authorId], references: [users.id] }),
+  category: one(blogCategories, {
+    fields: [blogPosts.categoryId],
+    references: [blogCategories.id],
+  }),
+  postTags: many(blogPostTags),
+}));
+
+export const blogCategoriesRelations = relations(
+  blogCategories,
+  ({ many }) => ({
+    posts: many(blogPosts),
+  }),
+);
+
+export const blogTagsRelations = relations(blogTags, ({ many }) => ({
+  postTags: many(blogPostTags),
+}));
+
+export const blogPostTagsRelations = relations(blogPostTags, ({ one }) => ({
+  post: one(blogPosts, {
+    fields: [blogPostTags.postId],
+    references: [blogPosts.id],
+  }),
+  tag: one(blogTags, {
+    fields: [blogPostTags.tagId],
+    references: [blogTags.id],
   }),
 }));

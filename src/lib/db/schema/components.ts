@@ -58,12 +58,15 @@ export const sections = pgTable("sections", {
   sectionType: sectionTypeEnum("section_type").notNull(),
   sectionName: text("section_name").notNull(), // internal label e.g. "Home Hero"
   slug: text("slug").notNull().unique(), // "home-hero", "about-story"
+  badge: text("badge"),
   title: text("title"),
   subtitle: text("subtitle"),
   description: text("description"),
   image: text("image"),
+  imageUtKey: text("image_ut_key"),
   imageAlt: text("image_alt"),
   bgImage: text("bg_image"),
+  bgImageUtKey: text("bg_image_ut_key"),
   ctaText: text("cta_text"),
   ctaLink: text("cta_link"),
   ctaSecondaryText: text("cta_secondary_text"),
@@ -94,6 +97,8 @@ export const featureItems = pgTable("feature_items", {
   icon: text("icon"), // icon name or SVG string
   title: text("title").notNull(),
   description: text("description"),
+  image: text("image"),
+  imageUtKey: text("image_ut_key"),
   ctaText: text("cta_text"),
   ctaLink: text("cta_link"),
   sortOrder: integer("sort_order").notNull().default(0),

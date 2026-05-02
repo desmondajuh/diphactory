@@ -10,6 +10,7 @@ import {
   sectionInsertSchema,
   sectionUpdateSchema,
 } from "@/lib/db/schema";
+import { utapi } from "@/lib/uploadthing";
 
 const statItemSchema = z.object({
   id: z.string().uuid().optional(),
@@ -23,6 +24,8 @@ const featureItemSchema = z.object({
   icon: z.string().optional().nullable(),
   title: z.string().min(1),
   description: z.string().optional().nullable(),
+  image: z.string().optional().nullable(),
+  imageUtKey: z.string().optional().nullable(),
   ctaText: z.string().optional().nullable(),
   ctaLink: z.string().optional().nullable(),
   sortOrder: z.number().int().default(0),
@@ -85,6 +88,8 @@ const create = protectedProcedure
     sectionInsertSchema
       .omit({ id: true, createdAt: true, updatedAt: true })
       .extend({
+        imageUtKey: z.string().optional().nullable(),
+        bgImageUtKey: z.string().optional().nullable(),
         statItems: z.array(statItemSchema).optional(),
         featureItems: z.array(featureItemSchema).optional(),
       }),
@@ -117,6 +122,8 @@ const create = protectedProcedure
 const update = protectedProcedure
   .input(
     sectionUpdateSchema.required({ id: true }).extend({
+      imageUtKey: z.string().optional().nullable(),
+      bgImageUtKey: z.string().optional().nullable(),
       statItems: z.array(statItemSchema).optional(),
       featureItems: z.array(featureItemSchema).optional(),
     }),
@@ -128,6 +135,32 @@ const update = protectedProcedure
 
     const { id, statItems: stats, featureItems: features, ...data } = input;
 
+    // utKey cleanup
+    // fetch existing to compare utKeys
+    const existing = await db.query.sections.findFirst({
+      where: eq(sections.id, id),
+    });
+
+    if (!existing) throw new ORPCError("NOT_FOUND");
+
+    // collect stale UT keys to delete
+    const keysToDelete: string[] = [];
+
+    if (
+      data.imageUtKey &&
+      existing.imageUtKey &&
+      data.imageUtKey !== existing.imageUtKey
+    ) {
+      keysToDelete.push(existing.imageUtKey);
+    }
+    if (
+      data.bgImageUtKey &&
+      existing.bgImageUtKey &&
+      data.bgImageUtKey !== existing.bgImageUtKey
+    ) {
+      keysToDelete.push(existing.bgImageUtKey);
+    }
+
     const [updated] = await db
       .update(sections)
       .set({ ...data, updatedAt: new Date() })
@@ -135,6 +168,10 @@ const update = protectedProcedure
       .returning();
 
     if (!updated) throw new ORPCError("NOT_FOUND");
+
+    if (keysToDelete.length > 0) {
+      await utapi.deleteFiles(keysToDelete);
+    }
 
     // Replace stat items if provided
     if (stats !== undefined) {
@@ -148,11 +185,27 @@ const update = protectedProcedure
 
     // Replace feature items if provided
     if (features !== undefined) {
+      // fetch existing feature items to get their utKeys
+      const existingFeatures = await db.query.featureItems.findMany({
+        where: eq(featureItems.sectionId, id),
+      });
+
+      // collect keys of items being replaced
+      const featureKeysToDelete = existingFeatures
+        .map((f) => f.imageUtKey)
+        .filter(Boolean) as string[];
+
       await db.delete(featureItems).where(eq(featureItems.sectionId, id));
+
       if (features.length) {
         await db
           .insert(featureItems)
           .values(features.map((f) => ({ ...f, sectionId: id })));
+      }
+
+      // delete old UT files after DB is updated
+      if (featureKeysToDelete.length > 0) {
+        await utapi.deleteFiles(featureKeysToDelete);
       }
     }
 
@@ -184,7 +237,34 @@ const remove = protectedProcedure
     if (user.role !== "admin" && user.role !== "super_admin")
       throw new ORPCError("FORBIDDEN");
 
+    const existing = await db.query.sections.findFirst({
+      where: eq(sections.id, input.id),
+    });
+
+    if (!existing) throw new ORPCError("NOT_FOUND");
+
+    const existingFeatures = await db.query.featureItems.findMany({
+      where: eq(featureItems.sectionId, input.id),
+    });
+
+    const featureImageKeys = existingFeatures
+      .map((f) => f.imageUtKey)
+      .filter(Boolean) as string[];
+
+    const keysToDelete = [
+      existing.imageUtKey,
+      existing.bgImageUtKey,
+      ...featureImageKeys,
+    ].filter(Boolean) as string[];
+
+    // delete DB record first (cascade handles stat/feature items)
     await db.delete(sections).where(eq(sections.id, input.id));
+
+    // clean up UT storage
+    if (keysToDelete.length > 0) {
+      await utapi.deleteFiles(keysToDelete);
+    }
+
     return { success: true };
   });
 
