@@ -102,6 +102,11 @@ export const sidebarGroups: SidebarGroupConfig[] = [
         icon: ImagesIcon,
       },
       {
+        title: "Blog",
+        url: "/dashboard/admin/blog",
+        icon: ImagesIcon,
+      },
+      {
         title: "Faq",
         url: "/dashboard/admin/templates/faq",
         icon: ImagesIcon,

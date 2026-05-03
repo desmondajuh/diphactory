@@ -10,7 +10,8 @@ import { ReactLenis } from "lenis/react";
 import Image from "next/image";
 import Link from "next/link";
 import { LensRuler } from "@/components/icons/ruler";
-import ParallaxImage from "@/components/shared/parallax-image";
+import { SectionWithItems } from "@/lib/db/schema";
+import { FALLBACK_PANELS, PANEL_CONFIG } from "@/datas/process-data";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,41 +25,41 @@ const containerClasses =
 
 // ─── Panel Data ────────────────────────────────────────────────────────────────
 
-const PANELS = [
-  {
-    step: 1,
-    label: "Book Your Session",
-    sub: "Choose your preferred date and photography package. I'll confirm availability and lock in your booking.",
-    tag: "Discovery",
-    accent: "#e63025",
-    imageUrl: "/images/gallery/2.jpg",
-  },
-  {
-    step: 2,
-    label: "Creative Direction",
-    sub: "We align on mood boards, locations, wardrobe, and the visual language that tells your story.",
-    tag: "Planning",
-    accent: "#f4a261",
-    imageUrl: "/images/gallery/3.jpg",
-  },
-  {
-    step: 3,
-    label: "The Shoot",
-    sub: "A focused, immersive session where every frame is crafted with intention. You bring the energy.",
-    tag: "Execution",
-    accent: "#2a9d8f",
-    imageUrl: "/images/gallery/4.jpg",
-    // extraHeight: true,
-  },
-  {
-    step: 4,
-    label: "Final Delivery",
-    sub: "Retouched selects delivered in a private gallery within 7 days. Yours to keep, forever.",
-    tag: "Delivery",
-    accent: "#c77dff",
-    imageUrl: "/images/gallery/5.jpg",
-  },
-];
+// const PANELS = [
+//   {
+//     step: 1,
+//     label: "Book Your Session", //use sectiondata.features.title
+//     sub: "Choose your preferred date and photography package. I'll confirm availability and lock in your booking.", //use sectiondata.features.description
+//     tag: "Discovery", //use sectiondata.features.icon
+//     accent: "#e63025",
+//     imageUrl: "/images/gallery/2.jpg", //use sectiondata.features.image
+//   },
+//   {
+//     step: 2,
+//     label: "Creative Direction",
+//     sub: "We align on mood boards, locations, wardrobe, and the visual language that tells your story.",
+//     tag: "Planning",
+//     accent: "#f4a261",
+//     imageUrl: "/images/gallery/3.jpg",
+//   },
+//   {
+//     step: 3,
+//     label: "The Shoot",
+//     sub: "A focused, immersive session where every frame is crafted with intention. You bring the energy.",
+//     tag: "Execution",
+//     accent: "#2a9d8f",
+//     imageUrl: "/images/gallery/4.jpg",
+//     // extraHeight: true,
+//   },
+//   {
+//     step: 4,
+//     label: "Final Delivery",
+//     sub: "Retouched selects delivered in a private gallery within 7 days. Yours to keep, forever.",
+//     tag: "Delivery",
+//     accent: "#c77dff",
+//     imageUrl: "/images/gallery/5.jpg",
+//   },
+// ];
 
 // ─── Ruler ─────────────────────────────────────────────────────────────────────
 
@@ -217,85 +218,25 @@ const ContentLabel = ({
   );
 };
 
-// ─── Vertical scroll indicator ─────────────────────────────────────────────────
-
-function ScrollIndicator() {
-  return (
-    <div
-      className="scroll-indicator fixed left-7 top-1/2 -translate-y-1/2 z-9999 flex-col items-center gap-3 opacity-0 pointer-events-none hidden lg:flex"
-      id="scroll-indicator"
-      style={{ opacity: 0 }} // ← hard default, GSAP overrides this
-      aria-hidden="true"
-    >
-      {/* "My Process" vertical label */}
-      <span
-        className="text-[0.62rem] font-bold tracking-[0.2em] uppercase text-white/35 mb-1"
-        style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
-      >
-        My Process
-      </span>
-
-      {PANELS.map((p, i) => (
-        <div
-          key={i}
-          id={`indicator-${i}`}
-          className="relative flex items-center justify-center w-7 h-7 rounded-full transition-all duration-500 cursor-default"
-          style={{
-            background: "rgba(0,0,0,0.45)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255,255,255,0.15)",
-          }}
-        >
-          {/* Step number */}
-          <span className="text-[10px] font-bold text-white/45 transition-colors duration-400 indicator-num">
-            {p.step}
-          </span>
-          {/* Accent ring — toggled active */}
-          <div
-            className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-400 pointer-events-none indicator-ring"
-            style={{ boxShadow: `0 0 0 2px ${p.accent}` }}
-          />
-          {/* Active dot inside */}
-          <div
-            className="absolute inset-1.5 rounded-full opacity-0 transition-all duration-400 indicator-fill"
-            style={{ background: p.accent }}
-          />
-        </div>
-      ))}
-
-      {/* Scroll hint arrow */}
-      <div className="mt-2 flex flex-col items-center gap-1 opacity-40">
-        <div
-          className="w-px bg-white/40"
-          style={{
-            height: "28px",
-            animation: "scrollPulse 2s ease-in-out infinite",
-          }}
-        />
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 10 10"
-          fill="white"
-          opacity="0.5"
-        >
-          <polygon points="5,10 0,0 10,0" />
-        </svg>
-      </div>
-
-      <style>{`
-        @keyframes scrollPulse {
-          0%, 100% { opacity: 0.2; transform: scaleY(0.5); transform-origin: top; }
-          50%       { opacity: 0.8; transform: scaleY(1);   transform-origin: top; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
 // ─── Main component ────────────────────────────────────────────────────────────
 
-export const ProcessScroll = () => {
+interface ProcessScrollProps {
+  sectionData: SectionWithItems | null;
+}
+
+export const ProcessScroll = ({ sectionData }: ProcessScrollProps) => {
+  const PANELS = sectionData?.featureItems?.length
+    ? sectionData.featureItems.map((item, i) => ({
+        step: i + 1,
+        label: item.title,
+        sub: item.description ?? "",
+        tag: item.icon ?? "",
+        accent: PANEL_CONFIG[i]?.accent ?? "#e63025",
+        imageUrl:
+          item.image ?? FALLBACK_PANELS[i]?.imageUrl ?? "/images/gallery/2.jpg",
+      }))
+    : FALLBACK_PANELS;
+
   const lenisRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -529,7 +470,76 @@ export const ProcessScroll = () => {
       />
 
       {/* Side scroll indicator — outside containerRef so it's fixed relative to viewport */}
-      <ScrollIndicator />
+      {/* ─── Vertical scroll indicator ────────── */}
+      <div
+        className="scroll-indicator fixed left-7 top-1/2 -translate-y-1/2 z-9999 flex-col items-center gap-3 opacity-0 pointer-events-none hidden lg:flex"
+        id="scroll-indicator"
+        style={{ opacity: 0 }} // ← hard default, GSAP overrides this
+        aria-hidden="true"
+      >
+        {/* "My Process" vertical label */}
+        <span
+          className="text-[0.62rem] font-bold tracking-[0.2em] uppercase text-white/35 mb-1"
+          style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+        >
+          My Process
+        </span>
+
+        {PANELS.map((p, i) => (
+          <div
+            key={i}
+            id={`indicator-${i}`}
+            className="relative flex items-center justify-center w-7 h-7 rounded-full transition-all duration-500 cursor-default"
+            style={{
+              background: "rgba(0,0,0,0.45)",
+              backdropFilter: "blur(8px)",
+              border: "1px solid rgba(255,255,255,0.15)",
+            }}
+          >
+            {/* Step number */}
+            <span className="text-[10px] font-bold text-white/45 transition-colors duration-400 indicator-num">
+              {p.step}
+            </span>
+            {/* Accent ring — toggled active */}
+            <div
+              className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-400 pointer-events-none indicator-ring"
+              style={{ boxShadow: `0 0 0 2px ${p.accent}` }}
+            />
+            {/* Active dot inside */}
+            <div
+              className="absolute inset-1.5 rounded-full opacity-0 transition-all duration-400 indicator-fill"
+              style={{ background: p.accent }}
+            />
+          </div>
+        ))}
+
+        {/* Scroll hint arrow */}
+        <div className="mt-2 flex flex-col items-center gap-1 opacity-40">
+          <div
+            className="w-px bg-white/40"
+            style={{
+              height: "28px",
+              animation: "scrollPulse 2s ease-in-out infinite",
+            }}
+          />
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="white"
+            opacity="0.5"
+          >
+            <polygon points="5,10 0,0 10,0" />
+          </svg>
+        </div>
+
+        <style>{`
+        @keyframes scrollPulse {
+          0%, 100% { opacity: 0.2; transform: scaleY(0.5); transform-origin: top; }
+          50%       { opacity: 0.8; transform: scaleY(1);   transform-origin: top; }
+        }
+      `}</style>
+      </div>
 
       <div ref={containerRef} className="relative">
         {PANELS.map((panel, i) => (

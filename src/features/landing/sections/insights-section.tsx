@@ -4,65 +4,23 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { SectionWithItems } from "@/lib/db/schema";
+import Link from "next/link";
+import { BlogPostFeatured } from "@/types/router-types";
 
-interface Post {
-  id: number;
-  title: string;
-  date: string;
-  category: string;
-  image: string;
+interface InsightsSectionProps {
+  sectionData: SectionWithItems | null;
+  posts: BlogPostFeatured[];
 }
-
-const posts: Post[] = [
-  {
-    id: 1,
-    title: "Polestar New EV",
-    date: "Mar 12, 2025",
-    category: "Launch Event",
-    image: "/images/gallery/1.jpg",
-  },
-  {
-    id: 2,
-    title: "Audemars Piguet",
-    date: "Apr 1, 2024",
-    category: "Classic",
-    image: "/images/gallery/2.jpg",
-  },
-  {
-    id: 3,
-    title: "Global Nikon Meetup",
-    date: "Sep 14, 2024",
-    category: "Photography",
-    image: "/images/gallery/3.jpg",
-  },
-  {
-    id: 4,
-    title: "Design Systems 2025",
-    date: "Jan 8, 2025",
-    category: "Design",
-    image: "/images/gallery/4.jpg",
-  },
-  {
-    id: 5,
-    title: "Creative Direction",
-    date: "Feb 20, 2025",
-    category: "Editorial",
-    image: "/images/gallery/5.jpg",
-  },
-  {
-    id: 6,
-    title: "Urban Architecture",
-    date: "Mar 3, 2025",
-    category: "Culture",
-    image: "/images/gallery/6.jpg",
-  },
-];
 
 // const VISIBLE = 3; // cards visible at once
 // const isDesktop = typeof window !== "undefined" && window.innerWidth >= 1024;
 // const VISIBLE = isDesktop ? 3 : posts.length;
 
-export default function LatestInsights() {
+export default function LatestInsights({
+  sectionData,
+  posts,
+}: InsightsSectionProps) {
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const animating = useRef(false);
@@ -70,9 +28,10 @@ export default function LatestInsights() {
   const isMobile = useIsMobile();
   const isDesktop = !isMobile;
 
-  const VISIBLE = isDesktop ? 3 : posts.length;
-
-  const maxIndex = posts.length - VISIBLE;
+  const safePosts = Array.isArray(posts) ? posts : [];
+  const VISIBLE = isDesktop ? 3 : safePosts.length;
+  const maxIndex = Math.max(0, safePosts.length - VISIBLE);
+  const visible = safePosts.slice(index, index + VISIBLE);
 
   const slide = (dir: "prev" | "next") => {
     // if (!isDesktop) return;
@@ -99,8 +58,6 @@ export default function LatestInsights() {
     );
     setIndex(next);
   };
-
-  const visible = posts.slice(index, index + VISIBLE);
 
   return (
     <section className="w-full px-8 py-20 overflow-hidden relative bg-white">
@@ -131,7 +88,7 @@ export default function LatestInsights() {
               strokeLinecap="round"
             />
           </svg>
-          Latest Blogs
+          {sectionData?.badge || "Latest Blogs"}
         </span>
 
         {/* Title */}
@@ -139,33 +96,34 @@ export default function LatestInsights() {
           className="text-[clamp(48px,7vw,80px)] font-black text-gray-900 leading-none tracking-tight mb-5"
           style={{ fontFamily: "'Arial Black', Arial, sans-serif" }}
         >
-          Latest Insights.
+          {sectionData?.title || "Latest Insights."}
         </h2>
 
         {/* Subtitle */}
         <p className="max-w-md text-sm text-gray-400 leading-relaxed">
-          Explore my blog for design tips, industry insights, and creative
-          inspiration. From tutorials to thought pieces, there&apos;s something
-          for every curious mind.
+          {sectionData?.subtitle ||
+            "Explore my blog for design tips, industry insights, and creative inspiration. From tutorials to thought pieces, there&apos;s something for every curious mind."}
         </p>
 
         {/* CTA + nav row */}
         <div className="mt-8 flex items-center gap-4">
           {/* View articles button */}
-          <button className="flex items-center gap-2 pl-1.5 pr-5 py-1.5 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-800 shadow-sm hover:shadow-md transition-shadow">
-            <span className="w-8 h-8 rounded-full bg-accent-red flex items-center justify-center shrink-0">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            View articles
-          </button>
+          <Link href={sectionData?.ctaLink || "/blog"}>
+            <button className="flex items-center gap-2 pl-1.5 pr-5 py-1.5 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-800 shadow-sm hover:shadow-md transition-shadow">
+              <span className="w-8 h-8 rounded-full bg-accent-red flex items-center justify-center shrink-0">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path
+                    d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"
+                    stroke="white"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              {sectionData?.ctaText || "View articles"}
+            </button>
+          </Link>
 
           {/* Nav buttons */}
           <div className="hidden md:flex items-center gap-2">
@@ -220,7 +178,7 @@ export default function LatestInsights() {
             {/* Image */}
             <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden">
               <Image
-                src={post.image}
+                src={post.coverImage || "/images/fallback/post_image.png"}
                 alt={post.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
@@ -232,12 +190,14 @@ export default function LatestInsights() {
             <div className="mt-4 flex items-center justify-between">
               <div>
                 <p className="text-[15px] font-bold text-gray-900">
-                  {post.title}
+                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">{post.date}</p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {post.updatedAt.toLocaleDateString()}
+                </p>
               </div>
               <span className="text-xs text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors px-4 py-2 rounded-full font-medium shrink-0">
-                {post.category}
+                {post.category?.name ?? "Uncategorized"}
               </span>
             </div>
           </article>

@@ -5,9 +5,14 @@ import AvatarGroup from "@/components/shared/avatar-group";
 import ParallaxImage from "@/components/shared/parallax-image";
 import { Button } from "@/components/ui/button";
 import { BUSINESS_INSTAGRAM_URL } from "@/constants";
+import { SectionWithItems } from "@/lib/db/schema";
 import { ArrowDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+interface DifferenceSectionProps {
+  sectionData: SectionWithItems | null;
+}
 
 // ─── Mosaic image placeholders ─────────────────────────────────────────────────
 // Replace these src values with real gallery images
@@ -23,7 +28,7 @@ const MOSAIC_IMAGES = [
 ];
 
 // ─── Main Component ────────────────────────────────────────────────────────────
-export function DifferenceSection() {
+export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
   return (
     <section
       className="relative xmin-h-screen flex flex-col items-center md:justify-end overflow-hidden bg-[#0a0a0a] pt-14 pb-0"
@@ -49,15 +54,15 @@ export function DifferenceSection() {
               fontFamily: "var(--font-display)",
             }}
           >
-            Difference Behind my lens that Truly matters
+            {sectionData?.title ||
+              "Difference Behind my lens that Truly matters"}
           </h2>
 
           {/* Body + scroll button */}
           <div className="flex flex-col items-center md:items-start gap-5 md:pl-12">
             <p className="max-w-60 text-center md:text-left text-sm leading-[1.7] text-white/45">
-              Through my lens, I capture raw emotions, authentic connections,
-              and fleeting details that transform your moments into lasting,
-              unforgettable stories.
+              {sectionData?.subtitle ||
+                "Through my lens, I capture raw emotions, authentic connections, and fleeting details that transform your moments into lasting, unforgettable stories."}
             </p>
             <Button
               className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 transition-all duration-300 hover:border-white/60 hover:bg-white/8 cursor-pointer"
@@ -183,8 +188,8 @@ export function DifferenceSection() {
                   "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)",
               }}
             >
-              Capture authentic emotions with timeless photography that
-              preserves your most beautiful memories.
+              {sectionData?.description ||
+                "Capture authentic emotions with timeless photography that preserves your most beautiful memories."}
             </p>
           </div>
 

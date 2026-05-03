@@ -14,6 +14,9 @@ import {
 } from "@/types/router-types";
 import NextImage from "next/image";
 import { cn } from "@/lib/utils";
+import { IconArrowBack } from "@tabler/icons-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   post: BlogPostWithRelations | null;
@@ -106,6 +109,14 @@ export function BlogEditorView({ post, categories, tags }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="flex">
+        <Button asChild className="rounded-full">
+          <Link href="dashboard/admin/posts">
+            {" "}
+            <IconArrowBack /> Posts
+          </Link>
+        </Button>
+      </div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-black text-white">
           {isEditing ? "Edit post" : "New post"}
@@ -172,7 +183,7 @@ export function BlogEditorView({ post, categories, tags }: Props) {
                 onChange={(e) =>
                   setField("status", e.target.value as typeof form.status)
                 }
-                className={inputCls}
+                className={cn(inputCls, "text-accent-red")}
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
@@ -239,7 +250,7 @@ export function BlogEditorView({ post, categories, tags }: Props) {
             <select
               value={form.categoryId}
               onChange={(e) => setField("categoryId", e.target.value)}
-              className={inputCls}
+              className={cn(inputCls, "text-accent-red")}
             >
               <option value="">No category</option>
               {categories.map((c) => (

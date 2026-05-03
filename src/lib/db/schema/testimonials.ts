@@ -1,4 +1,11 @@
-import { pgTable, text, timestamp, uuid, integer, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  integer,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 
@@ -9,6 +16,7 @@ export const testimonials = pgTable(
     clientName: text("client_name").notNull(),
     clientTitle: text("client_title"),
     clientImage: text("client_image"),
+    clientImageUtKey: text("client_image_ut_key"),
     quote: text("quote").notNull(),
     rating: integer("rating").notNull().default(5),
     dateLabel: text("date_label"),
@@ -26,6 +34,7 @@ export const insertTestimonialSchema = z.object({
   clientName: z.string().trim().min(1),
   clientTitle: z.string().trim().optional().nullable(),
   clientImage: z.string().url().optional().nullable(),
+  clientImageUtKey: z.string().optional().nullable(),
   quote: z.string().trim().min(1),
   rating: z.number().int().min(1).max(5).default(5),
   dateLabel: z.string().trim().optional().nullable(),

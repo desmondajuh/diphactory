@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "@/orpc/base";
 import { testimonials, insertTestimonialSchema } from "@/lib/db/schema";
+import { utapi } from "@/lib/uploadthing";
 
 // Public - only published testimonials
 const list = publicProcedure.handler(async ({ context }) => {
@@ -60,6 +61,21 @@ const update = protectedProcedure
 
     const { id, ...data } = input;
 
+    const existing = await db.query.testimonials.findFirst({
+      where: eq(testimonials.id, id),
+    });
+    if (!existing)
+      throw new ORPCError("NOT_FOUND", { message: "Testimonial not found" });
+
+    // delete old image from UT if replaced
+    if (
+      data.clientImageUtKey &&
+      existing.clientImageUtKey &&
+      data.clientImageUtKey !== existing.clientImageUtKey
+    ) {
+      await utapi.deleteFiles(existing.clientImageUtKey);
+    }
+
     const [updated] = await db
       .update(testimonials)
       .set({ ...data, updatedAt: new Date() })
@@ -84,7 +100,17 @@ const remove = protectedProcedure
       });
     }
 
+    const existing = await db.query.testimonials.findFirst({
+      where: eq(testimonials.id, input.id),
+    });
+
+    if (!existing) throw new ORPCError("NOT_FOUND");
+
     await db.delete(testimonials).where(eq(testimonials.id, input.id));
+
+    if (existing.clientImageUtKey) {
+      await utapi.deleteFiles(existing.clientImageUtKey);
+    }
 
     return { success: true };
   });

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { GlobeIcon } from "@/components/icons/globe";
 import BlockRevealAnime from "@/components/shared/reveal-anime";
 import ParallaxImage from "@/components/shared/parallax-image";
+import { SectionWithItems } from "@/lib/db/schema";
 
 interface HeroSectionProps {
   /**
@@ -10,12 +11,26 @@ interface HeroSectionProps {
    */
   imageSrc?: string;
   imageAlt?: string;
+  sectionData: SectionWithItems | null;
 }
+
+const sectionDesc =
+  "Hi, I am diai®I'm a photographer and highly talented visual artist with over a decade of experience in the field.";
 
 export function HeroSection({
   imageSrc = "/images/bg/bride-bg.jpg",
   imageAlt = "Diphactory – digital designer and 3D renderer",
+  sectionData,
 }: HeroSectionProps) {
+  // fallback values if section not found in DB
+  const title = sectionData?.title ?? "DIPHACTORY";
+  const subtitle = sectionData?.subtitle ?? sectionDesc;
+  const ctaText = sectionData?.ctaText ?? "Get in touch";
+  const ctaLink = sectionData?.ctaLink ?? "/contact";
+  const bgImage = sectionData?.bgImage ?? null;
+
+  //  const section = await client.sections.getBySlug({ slug: "contact-hero" });
+
   return (
     <section
       className="relative w-full overflow-hidden bg-(--color-bg-primary)"
@@ -25,7 +40,7 @@ export function HeroSection({
       <div className="absolute inset-0 z-5 bg-linear-to-b from-black/72 via-transparent to-black/55" />
       {/* ── Full-bleed portrait ── */}
       <div className="absolute inset-0 z-0">
-        <Image
+        {/* <Image
           src={imageSrc || "/images/hero-bg.png"}
           alt={imageAlt || "Diphactory – digital designer and photographer"}
           fill
@@ -33,7 +48,7 @@ export function HeroSection({
           sizes="100vw"
           className="md:hidden object-cover object-top opacity-80"
           style={{ objectPosition: "50% 15%" }}
-        />
+        /> */}
         <ParallaxImage
           src={imageSrc}
           alt={imageAlt}
@@ -87,7 +102,7 @@ export function HeroSection({
                 lineHeight: 0.88,
               }}
             >
-              Diphactory
+              {title}
               <span className="xhidden xmd:block text-accent-red">*</span>
             </h1>
           </BlockRevealAnime>
@@ -95,20 +110,22 @@ export function HeroSection({
           {/* Bio blurb – bottom right */}
           <BlockRevealAnime>
             <p className="hidden md:block max-w-55 lg:max-w-xs text-right text-sm leading-relaxed text-muted-foreground shrink-0 mb-1 lg:mb-2">
-              Hi, I am diai
+              {subtitle}
+              {/* Hi, I am diai
               <sup className="text-accent-red text-xs mr-1">®</sup> I&apos;m a
               photographer and highly talented visual artist with over a decade
-              of experience in the field.
+              of experience in the field. */}
             </p>
           </BlockRevealAnime>
         </div>
 
         {/* Mobile bio */}
         <p className="md:hidden px-6 pb-6 text-sm leading-relaxed text-muted-foreground">
-          Hi, I am Diai
+          {subtitle}
+          {/* Hi, I am Diai
           <sup className="text-accent-red text-xs">®</sup> I&apos;m a
           photographer and highly talented visual artist with over a decade of
-          experience in the field.
+          experience in the field. */}
         </p>
       </div>
     </section>

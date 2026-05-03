@@ -7,113 +7,12 @@ import { motion, useInView } from "motion/react";
 import { CarouselTitle } from "@/features/landing/components/carousel-title";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CarouselImage } from "@/lib/db/schema";
-
-// Keep FAN_CARDS but rename to CAROUSEL_CONFIG — no src/alt needed
-const CAROUSEL_CONFIG = [
-  {
-    skewY: 7.5,
-    scale: 2,
-    translateY: -10,
-    rotateY: 77.5,
-    zIndex: 1,
-    width: "105px",
-    height: 220,
-    heightOffset: 5,
-    mxValue: "mx-6",
-    clipLeft: true,
-  },
-  {
-    skewY: 5,
-    scale: 1.55,
-    translateY: 0,
-    rotateY: 57.5,
-    zIndex: 97.5,
-    width: "115px",
-    height: 220,
-    heightOffset: 4,
-    mxValue: "mx-4",
-  },
-  {
-    skewY: 3,
-    scale: 1.3,
-    translateY: 5,
-    rotateY: 37.5,
-    zIndex: 3,
-    width: "125px",
-    height: 220,
-    heightOffset: 3,
-    mxValue: "mx-3",
-  },
-  {
-    skewY: 1.5,
-    scale: 1.1,
-    translateY: 5,
-    rotateY: 20.5,
-    zIndex: 4,
-    width: "135px",
-    height: 220,
-    heightOffset: 2,
-    mxValue: "mx-2",
-  },
-  {
-    skewY: 0,
-    scale: 1,
-    translateY: 5,
-    rotateY: 0,
-    zIndex: 98.5,
-    width: "125px",
-    height: 220,
-    heightOffset: 1.5,
-    mxValue: "mx-2",
-  },
-  {
-    skewY: -1.5,
-    scale: 1.1,
-    translateY: 5,
-    rotateY: -20.5,
-    zIndex: 4,
-    width: "135px",
-    height: 220,
-    heightOffset: 2,
-    mxValue: "mx-2",
-  },
-  {
-    skewY: -3,
-    scale: 1.3,
-    translateY: 5,
-    rotateY: -37.5,
-    zIndex: 3,
-    width: "125px",
-    height: 220,
-    heightOffset: 3,
-    mxValue: "mx-3",
-  },
-  {
-    skewY: -5,
-    scale: 1.55,
-    translateY: 0,
-    rotateY: -57.5,
-    zIndex: 3,
-    width: "115px",
-    height: 220,
-    heightOffset: 4,
-    mxValue: "mx-4",
-  },
-  {
-    skewY: -7.5,
-    scale: 2,
-    translateY: -10,
-    rotateY: -77.5,
-    zIndex: 3,
-    width: "105px",
-    height: 220,
-    heightOffset: 5,
-    mxValue: "mx-6",
-  },
-];
+import { SectionWithItems } from "@/lib/db/schema";
+import { CAROUSEL_CONFIG } from "@/datas/carousel-data";
 
 interface CarouselClientProps {
   images: CarouselImage[]; // fetched from DB, max 9
+  sectionData: SectionWithItems | null;
 }
 
 const CENTER_INDEX = 4;
@@ -137,7 +36,10 @@ function getShadow(distFromCenter: number, isActive: boolean): string {
   return shadows[Math.min(distFromCenter, 4)];
 }
 
-export const CarouselClient = ({ images }: CarouselClientProps) => {
+export const CarouselClient = ({
+  images,
+  sectionData,
+}: CarouselClientProps) => {
   // merge DB images with static config by sortOrder/index
   const FAN_CARDS = CAROUSEL_CONFIG.map((config, i) => ({
     ...config,
@@ -167,7 +69,13 @@ export const CarouselClient = ({ images }: CarouselClientProps) => {
       ref={sectionRef}
       className="relative overflow-hidden py-20 min-h-screen"
     >
-      <CarouselTitle />
+      <CarouselTitle
+        badge={sectionData?.badge || ""}
+        title={sectionData?.title || ""}
+        subtitle={sectionData?.subtitle || ""}
+        ctaText={sectionData?.ctaText || ""}
+        ctaLink={sectionData?.ctaLink || ""}
+      />
       <div
         // className="mt-16 flex justify-center items-end gap-3 perspective-distant"
         className={cn(
@@ -297,6 +205,7 @@ export const CarouselClient = ({ images }: CarouselClientProps) => {
                       alt=""
                       fill
                       className="object-cover object-top"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                       aria-hidden="true"
                     />
                     {/* Gradient mask to fade the reflection out */}

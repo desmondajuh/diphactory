@@ -227,7 +227,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
           <Field label="Badge">
             <input
               value={form.badge}
-              onChange={(e) => setField("title", e.target.value)}
+              onChange={(e) => setField("badge", e.target.value)}
               className={inputCls}
               placeholder="Section badge"
             />
@@ -555,7 +555,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
 // ── Helpers ──
 
 const inputCls =
-  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/30 placeholder:text-white/20";
+  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-accent-red outline-none focus:border-white/30 placeholder:text-white/20";
 
 function Field({
   label,

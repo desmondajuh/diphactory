@@ -9,7 +9,12 @@ import { ExpertiseSection } from "@/features/about/sections/expertise-section";
 import { client } from "@/lib/orpc";
 
 export default async function AboutPage() {
-  const faqs = await client.faq.list();
+  // const faqs = await client.faq.list();
+  const [faqs, insightData, featuredPosts] = await Promise.all([
+    client.faq.list(),
+    client.sections.getBySlug({ slug: "posts-section" }),
+    client.blog.listFeatured(),
+  ]);
   return (
     <ReactLenis root>
       <div className="min-h-screen bg-[#0e0e0e] text-white relative overflow-hidden">
@@ -26,7 +31,7 @@ export default async function AboutPage() {
         <ExpertiseSection />
         <FAQSection faqs={faqs} />
         <ImageCTA />
-        <LatestInsights />
+        <LatestInsights sectionData={insightData} posts={featuredPosts} />
       </div>
     </ReactLenis>
   );

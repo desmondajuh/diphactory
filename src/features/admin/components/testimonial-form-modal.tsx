@@ -7,6 +7,9 @@ import { client } from "@/lib/orpc";
 import { SelectTestimonial } from "@/lib/db/schema/testimonials";
 import { InputField } from "@/features/bookings/components/input-field";
 import { TextareaField } from "@/components/shared/forms/text-area-field";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useUploadThing } from "@/lib/uploadthing-client";
 
 interface Props {
   testimonial: SelectTestimonial | null;
@@ -17,11 +20,14 @@ interface Props {
 export function TestimonialFormModal({ testimonial, onClose, onSaved }: Props) {
   const isEditing = !!testimonial;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const { startUpload } = useUploadThing("galleryUploader");
 
   const [form, setForm] = useState({
     clientName: testimonial?.clientName ?? "",
     clientTitle: testimonial?.clientTitle ?? "",
     clientImage: testimonial?.clientImage ?? "",
+    clientImageUtKey: testimonial?.clientImageUtKey ?? "",
     quote: testimonial?.quote ?? "",
     rating: testimonial?.rating ?? 5,
     dateLabel: testimonial?.dateLabel ?? "",
@@ -33,6 +39,24 @@ export function TestimonialFormModal({ testimonial, onClose, onSaved }: Props) {
     key: K,
     value: (typeof form)[K],
   ) => setForm((prev) => ({ ...prev, [key]: value }));
+
+  const handleImageUpload = async (file: File) => {
+    setImageUploading(true);
+    try {
+      const results = await startUpload([file]);
+      if (results?.[0]) {
+        setForm((prev) => ({
+          ...prev,
+          clientImage: results[0].ufsUrl,
+          clientImageUtKey: results[0].key,
+        }));
+      }
+    } catch {
+      toast.error("Image upload failed");
+    } finally {
+      setImageUploading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!form.clientName.trim() || !form.quote.trim()) {
@@ -56,6 +80,7 @@ export function TestimonialFormModal({ testimonial, onClose, onSaved }: Props) {
           ...form,
           clientTitle: form.clientTitle || null,
           clientImage: form.clientImage || null,
+          clientImageUtKey: form.clientImageUtKey || null,
           dateLabel: form.dateLabel || null,
         });
         toast.success("Testimonial created");
@@ -127,13 +152,53 @@ export function TestimonialFormModal({ testimonial, onClose, onSaved }: Props) {
           />
         </div>
 
-        <InputField
+        {/* <InputField
           label="Image URL"
           id="clientImage"
           placeholder="https://..."
           value={form.clientImage ?? ""}
           onChange={(v) => setField("clientImage", v)}
-        />
+        /> */}
+
+        {/* Client image upload */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold uppercase tracking-widest text-white/40">
+            Client Image
+          </label>
+          <div className="flex items-center gap-3">
+            {form.clientImage && (
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border border-white/10 shrink-0">
+                <Image
+                  src={form.clientImage}
+                  alt="Client"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )}
+            <label
+              className={cn(
+                "flex-1 flex items-center justify-center rounded-xl border border-dashed border-white/10 px-4 py-3 text-xs text-white/30 hover:border-white/25 hover:text-white/60 transition-all cursor-pointer",
+                imageUploading && "animate-pulse pointer-events-none",
+              )}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleImageUpload(f);
+                }}
+              />
+              {imageUploading
+                ? "Uploading..."
+                : form.clientImage
+                  ? "Replace image"
+                  : "Upload image"}
+            </label>
+          </div>
+        </div>
 
         {/* Published toggle */}
         <label className="flex items-center gap-3 cursor-pointer">
