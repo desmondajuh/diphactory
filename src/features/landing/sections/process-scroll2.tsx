@@ -18,7 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
 const sectionClasses =
-  "relative w-full h-[100svh] min-h-[100svh] overflow-hidden scroll-section";
+  "relative w-full h-[100svh] min-h-[100svh] overflow-hidden scroll-section bg-black";
 
 const containerClasses =
   "relative w-full h-full flex rotate-[30deg] origin-bottom-left will-change-transform flex-col";
@@ -104,6 +104,7 @@ const ContentLabel = ({
         fill
         sizes="100vw"
         priority={step === 1}
+        unoptimized
         className="object-cover object-center"
       />
 

@@ -143,22 +143,24 @@ const update = protectedProcedure
 
     if (!existing) throw new ORPCError("NOT_FOUND");
 
-    // collect stale UT keys to delete
-    const keysToDelete: string[] = [];
+    // ── Collect stale section-level UT keys ──
+    // Only delete if a NEW key is coming in to replace it
+    const sectionKeysToDelete: string[] = [];
 
     if (
       data.imageUtKey &&
       existing.imageUtKey &&
       data.imageUtKey !== existing.imageUtKey
     ) {
-      keysToDelete.push(existing.imageUtKey);
+      sectionKeysToDelete.push(existing.imageUtKey);
     }
+
     if (
       data.bgImageUtKey &&
       existing.bgImageUtKey &&
       data.bgImageUtKey !== existing.bgImageUtKey
     ) {
-      keysToDelete.push(existing.bgImageUtKey);
+      sectionKeysToDelete.push(existing.bgImageUtKey);
     }
 
     const [updated] = await db
@@ -169,8 +171,9 @@ const update = protectedProcedure
 
     if (!updated) throw new ORPCError("NOT_FOUND");
 
-    if (keysToDelete.length > 0) {
-      await utapi.deleteFiles(keysToDelete);
+    // ── Clean up stale section images ──
+    if (sectionKeysToDelete.length > 0) {
+      await utapi.deleteFiles(sectionKeysToDelete);
     }
 
     // Replace stat items if provided
@@ -190,13 +193,19 @@ const update = protectedProcedure
         where: eq(featureItems.sectionId, id),
       });
 
+      // ✅ THE FIX — only delete keys that are NOT coming back in the new data
+      // incoming keys = keys the client is keeping or replacing with
+      const incomingUtKeys = new Set(
+        features.map((f) => f.imageUtKey).filter(Boolean),
+      );
+
       // collect keys of items being replaced
       const featureKeysToDelete = existingFeatures
         .map((f) => f.imageUtKey)
-        .filter(Boolean) as string[];
+        .filter((key): key is string => !!key && !incomingUtKeys.has(key));
 
+      // replace DB records
       await db.delete(featureItems).where(eq(featureItems.sectionId, id));
-
       if (features.length) {
         await db
           .insert(featureItems)
@@ -204,6 +213,7 @@ const update = protectedProcedure
       }
 
       // delete old UT files after DB is updated
+      // only now delete truly orphaned UT files
       if (featureKeysToDelete.length > 0) {
         await utapi.deleteFiles(featureKeysToDelete);
       }

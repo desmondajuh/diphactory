@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { client } from "@/lib/orpc";
 import { SectionWithItems } from "@/lib/db/schema";
 import { useUploadThing } from "@/lib/uploadthing-client";
+import { cn } from "@/lib/utils";
 
 type SectionType = "hero" | "about" | "stats" | "features" | "cta";
 
@@ -195,7 +196,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
               onChange={(e) =>
                 setField("sectionType", e.target.value as SectionType)
               }
-              className={inputCls}
+              className={cn(inputCls, "text-accent-red")}
             >
               {["hero", "about", "stats", "features", "cta"].map((t) => (
                 <option key={t} value={t}>
@@ -555,7 +556,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
 // ── Helpers ──
 
 const inputCls =
-  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-accent-red outline-none focus:border-white/30 placeholder:text-white/20";
+  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/30 placeholder:text-white/20";
 
 function Field({
   label,
