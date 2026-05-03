@@ -4,6 +4,8 @@ import Image from "next/image";
 import AnimatedButton from "@/components/shared/animated-button";
 import { SectionBadge } from "@/components/shared/section-badge";
 import ParallaxImage from "@/components/shared/parallax-image";
+import { SectionWithItems } from "@/lib/db/schema";
+import Link from "next/link";
 
 const ExpertIcon = () => {
   return (
@@ -27,15 +29,19 @@ const ExpertIcon = () => {
   );
 };
 
-export function ExpertiseSection() {
+interface ExpertiseSectionProps {
+  sectionData: SectionWithItems | null;
+}
+
+export function ExpertiseSection({ sectionData }: ExpertiseSectionProps) {
   return (
     <section className="w-full bg-white/90 px-6 py-12 md:px-12 md:py-16">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16">
         {/* ── Left: Image ── */}
         <div className="w-full md:w-[54%] shrink-0 relative">
-          <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden">
+          <div className="relative w-full h-full rounded-2xl overflow-hidden">
             <ParallaxImage
-              src="/images/bg/about.jpg"
+              src={sectionData?.image || "/images/bg/about.jpg"}
               alt="Portrait"
               className="object-cover object-center"
             />
@@ -64,27 +70,31 @@ export function ExpertiseSection() {
             className="text-[clamp(34px,4.5vw,54px)] font-black text-gray-900 leading-[1.1] tracking-none mb-5 font-display"
             // style={{ fontFamily: "'Arial Black', Arial, sans-serif" }}
           >
-            Expertise in
+            {/* Expertise in
             <br />
-            Framer Templates.
+            Framer Templates. */}
+            {sectionData?.title || "Expertise in Photography"}
           </h2>
 
           {/* Subheading */}
           <p className="text-[15px] font-semibold text-gray-900 mb-3">
-            Bringing Your Ideas to Life®
+            {sectionData?.subtitle || "Bringing Your Ideas to Life®"}
           </p>
 
           {/* Body */}
           <p className="text-sm text-gray-400 leading-relaxed max-w-sm mb-8">
-            As expert in Framer, we specialize in turning your ideas into
-            functional websites. Whether it&apos;s a custom template, i ensure
-            every project meets your vision and exceeds expectations.
+            {sectionData?.description ||
+              "As expert in Framer, we specialize in turning your ideas into functional websites. Whether it's a custom template, i ensure every project meets your vision and exceeds expectations."}
           </p>
 
           {/* CTA row */}
           <div className="flex items-center gap-6 flex-wrap">
             {/* Reusable animated button */}
-            <AnimatedButton label="View portfolio" />
+            <Link href={sectionData?.ctaLink || "/gallery"}>
+              <AnimatedButton
+                label={sectionData?.ctaText || "View portfolio"}
+              />
+            </Link>
 
             {/* Stars + rating */}
             <div className="flex flex-col gap-1">

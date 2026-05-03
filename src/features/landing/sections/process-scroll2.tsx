@@ -18,7 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
 const sectionClasses =
-  "relative w-full h-[100svh] min-h-[100svh] overflow-hidden scroll-section bg-black";
+  "relative w-full h-[100svh] min-h-[100svh] overflow-hidden scroll-section";
 
 const containerClasses =
   "relative w-full h-full flex rotate-[30deg] origin-bottom-left will-change-transform flex-col";
@@ -93,18 +93,18 @@ const ContentLabel = ({
   totalSteps,
 }: ContentLabelProps) => {
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full bg-black">
       {/* ── Ruler ── */}
       <Ruler />
 
       {/* ── Background image ── */}
       <Image
+        // src="/"
         src={imageUrl}
         alt={`Process step ${step} – ${label}`}
         fill
         sizes="100vw"
         priority={step === 1}
-        unoptimized
         className="object-cover object-center"
       />
 

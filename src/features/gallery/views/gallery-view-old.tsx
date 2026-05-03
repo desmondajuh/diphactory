@@ -1,15 +1,11 @@
-import { ServicesCTA } from "../components/services-cta";
-import { ServiceHero } from "../components/service-hero";
+"use client";
+
 import { ReactLenis } from "lenis/react";
 import { PageHero } from "@/components/shared/page-hero";
-import { client } from "@/lib/orpc";
+import { MasonryGallery } from "../sections/masonry-gallery";
+import { MasonryGallery2 } from "../sections/masonry";
 
-export default async function ServicesPage() {
-  const [servicesHeroData, aboutCtaData] = await Promise.all([
-    client.sections.getBySlug({ slug: "services-hero" }),
-    client.sections.getBySlug({ slug: "home-cta-main" }),
-  ]);
-
+export default function GalleryView() {
   return (
     <ReactLenis root>
       <div className="min-h-screen bg-[#0e0e0e] text-white relative overflow-hidden">
@@ -22,16 +18,9 @@ export default async function ServicesPage() {
         />
 
         {/* Hero */}
-        <PageHero
-          title={servicesHeroData?.title || "Services"}
-          imageSrc={servicesHeroData?.image || "images/bg/bride-portrait.jpg"}
-        />
-        <ServiceHero />
-        <ServicesCTA />
-
-        {/* <ServiceCards /> */}
-        {/* Services Grid */}
-        {/* <ServicesGrid /> */}
+        <PageHero title="DIP Gallery" />
+        <MasonryGallery />
+        {/* <MasonryGallery2 /> */}
       </div>
     </ReactLenis>
   );

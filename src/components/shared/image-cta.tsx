@@ -5,14 +5,28 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface ImageCTAProps {
   className?: string;
+  imageUrl?: string;
+  title?: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
-export function ImageCTA({ className }: ImageCTAProps) {
+export function ImageCTA({
+  className,
+  imageUrl,
+  title,
+  subtitle,
+  ctaText,
+  ctaLink,
+}: ImageCTAProps) {
   const sectionRef = useRef(null);
   const bgRef = useRef(null);
 
@@ -59,9 +73,11 @@ export function ImageCTA({ className }: ImageCTAProps) {
           className="absolute inset-0 will-change-transform origin-center"
         >
           {/* Placeholder — swap with Next.js <Image> in production */}
-          <img
-            src="/images/bg/image-cta-bg.jpg"
-            alt="diai image phactory Campaign"
+          <Image
+            src={imageUrl || "/images/bg/image-cta-bg.jpg"}
+            alt="diai image phactory Campaign CTA"
+            fill
+            sizes="100vw"
             className="w-full h-full object-cover object-top"
           />
 
@@ -79,7 +95,7 @@ export function ImageCTA({ className }: ImageCTAProps) {
               fontSize: "clamp(36px, 6vw, 56px)",
             }}
           >
-            <span className="w-fit">DIAI IMAGE PHACTORY</span>
+            <span className="w-fit">{title || "DIAI IMAGE PHACTORY"}</span>
             <span
               className="hidden md:block text-red-600 ml-0.5 leading-none"
               style={{ fontSize: "0.75em" }}
@@ -90,13 +106,15 @@ export function ImageCTA({ className }: ImageCTAProps) {
 
           {/* Tagline */}
           <p className="mt-2.5 text-[11px] font-normal uppercase tracking-[0.4em] text-white/50">
-            New Collection 2026
+            {subtitle || "New Collection"}
           </p>
 
           {/* CTA Button */}
-          <button className="mt-7 bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white text-[11px] font-bold uppercase tracking-[0.3em] px-9 py-3 rounded-sm cursor-pointer">
-            Book Now
-          </button>
+          <Link href={ctaLink || "/"}>
+            <button className="mt-7 bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white text-[11px] font-bold uppercase tracking-[0.3em] px-9 py-3 rounded-sm cursor-pointer">
+              {ctaText || "Book Now"}
+            </button>
+          </Link>
         </div>
       </section>
     </div>

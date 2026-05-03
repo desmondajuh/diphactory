@@ -1,5 +1,3 @@
-// "use client";
-
 import { ReactLenis } from "lenis/react";
 import { PageHero } from "@/components/shared/page-hero";
 import { ImageCTA } from "@/components/shared/image-cta";
@@ -10,10 +8,20 @@ import { client } from "@/lib/orpc";
 
 export default async function AboutPage() {
   // const faqs = await client.faq.list();
-  const [faqs, insightData, featuredPosts] = await Promise.all([
+  const [
+    faqs,
+    featuredPosts,
+    insightData,
+    aboutHeroData,
+    aboutMeData,
+    aboutCtaData,
+  ] = await Promise.all([
     client.faq.list(),
-    client.sections.getBySlug({ slug: "posts-section" }),
     client.blog.listFeatured(),
+    client.sections.getBySlug({ slug: "posts-section" }),
+    client.sections.getBySlug({ slug: "about-hero" }),
+    client.sections.getBySlug({ slug: "about-me-main" }),
+    client.sections.getBySlug({ slug: "home-cta-main" }),
   ]);
   return (
     <ReactLenis root>
@@ -27,10 +35,18 @@ export default async function AboutPage() {
         />
 
         {/* Hero */}
-        <PageHero title="About Dip" imageSrc="images/bg/bride-portrait.jpg" />
-        <ExpertiseSection />
+        <PageHero
+          title={aboutHeroData?.title || "About Dip"}
+          imageSrc={aboutHeroData?.image || "images/bg/bride-portrait.jpg"}
+        />
+        <ExpertiseSection sectionData={aboutMeData} />
         <FAQSection faqs={faqs} />
-        <ImageCTA />
+        <ImageCTA
+          title={aboutCtaData?.title || ""}
+          subtitle={aboutCtaData?.subtitle || ""}
+          ctaText={aboutCtaData?.ctaText || ""}
+          ctaLink={aboutCtaData?.ctaLink || ""}
+        />
         <LatestInsights sectionData={insightData} posts={featuredPosts} />
       </div>
     </ReactLenis>
