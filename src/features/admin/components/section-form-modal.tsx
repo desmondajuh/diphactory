@@ -2,12 +2,16 @@
 // features/admin/sections/components/section-form-modal.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { client } from "@/lib/orpc";
 import { SectionWithItems } from "@/lib/db/schema";
 import { useUploadThing } from "@/lib/uploadthing-client";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
+import { toSlug } from "@/utils/slugify";
+import { Button } from "@/components/ui/button";
+import { XCircleIcon } from "lucide-react";
 
 type SectionType = "hero" | "about" | "stats" | "features" | "cta";
 
@@ -35,11 +39,17 @@ interface Props {
   onSaved: () => void;
 }
 
+// Available pages = Home, about, contact, bookings, albums, gallery, testimonials, portfolio
+
 export function SectionFormModal({ section, onClose, onSaved }: Props) {
   const isEditing = !!section;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const { startUpload } = useUploadThing("galleryUploader");
+
+  // ── Role gate ──
+  const { data: session } = authClient.useSession();
+  const isSuperAdmin = session?.user?.role === "super_admin";
 
   const [form, setForm] = useState({
     pageSlug: section?.pageSlug ?? "",
@@ -61,6 +71,9 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
     ctaSecondaryLink: section?.ctaSecondaryLink ?? "",
     isActive: section?.isActive ?? true,
   });
+
+  // Track whether the user has manually edited the slug so we stop auto-filling
+  const [slugTouched, setSlugTouched] = useState(isEditing);
 
   const [stats, setStats] = useState<StatRow[]>(
     section?.statItems.map((s) => ({
@@ -144,6 +157,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
     try {
       const payload = {
         ...form,
+        slug: toSlug(form.slug), // Ensure slug is sanitized one final time before saving
         imageUtKey: form.imageUtKey || null,
         bgImageUtKey: form.bgImageUtKey || null,
         statItems: form.sectionType === "stats" ? stats : undefined,
@@ -176,17 +190,45 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 py-6 overflow-y-auto">
       <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0e0e0e] p-6 space-y-6 my-auto">
-        <p className="text-base font-semibold text-white">
-          {isEditing ? "Edit section" : "New section"}
-        </p>
+        <div className="flex justify-between">
+          <p className="text-base font-semibold text-white">
+            {isEditing ? "Edit section" : "New section"}
+          </p>
+          {/* <Button type="button"></Button> */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-sm font-medium text-white/50 hover:text-white transition-all"
+          >
+            <XCircleIcon />
+          </button>
+        </div>
+
+        {/* Role notice for non-super_admin */}
+        {!isSuperAdmin && (
+          <p className="text-xs text-amber-400/70 bg-amber-400/8 border border-amber-400/15 rounded-lg px-3 py-2">
+            Page slug, section type and slug are locked — contact a super admin
+            to change them.
+          </p>
+        )}
 
         {/* Base fields */}
         <div className="grid grid-cols-2 gap-4">
           <Field label="Page slug" placeholder="home, about, services">
             <input
               value={form.pageSlug}
-              onChange={(e) => setField("pageSlug", e.target.value)}
-              className={inputCls}
+              // onChange={(e) => setField("pageSlug", e.target.value)}
+              onChange={(e) => {
+                const raw = e.target.value
+                  .toLowerCase()
+                  .replace(/[^\w\s-]/g, "")
+                  .replace(/[\s_]+/g, "-");
+                setField("pageSlug", raw);
+              }}
+              onBlur={(e) => setField("pageSlug", toSlug(e.target.value))}
+              // className={inputCls}
+              readOnly={!isSuperAdmin}
+              className={cn(inputCls, !isSuperAdmin && readOnlyCls)}
               placeholder="home"
             />
           </Field>
@@ -208,18 +250,59 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
           <Field label="Section name (internal)">
             <input
               value={form.sectionName}
-              onChange={(e) => setField("sectionName", e.target.value)}
-              className={inputCls}
+              // onChange={(e) => setField("sectionName", e.target.value)}
+              onChange={(e) => {
+                const name = e.target.value;
+                setForm((prev) => ({
+                  ...prev,
+                  sectionName: name,
+                  ...(slugTouched ? {} : { slug: toSlug(name) }),
+                }));
+              }}
+              readOnly={!isSuperAdmin}
+              className={cn(inputCls, !isSuperAdmin && readOnlyCls)}
               placeholder="Home Hero"
             />
           </Field>
+
+          {/* Slug — auto-generated from sectionName, sanitized on every keystroke */}
           <Field label="Slug (unique)">
-            <input
-              value={form.slug}
-              onChange={(e) => setField("slug", e.target.value)}
-              className={inputCls}
-              placeholder="home-hero"
-            />
+            <div className="relative">
+              <input
+                value={form.slug}
+                // onChange={(e) => setField("slug", e.target.value)}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  // Sanitize in real-time: allow only valid slug characters while typing
+                  const raw = e.target.value
+                    .toLowerCase()
+                    .replace(/[^\w\s-]/g, "")
+                    .replace(/[\s_]+/g, "-");
+                  setField("slug", raw);
+                }}
+                onBlur={(e) => {
+                  // Final cleanup on blur (trim stray hyphens)
+                  setField("slug", toSlug(e.target.value));
+                }}
+                readOnly={!isSuperAdmin}
+                className={cn(inputCls, !isSuperAdmin && readOnlyCls)}
+                placeholder="home-hero"
+              />
+              {/* Reset button — only show when editing and super_admin */}
+              {isSuperAdmin && slugTouched && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSlugTouched(false);
+                    setField("slug", toSlug(form.sectionName));
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-white/30 hover:text-white/60 transition-colors"
+                  title="Re-generate from section name"
+                >
+                  ↺ auto
+                </button>
+              )}
+            </div>
           </Field>
         </div>
 
@@ -557,6 +640,10 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
 
 const inputCls =
   "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/30 placeholder:text-white/20";
+
+/** Applied on top of inputCls for locked/read-only fields */
+const readOnlyCls =
+  "opacity-50 cursor-not-allowed select-none pointer-events-none border-white/5";
 
 function Field({
   label,

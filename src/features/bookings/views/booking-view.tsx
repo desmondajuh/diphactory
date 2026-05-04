@@ -1,77 +1,106 @@
+// features/bookings/views/booking-page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-// import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/features/landing/components/nav/logo";
 import { client } from "@/lib/orpc";
 import { TextareaField } from "@/components/shared/forms/text-area-field";
-import {
-  BOOKING_SESSION_TYPES,
-  BOOKING_STEPS,
-  BOOKING_TIME_SLOTS,
-} from "@/datas/bookings";
-import { BookingFormState } from "@/types/booking-form";
-import { SessionCard } from "../components/session-card";
 import { InputField } from "../components/input-field";
 import { StepIndicator } from "../components/step-indicator";
-// import { Logo } from "@/components/nav/logo";
+import { SessionCard } from "../components/session-card";
+import { CircleArrowLeft, HomeIcon } from "lucide-react";
+import type {
+  BookingSessionType,
+  BookingTimeSlot,
+} from "@/lib/db/schema/bookings";
 
-// ─── Main Component ────────────────────────────────────────────────────────────
-type BookingPageProps = {
+const BOOKING_STEPS = ["Session", "Schedule", "Details", "Review"];
+
+interface Props {
   initialSession: string | null;
-};
+  sessionTypes: BookingSessionType[];
+  timeSlots: BookingTimeSlot[];
+  bookedDates: string[];
+}
 
-export default function BookingPage({ initialSession }: BookingPageProps) {
-  // const searchParams = useSearchParams();
+interface FormState {
+  sessionTypeId: string;
+  date: string;
+  timeSlotId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  location: string;
+  notes: string;
+}
+
+export function BookingPage({
+  initialSession,
+  sessionTypes,
+  timeSlots,
+  bookedDates,
+}: Props) {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
-  const [form, setForm] = useState<BookingFormState>({
-    sessionType: "",
-    date: "",
-    timeSlot: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    location: "",
-    notes: "",
+  const [form, setForm] = useState<FormState>(() => {
+    const matched = sessionTypes.find(
+      (s) =>
+        s.id === initialSession || s.label.toLowerCase() === initialSession,
+    );
+    return {
+      sessionTypeId: matched?.id ?? "",
+      date: "",
+      timeSlotId: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      location: "",
+      notes: "",
+    };
   });
 
-  const setField = <K extends keyof BookingFormState>(
-    key: K,
-    value: BookingFormState[K],
-  ) => setForm((prev) => ({ ...prev, [key]: value }));
+  const setField = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
-  const selectedSession = BOOKING_SESSION_TYPES.find(
-    (s) => s.id === form.sessionType,
-  );
-  const selectedSlot = BOOKING_TIME_SLOTS.find((t) => t.id === form.timeSlot);
+  const selectedSession = sessionTypes.find((s) => s.id === form.sessionTypeId);
+  const selectedSlot = timeSlots.find((t) => t.id === form.timeSlotId);
 
+  // fetch booked slots whenever date changes
   useEffect(() => {
-    if (!initialSession) return;
+    if (!form.date) return; // nothing to fetch — bookedSlotIds already reset by date onChange
 
-    const matchedSession = BOOKING_SESSION_TYPES.find(
-      (session) =>
-        session.id === initialSession ||
-        session.label.toLowerCase() === initialSession,
-    );
+    let cancelled = false;
+    // setLoadingSlots(true);
 
-    if (matchedSession) {
-      setForm((current) => ({
-        ...current,
-        sessionType: matchedSession.id,
-      }));
-    }
-  }, [initialSession]);
+    client.bookings
+      .getBookedSlots({ date: form.date })
+      .then((ids) => {
+        if (!cancelled) setBookedSlotIds(ids);
+      })
+      .catch(() => {
+        if (!cancelled) setBookedSlotIds([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingSlots(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [form.date]);
 
   const canProceed = [
-    !!form.sessionType,
-    !!form.date && !!form.timeSlot,
+    !!form.sessionTypeId,
+    !!form.date && !!form.timeSlotId,
     !!form.firstName && !!form.lastName && !!form.email,
     true,
   ][step];
@@ -81,14 +110,12 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
       toast.error("Complete the booking details before confirming.");
       return;
     }
-
     setIsSubmitting(true);
-
     try {
       await client.bookings.create({
-        sessionType: selectedSession.label,
+        sessionTypeId: form.sessionTypeId,
         preferredDate: form.date,
-        timeSlot: selectedSlot.time,
+        timeSlotId: form.timeSlotId,
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,
@@ -108,7 +135,6 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
     }
   };
 
-  // ── Success Screen ──
   if (submitted) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0e0e0e] px-6">
@@ -148,7 +174,7 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
           <p className="text-sm leading-relaxed text-white/50">
             A confirmation has been sent to{" "}
             <span className="text-white">{form.email}</span>. We&apos;ll be in
-            touch within 24 hours to finalise the details.
+            touch within 24 hours.
           </p>
           <div className="w-full rounded-2xl border border-white/8 bg-white/4 p-5 text-left space-y-3">
             {[
@@ -177,13 +203,12 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
     );
   }
 
-  // ── Main Layout ──
   return (
     <div
       className="min-h-screen bg-[#0e0e0e]"
       style={{ fontFamily: "var(--font-body)" }}
     >
-      {/* Subtle grain overlay */}
+      {/* grain overlay */}
       <div
         className="pointer-events-none fixed inset-0 z-50 opacity-[0.025]"
         style={{
@@ -193,45 +218,24 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
         }}
       />
 
-      {/* ── Top bar ── */}
+      {/* Top bar */}
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-white/6 bg-[#0e0e0e]/90 px-6 py-4 backdrop-blur-md md:px-10">
-        {/* <Link
-          href="/"
-          className="flex items-center gap-0.5 font-black uppercase tracking-widest text-white text-lg"
-          style={{ fontFamily: "var(--font-display)" }}
-        >
-          DIPHACTORY
-          <span style={{ color: "var(--color-accent-red)", fontSize: "1.3em" }}>
-            *
-          </span>
-        </Link> */}
-        <Logo className="text-lg" />
+        <Logo className="text-lg hidden sm:block" />
         <StepIndicator current={step} total={BOOKING_STEPS.length} />
         <Link
           href="/"
-          className="hidden items-center gap-1.5 text-xs font-medium text-white/35 transition-colors hover:text-white sm:flex"
+          className="xhidden items-center gap-1.5 text-xs font-medium text-white/35 transition-colors hover:text-white sm:flex"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 12H5M12 5l-7 7 7 7"
-            />
-          </svg>
-          Back
+          <div className="flex sm:hidden p-1 items-center justify-center rounded-full text-md font-bold transition-all duration-300 border border-white/20 bg-accent-red">
+            <HomeIcon className="text-white/70" size="18" />
+          </div>
+          <CircleArrowLeft className="hidden sm:block" />
+          <span className="hidden sm:block">Back</span>
         </Link>
       </header>
 
       <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 lg:py-16">
         <div className="grid gap-8 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]">
-          {/* ── Left: Form area ── */}
           <div className="min-w-0">
             {/* Page heading */}
             <div className="mb-10">
@@ -264,77 +268,101 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
               </h1>
             </div>
 
-            {/* ── STEP 0: Session type ── */}
+            {/* Step 0 — session types from DB */}
             {step === 0 && (
               <div className="grid gap-4 sm:grid-cols-2">
-                {BOOKING_SESSION_TYPES.map((session) => (
+                {sessionTypes.map((session) => (
                   <SessionCard
                     key={session.id}
                     session={session}
-                    selected={form.sessionType === session.id}
-                    onSelect={() => setField("sessionType", session.id)}
+                    selected={form.sessionTypeId === session.id}
+                    onSelect={() => setField("sessionTypeId", session.id)}
                   />
                 ))}
               </div>
             )}
 
-            {/* ── STEP 1: Date & time ── */}
+            {/* Step 1 — date + time slots */}
             {step === 1 && (
               <div className="space-y-8">
                 {/* Date picker */}
                 <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="date"
-                    className="flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-white/40"
-                  >
-                    Preferred Date{" "}
-                    <span className="text-(--color-accent-red)">*</span>
+                  <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-white/40">
+                    Preferred Date <span className="text-accent-red">*</span>
                   </label>
                   <input
-                    id="date"
                     type="date"
                     value={form.date}
                     min={new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setField("date", e.target.value)}
+                    // onChange={(e) => {
+                    //   setField("date", e.target.value);
+                    //   setField("timeSlotId", "");
+                    // }}
+                    // reset timeSlotId when date changes — handle in the onChange directly
+                    onChange={(e) => {
+                      setForm((prev) => ({
+                        ...prev,
+                        date: e.target.value,
+                        timeSlotId: "", // ← reset slot here, not in useEffect
+                      }));
+                      setBookedSlotIds([]);
+                      setLoadingSlots(true);
+                    }}
                     className={cn(
                       "w-full max-w-xs rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white",
-                      "outline-none transition-all duration-200 focus:border-white/30 focus:bg-white/8",
-                      "scheme-dark",
+                      "outline-none transition-all duration-200 focus:border-white/30 focus:bg-white/8 scheme-dark",
                     )}
                   />
+                  {/* Booked date notice */}
+                  {form.date && bookedDates.includes(form.date) && (
+                    <p className="text-xs text-red-400/70 mt-1">
+                      This date is fully booked. Please choose another.
+                    </p>
+                  )}
                 </div>
 
                 {/* Time slots */}
                 <div>
-                  <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/40">
-                    Available Time Slots
-                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40">
+                      Available Time Slots
+                    </p>
+                    {loadingSlots && (
+                      <p className="text-[10px] text-white/20 animate-pulse">
+                        Checking availability...
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                    {BOOKING_TIME_SLOTS.map((slot) => (
-                      <button
-                        key={slot.id}
-                        type="button"
-                        disabled={!slot.available}
-                        onClick={() =>
-                          slot.available && setField("timeSlot", slot.id)
-                        }
-                        className={cn(
-                          "group relative rounded-xl border px-4 py-3.5 text-sm font-medium transition-all duration-200",
-                          !slot.available
-                            ? "cursor-not-allowed border-white/5 text-white/15 line-through"
-                            : form.timeSlot === slot.id
-                              ? "border-accent-red bg-accent-red/10 text-white"
-                              : "border-white/10 bg-white/4 text-white/60 hover:border-white/25 hover:text-white",
-                        )}
-                      >
-                        {slot.time}
-                        {!slot.available && (
-                          <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-white/8 px-2 py-0.5 text-[9px] text-white/25">
-                            Booked
-                          </span>
-                        )}
-                      </button>
-                    ))}
+                    {timeSlots.map((slot) => {
+                      const isBooked = bookedSlotIds.includes(slot.id);
+                      const isSelected = form.timeSlotId === slot.id;
+                      return (
+                        <button
+                          key={slot.id}
+                          type="button"
+                          disabled={isBooked || loadingSlots}
+                          onClick={() =>
+                            !isBooked && setField("timeSlotId", slot.id)
+                          }
+                          className={cn(
+                            "group relative rounded-xl border px-4 py-3.5 text-sm font-medium transition-all duration-200",
+                            isBooked
+                              ? "cursor-not-allowed border-white/5 text-white/15 line-through"
+                              : isSelected
+                                ? "border-accent-red bg-accent-red/10 text-white"
+                                : "border-white/10 bg-white/4 text-white/60 hover:border-white/25 hover:text-white",
+                          )}
+                        >
+                          {slot.time}
+                          {isBooked && (
+                            <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-white/8 px-2 py-0.5 text-[9px] text-white/25">
+                              Booked
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -350,7 +378,7 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
               </div>
             )}
 
-            {/* ── STEP 2: Client details ── */}
+            {/* Step 2 — client details — unchanged */}
             {step === 2 && (
               <div className="space-y-5 max-w-xl">
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -392,14 +420,14 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                 <TextareaField
                   label="Vision & Notes"
                   id="notes"
-                  placeholder="Describe your vision, mood references, wardrobe ideas, or any specific requirements…"
+                  placeholder="Describe your vision, mood references, wardrobe ideas…"
                   value={form.notes}
                   onChange={(v) => setField("notes", v)}
                 />
               </div>
             )}
 
-            {/* ── STEP 3: Review ── */}
+            {/* Step 3 — review */}
             {step === 3 && (
               <div className="max-w-xl space-y-4">
                 <div className="rounded-2xl border border-white/8 bg-white/3 divide-y divide-white/6 overflow-hidden">
@@ -432,7 +460,6 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                     </div>
                   ))}
                 </div>
-
                 {form.notes && (
                   <div className="rounded-2xl border border-white/8 bg-white/3 p-5">
                     <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/30">
@@ -443,7 +470,6 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                     </p>
                   </div>
                 )}
-
                 <p className="text-xs leading-relaxed text-white/25">
                   By confirming, you agree to our{" "}
                   <a
@@ -464,7 +490,7 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
               </div>
             )}
 
-            {/* ── Navigation buttons ── */}
+            {/* Navigation */}
             <div className="mt-10 flex items-center justify-between gap-4">
               <button
                 type="button"
@@ -551,23 +577,20 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
             </div>
           </div>
 
-          {/* ── Right: Summary sidebar ── */}
+          {/* Sidebar — unchanged layout */}
           <aside className="hidden lg:block">
             <div className="sticky top-24">
               <div className="overflow-hidden rounded-2xl border border-white/8 bg-white/3">
-                {/* Sidebar header */}
                 <div className="border-b border-white/6 px-6 py-5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/30">
                     Booking Summary
                   </p>
                 </div>
-
                 <div className="px-6 py-5 space-y-5">
-                  {/* Session type */}
                   {selectedSession ? (
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-red/12 text-accent-red">
-                        {selectedSession.icon}
+                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-red/12 text-accent-red text-xs font-bold">
+                        {selectedSession.label[0]}
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-white">
@@ -588,7 +611,6 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                     </div>
                   )}
 
-                  {/* Date/Time row */}
                   <div className="flex gap-3">
                     <div className="flex-1 rounded-xl border border-white/6 bg-white/3 p-3">
                       <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-white/25">
@@ -617,7 +639,6 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                     </div>
                   </div>
 
-                  {/* Client name */}
                   {(form.firstName || form.lastName) && (
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/8 text-xs font-bold text-white/60">
@@ -634,10 +655,8 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                     </div>
                   )}
 
-                  {/* Divider */}
                   <div className="border-t border-white/6" />
 
-                  {/* Price breakdown */}
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-white/40">
@@ -671,7 +690,6 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                     </div>
                   </div>
 
-                  {/* Trust badges */}
                   <div className="space-y-2 pt-1">
                     {[
                       { icon: "shield", text: "Secure & encrypted booking" },
@@ -726,8 +744,6 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
                   </div>
                 </div>
               </div>
-
-              {/* Help link */}
               <p className="mt-4 text-center text-xs text-white/20">
                 Questions?{" "}
                 <a
@@ -742,7 +758,7 @@ export default function BookingPage({ initialSession }: BookingPageProps) {
         </div>
       </div>
 
-      {/* ── Mobile summary bar ── */}
+      {/* Mobile summary bar */}
       {selectedSession && (
         <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-white/8 bg-[#0e0e0e]/95 px-5 py-3 backdrop-blur-md lg:hidden">
           <div className="flex items-center justify-between">

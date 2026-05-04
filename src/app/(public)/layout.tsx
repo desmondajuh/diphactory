@@ -2,6 +2,7 @@ import { Footer } from "@/features/landing/components/footer";
 import { NavbarClient } from "@/features/landing/components/nav/navbar";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { client } from "@/lib/orpc";
 
 export default async function RootGroupLayout({
   children,
@@ -12,6 +13,7 @@ export default async function RootGroupLayout({
     headers: await headers(),
   });
 
+  const config = await client.siteConfig.get();
   // const showSidebar =
   //   session.user.role === "photographer" ||
   //   session.user.role === "admin" ||
@@ -24,7 +26,7 @@ export default async function RootGroupLayout({
         role={session?.user?.role ?? undefined}
       />
       {children}
-      <Footer />
+      <Footer config={config} />
     </main>
   );
 }

@@ -9,8 +9,11 @@ interface HeroSectionProps {
    * Path to the hero portrait image.
    * Replace with your actual image path, e.g. "/images/clivelle.jpg"
    */
+  title?: string;
+  subtitle?: string;
   imageSrc?: string;
   imageAlt?: string;
+  badge?: string;
   sectionData: SectionWithItems | null;
 }
 
@@ -18,16 +21,16 @@ const sectionDesc =
   "Hi, I am diai®I'm a photographer and highly talented visual artist with over a decade of experience in the field.";
 
 export function HeroSection({
+  title = "DIPHACTORY",
+  subtitle = sectionDesc,
   imageSrc = "/images/bg/bride-bg.jpg",
   imageAlt = "Diphactory – digital designer and 3D renderer",
+  badge = "©2026",
   sectionData,
 }: HeroSectionProps) {
   // fallback values if section not found in DB
-  const title = sectionData?.title ?? "DIPHACTORY";
-  const subtitle = sectionData?.subtitle ?? sectionDesc;
-  const ctaText = sectionData?.ctaText ?? "Get in touch";
-  const ctaLink = sectionData?.ctaLink ?? "/contact";
-  const bgImage = sectionData?.bgImage ?? null;
+  // const title = sectionData?.title ?? "DIPHACTORY";
+  // const subtitle = sectionData?.subtitle ?? sectionDesc;
 
   //  const section = await client.sections.getBySlug({ slug: "contact-hero" });
 
@@ -40,7 +43,7 @@ export function HeroSection({
       <div className="absolute inset-0 z-5 bg-linear-to-b from-black/72 via-transparent to-black/55" />
       {/* ── Full-bleed portrait ── */}
       <div className="absolute inset-0 z-0">
-        {/* <Image
+        <Image
           src={imageSrc || "/images/hero-bg.png"}
           alt={imageAlt || "Diphactory – digital designer and photographer"}
           fill
@@ -48,7 +51,7 @@ export function HeroSection({
           sizes="100vw"
           className="md:hidden object-cover object-top opacity-80"
           style={{ objectPosition: "50% 15%" }}
-        /> */}
+        />
         <ParallaxImage
           src={imageSrc}
           alt={imageAlt}
@@ -85,7 +88,7 @@ export function HeroSection({
       <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col">
         {/* Copyright line */}
         <p className="px-6 md:px-10 lg:px-14 text-sm font-medium text-muted-foreground mb-1 md:mb-2">
-          ©2026
+          {badge}
         </p>
 
         {/* Large name + bio row */}

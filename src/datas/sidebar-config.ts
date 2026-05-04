@@ -11,6 +11,11 @@ import {
   NotebookTabsIcon,
   ShieldCheckIcon,
   MessageSquareText,
+  RssIcon,
+  MailQuestionMarkIcon,
+  LayoutTemplateIcon,
+  // GalleryHorizontalIcon,
+  GalleryHorizontalEndIcon,
 } from "lucide-react";
 
 import { UserRole } from "@/lib/permissions";
@@ -88,7 +93,7 @@ export const sidebarGroups: SidebarGroupConfig[] = [
       },
       {
         title: "Bookings",
-        url: "/dashboard/bookings",
+        url: "/dashboard/admin/bookings",
         icon: NotebookTabsIcon,
       },
       {
@@ -104,22 +109,22 @@ export const sidebarGroups: SidebarGroupConfig[] = [
       {
         title: "Blog",
         url: "/dashboard/admin/blog",
-        icon: ImagesIcon,
+        icon: RssIcon,
       },
       {
         title: "Faq",
         url: "/dashboard/admin/templates/faq",
-        icon: ImagesIcon,
+        icon: MailQuestionMarkIcon,
       },
       {
         title: "Sections",
         url: "/dashboard/admin/templates/sections",
-        icon: ImagesIcon,
+        icon: LayoutTemplateIcon,
       },
       {
         title: "Carousel",
         url: "/dashboard/admin/templates/carousel",
-        icon: ImagesIcon,
+        icon: GalleryHorizontalEndIcon,
       },
     ],
   },

@@ -4,9 +4,14 @@ import Link from "next/link";
 interface ActionButtonsProps {
   isLoggedIn?: boolean;
   role?: string;
+  onItemClick?: () => void;
 }
 
-export const ActionButtons = ({ role, isLoggedIn }: ActionButtonsProps) => {
+export const ActionButtons = ({
+  role,
+  isLoggedIn,
+  onItemClick,
+}: ActionButtonsProps) => {
   //   const userUrl = !isLoggedIn
   //     ? "/sign-in"
   //     : role === "admin"
@@ -32,10 +37,11 @@ export const ActionButtons = ({ role, isLoggedIn }: ActionButtonsProps) => {
   }
 
   return (
-    <>
+    <div className="flex gap-2">
       <Link
         href="/bookings"
-        className="group flex items-center gap-2.5 rounded-full border border-accent-red bg-accent-red px-3 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-transparent hover:text-white"
+        onClick={onItemClick}
+        className="group flex flex-1 items-center gap-2.5 rounded-full border border-accent-red bg-accent-red p-2 md:p-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-transparent hover:text-white"
         aria-label="Book Now"
       >
         <span
@@ -48,10 +54,11 @@ export const ActionButtons = ({ role, isLoggedIn }: ActionButtonsProps) => {
       </Link>
       <Link
         href={userUrl}
-        className="rounded-full p-3 bg-accent-red text-white"
+        onClick={onItemClick}
+        className="rounded-full p-2 md:p-2.5 bg-accent-red text-white"
       >
         <UserIcon />
       </Link>
-    </>
+    </div>
   );
 };

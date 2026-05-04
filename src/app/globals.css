@@ -376,4 +376,17 @@
     }
   }
 
+  .custom-input select {
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  /* Style the individual options */
+  .custom-input select option {
+    background-color: white;
+    color: #333;
+  }
+
 }

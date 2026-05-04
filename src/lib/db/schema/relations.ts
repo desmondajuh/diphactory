@@ -10,8 +10,12 @@ import { leads } from "./leads";
 import { albumImages } from "./album-images";
 import { gallery } from "./gallery";
 import { sections, statItems, featureItems } from "./components";
-
 import { blogPosts, blogCategories, blogTags, blogPostTags } from "./blog";
+import {
+  bookings,
+  bookingSlotReservations,
+  bookingTimeSlots,
+} from "./bookings";
 
 export const usersRelations = relations(users, ({ many }) => ({
   ownedAlbums: many(albums, { relationName: "owner" }),
@@ -162,3 +166,17 @@ export const blogPostTagsRelations = relations(blogPostTags, ({ one }) => ({
     references: [blogTags.id],
   }),
 }));
+
+export const bookingSlotReservationsRelations = relations(
+  bookingSlotReservations,
+  ({ one }) => ({
+    booking: one(bookings, {
+      fields: [bookingSlotReservations.bookingId],
+      references: [bookings.id],
+    }),
+    timeSlot: one(bookingTimeSlots, {
+      fields: [bookingSlotReservations.timeSlotId],
+      references: [bookingTimeSlots.id],
+    }),
+  }),
+);

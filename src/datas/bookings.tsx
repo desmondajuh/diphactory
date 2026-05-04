@@ -1,3 +1,4 @@
+// booking types
 import { BookingSessionType, BookingTimeSlot } from "@/types/booking-form";
 
 export const BOOKING_SESSION_TYPES: BookingSessionType[] = [

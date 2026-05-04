@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BUSINESS_NAME, BUSINESS_TYPE, BUSINESS_URL } from "@/constants";
-import BookingPage from "@/features/bookings/views/booking-view";
+import { BookingPage } from "@/features/bookings/views/booking-view";
+import { client } from "@/lib/orpc";
 import Script from "next/script";
 
 const structuredData = {
@@ -56,12 +57,22 @@ type PageProps = {
 
 export default async function Page({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
-
   const initialSession = resolvedParams.session?.toLowerCase() ?? null;
+
+  const [sessionTypes, timeSlots, bookedDates] = await Promise.all([
+    client.bookings.listSessionTypes(),
+    client.bookings.listTimeSlots(),
+    client.bookings.getBookedDates(),
+  ]);
 
   return (
     <>
-      <BookingPage initialSession={initialSession} />
+      <BookingPage
+        initialSession={initialSession}
+        sessionTypes={sessionTypes}
+        timeSlots={timeSlots}
+        bookedDates={bookedDates}
+      />
       <Script
         id="structured-data-bookings"
         type="application/ld+json"

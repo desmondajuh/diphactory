@@ -68,7 +68,11 @@ export function NavbarClient({ isLoggedIn, role }: NavbarClientProps) {
             </Link>
           ))}
           <div className="z-50 flex w-full flex-col gap-4">
-            <ActionButtons isLoggedIn={isLoggedIn} role={role} />
+            <ActionButtons
+              isLoggedIn={isLoggedIn}
+              role={role}
+              onItemClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
           </div>
         </MobileNavMenu>
       </MobileNav>

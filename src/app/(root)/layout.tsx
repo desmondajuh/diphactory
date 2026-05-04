@@ -14,7 +14,7 @@ export default async function RootGroupLayout({
   });
 
   const config = await client.siteConfig.get();
-  console.log(config);
+  // console.log(config);
 
   return (
     <main className="relative">

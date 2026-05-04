@@ -16,6 +16,7 @@ export const HomeView = async () => {
     fullImageData,
     carouselData,
     differenceData,
+    differenceGalleryData,
     processData,
     insightData,
     featuredPosts,
@@ -24,6 +25,7 @@ export const HomeView = async () => {
     client.sections.getBySlug({ slug: "full-hero-mage" }),
     client.sections.getBySlug({ slug: "home-carousel" }),
     client.sections.getBySlug({ slug: "difference-section" }),
+    client.sections.getBySlug({ slug: "difference-section-gallery" }),
     client.sections.getBySlug({ slug: "process-steps" }),
     client.sections.getBySlug({ slug: "posts-section" }),
     client.blog.listFeatured(),
@@ -37,16 +39,24 @@ export const HomeView = async () => {
     <>
       <ReactLenis root>
         <HeroSection
+          title={heroData.title || "DIPHACTORY"}
+          subtitle={heroData.subtitle || ""}
           sectionData={heroData}
-          imageSrc="/images/hero-bg4.jpg"
-          imageAlt="Diphactory – digital designer and 3D renderer"
+          badge={heroData.badge || "©2026"}
+          imageSrc={heroData.image || "/images/hero-bg4.jpg"}
+          imageAlt={
+            heroData.imageAlt || "Diphactory – digital designer and 3D renderer"
+          }
         />
         <ParallaxStickySection
           stickySection={<FullImageSection sectionData={fullImageData} />}
           overlaySection={<CarouselSection sectionData={carouselData} />}
           peekAmount="5vh"
         />
-        <DifferenceSection sectionData={differenceData} />
+        <DifferenceSection
+          sectionData={differenceData}
+          galleryData={differenceGalleryData}
+        />
         <ProcessScroll sectionData={processData} />
         <LatestInsights sectionData={insightData} posts={featuredPosts} />
         <ImageCTA />

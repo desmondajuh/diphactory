@@ -12,6 +12,7 @@ import Link from "next/link";
 
 interface DifferenceSectionProps {
   sectionData: SectionWithItems | null;
+  galleryData: SectionWithItems | null;
 }
 
 // ─── Mosaic image placeholders ─────────────────────────────────────────────────
@@ -28,7 +29,10 @@ const MOSAIC_IMAGES = [
 ];
 
 // ─── Main Component ────────────────────────────────────────────────────────────
-export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
+export function DifferenceSection({
+  sectionData,
+  galleryData,
+}: DifferenceSectionProps) {
   return (
     <section
       className="relative xmin-h-screen flex flex-col items-center md:justify-end overflow-hidden bg-[#0a0a0a] pt-14 pb-0"
@@ -88,7 +92,7 @@ export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
               className="font-black leading-none tracking-tight text-[#0a0a0a]"
               style={{ fontFamily: "var(--font-display)", fontSize: "3.2rem" }}
             >
-              2.5k
+              {galleryData?.badge || "2.5k"}
             </span>
             <span className="text-[13px] font-medium text-black/45">
               Happy Clients Captured
@@ -96,16 +100,6 @@ export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
             {/* Avatar stack */}
             <div className="flex items-center">
               <AvatarGroup />
-              {/* {AVATAR_COLORS.map((colors, i) => (
-                <div
-                  key={i}
-                  className={`h-9 w-9 shrink-0 rounded-full border-[2.5px] border-white bg-linear-to-br ${colors} overflow-hidden`}
-                  style={{
-                    marginLeft: i === 0 ? 0 : "-10px",
-                    zIndex: AVATAR_COLORS.length - i,
-                  }}
-                />
-              ))} */}
             </div>
           </div>
 
@@ -114,13 +108,6 @@ export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
             className="group relative overflow-hidden rounded-[20px]"
             style={{ aspectRatio: "3/2.2" }}
           >
-            {/* <Image
-              src="/images/gallery/9.jpg"
-              alt="Photography – woman in red standing in golden field"
-              fill
-              sizes="(max-width: 900px) 50vw, 33vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-            /> */}
             <ParallaxImage
               src="/images/gallery/9.jpg"
               alt="Photography – woman in red standing in golden field"
@@ -134,12 +121,12 @@ export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
               }}
             />
             <Link
-              href={BUSINESS_INSTAGRAM_URL}
+              href={galleryData?.ctaLink || BUSINESS_INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="absolute bottom-4 left-5 flex items-center gap-2.5 text-sm font-semibold text-white transition-gap duration-200 hover:gap-3.5"
             >
-              Check My Instagram
+              {galleryData?.ctaText || "Check My Instagram"}
               <svg
                 width="16"
                 height="16"
@@ -164,8 +151,11 @@ export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
             style={{ aspectRatio: "16/9" }}
           >
             <Image
-              src="/images/gallery/10.jpg"
-              alt="Portrait – man with authentic expression"
+              src={galleryData?.image || "/images/gallery/10.jpg"}
+              alt={
+                galleryData?.imageAlt ||
+                "Portrait – man with authentic expression"
+              }
               fill
               sizes="(max-width: 900px) 100vw, 40vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -188,7 +178,8 @@ export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
                   "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)",
               }}
             >
-              {sectionData?.description ||
+              {galleryData?.title ||
+                sectionData?.description ||
                 "Capture authentic emotions with timeless photography that preserves your most beautiful memories."}
             </p>
           </div>
@@ -215,8 +206,8 @@ export function DifferenceSection({ sectionData }: DifferenceSectionProps) {
             {/* Text card below mosaic */}
             <div className="bg-[#111] px-5 py-4">
               <p className="text-[13px] leading-[1.65] text-white/60">
-                Enjoy a relaxed, stress-free photoshoot, focusing on real
-                moments while I capture every detail beautifully.
+                {galleryData?.subtitle ||
+                  "Enjoy a relaxed, stress-free photoshoot, focusing on real moments while I capture every detail beautifully."}
               </p>
             </div>
           </div>

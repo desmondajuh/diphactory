@@ -7,6 +7,7 @@ import { client } from "@/lib/orpc";
 import { SectionWithItems } from "@/lib/db/schema";
 import { SectionFormModal } from "../components/section-form-modal";
 import { SectionDeleteModal } from "../components/section-delete-modal";
+import { authClient } from "@/lib/auth-client";
 
 const TYPE_LABELS: Record<string, string> = {
   hero: "Hero",
@@ -21,6 +22,9 @@ interface Props {
 }
 
 export function SectionsAdminView({ initialSections }: Props) {
+  const { data: session } = authClient.useSession();
+  const isSuperAdmin = session?.user?.role === "super_admin";
+
   const [sections, setSections] = useState(initialSections);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<SectionWithItems | null>(null);
@@ -90,11 +94,11 @@ export function SectionsAdminView({ initialSections }: Props) {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/25 mb-4">
               /{pageSlug}
             </p>
-            <div className="space-y-3">
+            <div className="space-y-3 grid grid-cols-1 md:grid-cols-3 gap-2">
               {pageSections.map((section) => (
                 <div
                   key={section.id}
-                  className="rounded-2xl border border-white/8 bg-white/3 p-5"
+                  className="h-full rounded-2xl border border-white/8 bg-white/3 p-5"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0 space-y-1.5">
@@ -148,6 +152,7 @@ export function SectionsAdminView({ initialSections }: Props) {
                         Edit
                       </button>
                       <button
+                        disabled={!isSuperAdmin}
                         onClick={() => setDeleting(section)}
                         className="rounded-full border border-red-500/20 px-4 py-1.5 text-xs font-medium text-red-400/70 hover:border-red-500/40 hover:text-red-400 transition-all"
                       >
