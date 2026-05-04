@@ -1,3 +1,4 @@
+export * from "./site-config";
 export * from "./components";
 
 export * from "./user";

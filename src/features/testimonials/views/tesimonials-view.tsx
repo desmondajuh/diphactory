@@ -1,6 +1,7 @@
 // import { testimonials } from "@/datas/testimonials";
 import { client } from "@/lib/orpc";
 import { TestimonialColumn } from "../components/testimonial-column";
+import { SectionHeader } from "@/components/shared/section-header";
 
 function chunkArray<T>(arr: T[], num: number) {
   const result = [];
@@ -14,10 +15,13 @@ function chunkArray<T>(arr: T[], num: number) {
 }
 
 export default async function TestimonialsView() {
-  const data = await client.testimonials.list();
+  const [TestimonialHeroData, testimonialData] = await Promise.all([
+    client.sections.getBySlug({ slug: "testimonial-section-header" }),
+    client.testimonials.list(),
+  ]);
 
   // map DB fields → what TestimonialCard expects
-  const testimonials = data.map((t) => ({
+  const testimonials = testimonialData.map((t) => ({
     id: t.id,
     name: t.clientName,
     role: t.clientTitle ?? "",
@@ -30,7 +34,7 @@ export default async function TestimonialsView() {
   return (
     <section className="min-h-screen bg-background text-foreground px-6 py-24">
       {/* Header */}
-      <div className="max-w-5xl mx-auto text-center mb-16">
+      {/* <div className="max-w-5xl mx-auto text-center mb-16">
         <p className="text-accent-red text-sm uppercase tracking-widest">
           Testimonials
         </p>
@@ -43,7 +47,16 @@ export default async function TestimonialsView() {
           Real stories. Real emotions. Real impact. Here’s what people
           experience working with DIP.
         </p>
-      </div>
+      </div> */}
+      <SectionHeader
+        variant="center"
+        badge={TestimonialHeroData?.badge || "Testimonials"}
+        title={TestimonialHeroData?.title || "What Clients Say"}
+        subtitle={
+          TestimonialHeroData?.subtitle ||
+          "Real stories. Real emotions. Real impact. Here’s what people experience working with DIP."
+        }
+      />
 
       {/* Columns */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto h-[70vh]">

@@ -1,10 +1,19 @@
-"use client";
+// "use client";
 
 import { ReactLenis } from "lenis/react";
 import { PageHero } from "@/components/shared/page-hero";
-import { Contact2 } from "./contact2";
+import { PageHeroTwo } from "@/components/shared/heros/page-hero-two";
+import { client } from "@/lib/orpc";
+import { ContactSection } from "../components/contact-section";
 
-export default function ContactView() {
+export default async function ContactView() {
+  const [ContactHeroData, ContactHeaderData] = await Promise.all([
+    client.sections.getBySlug({ slug: "contact-hero" }),
+    client.sections.getBySlug({ slug: "contact-page-header" }),
+  ]);
+
+  // const subtitleObj = splitWordBalanced(ContactHeaderData?.subtitle || "sub title");
+
   return (
     <ReactLenis root>
       <div className="min-h-screen relative overflow-hidden">
@@ -17,9 +26,28 @@ export default function ContactView() {
         />
 
         {/* Hero */}
-        <PageHero title="Contact DIP" />
-        <div className="max-w-7xl mx-auto">
-          <Contact2 />
+        {/* <PageHero title="Contact DIP" /> */}
+        <PageHero
+          badge={ContactHeroData?.badge || "©2026"}
+          title={ContactHeroData?.title || "About Dip"}
+          pageDesc={ContactHeroData?.subtitle || "About Dip"}
+          imageSrc={ContactHeroData?.image || "images/bg/bride-portrait.jpg"}
+        />
+        <div className="max-w-7xl mx-auto min-h-screen">
+          {/* div className="min-h-screen bg-background text-foreground" */}
+          {/* ── PAGE HEADER ── */}
+          <PageHeroTwo
+            label={ContactHeaderData?.title || "CONTACT US"}
+            badge={ContactHeaderData?.badge || "Available for bookings"}
+            title={ContactHeaderData?.subtitle || ""}
+            subTitle={
+              ContactHeaderData?.description ||
+              "Every great image starts with a conversation. Tell me about your vision and let's make it real."
+            }
+            badgeActive
+            variant="left"
+          />
+          <ContactSection />
         </div>
       </div>
     </ReactLenis>

@@ -5,6 +5,7 @@ import { ArrowDown } from "lucide-react";
 
 interface PageHeroProps {
   title?: string;
+  badge?: string;
   imageSrc?: string;
   imageAlt?: string;
   pageDesc?: string;
@@ -12,6 +13,7 @@ interface PageHeroProps {
 
 export function PageHero({
   title = "About Dip",
+  badge = "©Dial image Phactory",
   imageSrc = "/images/bg/bride-bg.jpg",
   imageAlt = "Diphactory – page hero",
   pageDesc = "Hi, I am Diai. I'm a photographer and highly talented visual artist with over a decade of experience in the field.",
@@ -37,9 +39,9 @@ export function PageHero({
         <ParallaxImage
           src={imageSrc}
           alt={imageAlt}
-          className="object-cover object-center opacity-100"
+          className="object-cover xobject-center opacity-100 w-full"
           scale={1.1}
-          // style={{ objectPosition: "50% 15%" }}
+          style={{ objectPosition: "50% 55%" }}
         />
         {/* Gradient overlays – left, bottom, right */}
         <div
@@ -62,7 +64,8 @@ export function PageHero({
       <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col">
         {/* Copyright line */}
         <p className="px-6 md:px-10 lg:px-14 text-lg font-medium text-muted-foreground mb-1 md:mb-2">
-          ©2026
+          {/* ©2026 */}
+          {badge}
         </p>
 
         {/* Large name + bio row */}

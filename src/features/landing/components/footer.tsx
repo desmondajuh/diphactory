@@ -1,4 +1,38 @@
 import { BUSINESS_NAME } from "@/constants";
+import { SiteConfig } from "@/lib/db/schema/site-config";
+
+interface Props {
+  config: SiteConfig;
+}
+
+export function Footer3({ config }: Props) {
+  return (
+    <footer>
+      <p>{config.businessName}</p>
+      <a href={`mailto:${config.email}`}>{config.email}</a>
+      <a href={`tel:${config.phone}`}>{config.phone}</a>
+      {config.instagram && (
+        <a href={config.instagram} target="_blank">
+          Instagram
+        </a>
+      )}
+    </footer>
+  );
+}
+
+export const Footer = ({ config }: Props) => {
+  return (
+    <div className="flex items-center justify-between border-t border-border px-6 py-4 md:px-10">
+      <p className="text-xs text-muted-foreground">
+        © 2026 {config.businessName}. All rights reserved.
+      </p>
+      <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+        <span className="text-accent-red">⚡</span>
+        Typically responds within 24–48 hours
+      </span>
+    </div>
+  );
+};
 
 export const Footer2 = () => {
   return (
@@ -37,19 +71,5 @@ export const Footer2 = () => {
         <p className="text-sm">© 2026 {BUSINESS_NAME}. All rights reserved.</p>
       </div>
     </footer>
-  );
-};
-
-export const Footer = () => {
-  return (
-    <div className="flex items-center justify-between border-t border-border px-6 py-4 md:px-10">
-      <p className="text-xs text-muted-foreground">
-        © 2026 Diphactory. All rights reserved.
-      </p>
-      <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-        <span className="text-accent-red">⚡</span>
-        Typically responds within 24–48 hours
-      </span>
-    </div>
   );
 };

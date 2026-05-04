@@ -15,8 +15,10 @@ import { blogRouter } from "./blog";
 import { carouselRouter } from "./components/carousel";
 import { faqRouter } from "./components/faq";
 import { sectionsRouter } from "./components/sections";
+import { siteConfigRouter } from "./site-config";
 
 export const router = base.router({
+  siteConfig: siteConfigRouter,
   user: userRouter,
   leads: leadsRouter,
   albums: albumsRouter,

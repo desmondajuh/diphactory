@@ -4,7 +4,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Send, Calendar, MapPin, Phone, Mail, ArrowRight } from "lucide-react";
-import { PageHeroTwo } from "@/components/shared/heros/page-hero-two";
 import { SubmitButton } from "../components/submit-btn";
 import { Field } from "../components/fields";
 import { Sidebar } from "../components/sidebar";
@@ -20,25 +19,12 @@ const SESSION_TYPES = [
   "Other",
 ];
 
-export const Contact2 = () => {
+export const ContactSection = () => {
   const [tab, setTab] = useState<Tab>("contact");
   const [selectedService, setSelectedService] = useState("Portrait");
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* ── HERO ── */}
-      <PageHeroTwo
-        label="CONTACT US"
-        badge="Available for bookings"
-        title={{
-          first: "WE BUILD",
-          second: "EXPERIENCES.",
-        }}
-        subTitle="Every great image starts with a conversation. Tell me about your
-          vision and let's make it real."
-        variant="left"
-      />
-
+    <>
       {/* ── BODY ── */}
       <div className="grid md:grid-cols-[1fr_1.6fr]">
         {/* Sidebar */}
@@ -99,7 +85,7 @@ export const Contact2 = () => {
       </div>
 
       {/* ── FOOTER STRIP ── */}
-    </div>
+    </>
   );
 };
 
