@@ -83,7 +83,7 @@ export function PageHero({
               }}
             >
               {title}
-              <span className="text-accent-red">*</span>
+              <span className="text-accent-brand">*</span>
             </h1>
           </BlockRevealAnime>
 

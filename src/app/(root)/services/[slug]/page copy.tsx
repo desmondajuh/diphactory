@@ -19,7 +19,7 @@ export default function ServiceDetailPage({
         </p>
         <h1 className="text-5xl font-black leading-none">
           {service.title}
-          <span className="text-[var(--color-accent-red)]">*</span>
+          <span className="text-accent-brand">*</span>
         </h1>
         <p className="mt-6 text-white/50 max-w-2xl">{service.description}</p>
       </div>

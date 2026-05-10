@@ -95,8 +95,8 @@ export function GalleryGrid({ images, categories, albumSlugs }: Props) {
               className={cn(
                 "rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-widest transition-all duration-200",
                 active === cat
-                  ? "bg-white text-[#0e0e0e]"
-                  : "border border-white/10 text-white/40 hover:border-white/25 hover:text-white",
+                  ? "bg-accent-brand-500 text-[#0e0e0e]"
+                  : "border border-accent-brand-200/10 text-white/40 hover:border-white/25 hover:text-accent-brand-500",
               )}
             >
               {cat}

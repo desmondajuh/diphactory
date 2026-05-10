@@ -70,7 +70,7 @@ export const SectionHeader = ({
 
         <h1 className="font-display text-[clamp(44px,10vw,88px)] leading-[0.95] tracking-tight">
           {title}
-          <span className="text-accent-red">*</span>
+          <span className="text-accent-brand">*</span>
         </h1>
 
         {subtitle && (

@@ -26,7 +26,7 @@ export function InputField({
         className="flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-white/40"
       >
         {label}
-        {required && <span className="text-accent-red">*</span>}
+        {required && <span className="text-accent-brand">*</span>}
       </label>
       <input
         id={id}

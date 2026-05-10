@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { FocusBrackets } from "@/components/icons/focus-bracket";
 import { LensRuler } from "@/components/icons/ruler";
@@ -38,16 +39,30 @@ export function DifferenceSection({
       className="relative xmin-h-screen flex flex-col items-center md:justify-end overflow-hidden bg-[#0a0a0a] pt-14 pb-0"
       aria-label="About the photographer"
     >
-      <Image
-        src="/images/camera-illustration.png"
-        alt="camera-illustration"
-        width={500}
-        height={500}
-        className="absolute -top-14 left-0 "
-      />
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{
+            backgroundImage: `url(${sectionData?.bgImage || "/images/bg/nature-road.jpg"})`,
+          }}
+        />
+
+        {/* dark overlays */}
+        <div className="absolute inset-0 bg-black/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#b9862b25_0%,transparent_45%)]" />
+
+        <img
+          src="/images/camera-illustration.png"
+          alt="camera-illustration"
+          // width={500}
+          // height={500}
+          className="absolute w-125 h-auto -top-14 left-0 "
+        />
+      </div>
 
       {/* ── MAIN GRID ── */}
-      <div className="grid gap-3.5 px-7 lg:grid-cols-[1.6fr_1fr_1.4fr] md:grid-cols-2 grid-cols-1">
+      <div className="relative grid gap-3.5 px-7 lg:grid-cols-[1.6fr_1fr_1.4fr] md:grid-cols-2 grid-cols-1">
         {/* ── LEFT COLUMN ── */}
         <div className="flex flex-col justify-center gap-0 pt-2 md:col-span-2 lg:col-span-1">
           {/* Headline */}
@@ -69,7 +84,7 @@ export function DifferenceSection({
                 "Through my lens, I capture raw emotions, authentic connections, and fleeting details that transform your moments into lasting, unforgettable stories."}
             </p>
             <Button
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 transition-all duration-300 hover:border-white/60 hover:bg-white/8 cursor-pointer"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-accent-brand transition-all duration-300 hover:border-white/60 bg-transparent hover:bg-white/8 cursor-pointer text-accent-brand"
               aria-label="Scroll down"
               onClick={() =>
                 window.scrollBy({ top: window.innerHeight, behavior: "smooth" })
@@ -89,12 +104,12 @@ export function DifferenceSection({
           {/* Stat card */}
           <div className="flex flex-col items-center gap-2.5 rounded-[20px] bg-white px-6 py-7 text-center">
             <span
-              className="font-black leading-none tracking-tight text-[#0a0a0a]"
+              className="font-black leading-none tracking-tight text-brand"
               style={{ fontFamily: "var(--font-display)", fontSize: "3.2rem" }}
             >
               {galleryData?.badge || "2.5k"}
             </span>
-            <span className="text-[13px] font-medium text-black/45">
+            <span className="text-[13px] font-medium text-accent-brand">
               Happy Clients Captured
             </span>
             {/* Avatar stack */}
@@ -124,14 +139,14 @@ export function DifferenceSection({
               href={galleryData?.ctaLink || BUSINESS_INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute bottom-4 left-5 flex items-center gap-2.5 text-sm font-semibold text-white transition-gap duration-200 hover:gap-3.5"
+              className="absolute bottom-4 left-5 flex items-center gap-2.5 text-sm font-semibold text-white hover:text-accent-brand transition-gap duration-200 hover:gap-3.5"
             >
               {galleryData?.ctaText || "Check My Instagram"}
               <svg
                 width="16"
                 height="16"
                 viewBox="0 0 24 24"
-                fill="none"
+                fill="currentColor"
                 stroke="white"
                 strokeWidth={2}
                 strokeLinecap="round"

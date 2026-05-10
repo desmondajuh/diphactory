@@ -206,7 +206,7 @@ export function TestimonialFormModal({ testimonial, onClose, onSaved }: Props) {
             type="checkbox"
             checked={form.isPublished}
             onChange={(e) => setField("isPublished", e.target.checked)}
-            className="h-4 w-4 accent-red-500"
+            className="h-4 w-4 accent-brand-500"
           />
           <span className="text-sm text-white/50">Published</span>
         </label>

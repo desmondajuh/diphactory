@@ -183,7 +183,7 @@ export function BlogEditorView({ post, categories, tags }: Props) {
                 onChange={(e) =>
                   setField("status", e.target.value as typeof form.status)
                 }
-                className={cn(inputCls, "text-accent-red")}
+                className={cn(inputCls, "text-accent-brand")}
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
@@ -196,7 +196,7 @@ export function BlogEditorView({ post, categories, tags }: Props) {
                 type="checkbox"
                 checked={form.isFeatured}
                 onChange={(e) => setField("isFeatured", e.target.checked)}
-                className="h-4 w-4 accent-red-500"
+                className="h-4 w-4 accent-brand-500"
               />
               <span className="text-sm text-white/50">
                 Featured on homepage
@@ -250,7 +250,7 @@ export function BlogEditorView({ post, categories, tags }: Props) {
             <select
               value={form.categoryId}
               onChange={(e) => setField("categoryId", e.target.value)}
-              className={cn(inputCls, "text-accent-red")}
+              className={cn(inputCls, "text-accent-brand")}
             >
               <option value="">No category</option>
               {categories.map((c) => (

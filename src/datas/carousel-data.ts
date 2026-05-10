@@ -51,10 +51,10 @@ export const CAROUSEL_CONFIG = [
     translateY: 5,
     rotateY: 0,
     zIndex: 98.5,
-    width: "125px",
+    width: "135px",
     height: 220,
     heightOffset: 1.5,
-    mxValue: "mx-2",
+    mxValue: "mx-0",
   },
   {
     skewY: -1.5,

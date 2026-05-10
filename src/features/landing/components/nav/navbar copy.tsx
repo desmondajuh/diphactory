@@ -37,15 +37,15 @@ export function Navbar() {
         {/* CTA Button */}
         <a
           href="/contact"
-          className="group flex items-center gap-2.5 rounded-full border border-accent-red bg-accent-red px-3 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-transparent hover:text-white"
+          className="group flex items-center gap-2.5 rounded-full border border-accent-brand bg-accent-brand px-3 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-transparent hover:text-white"
           aria-label="Get in touch"
         >
           <span
-            className="flex h-6 w-6 items-center justify-center rounded-full bg-white transition-all duration-300 group-hover:bg-accent-red group-hover:border group-hover:border-white"
+            className="flex h-6 w-6 items-center justify-center rounded-full bg-white transition-all duration-300 group-hover:bg-accent-brand group-hover:border group-hover:border-white"
             aria-hidden="true"
           >
             <svg
-              className="h-3 w-3 text-accent-red transition-colors duration-300 group-hover:text-white"
+              className="h-3 w-3 text-accent-brand transition-colors duration-300 group-hover:text-white"
               fill="none"
               stroke="currentColor"
               strokeWidth={2.5}
@@ -94,11 +94,11 @@ export function Navbar() {
           ))}
           <a
             href="/contact"
-            className="mt-2 inline-flex w-fit items-center gap-2.5 rounded-full bg-(--color-accent-red) px-5 py-2.5 text-sm font-semibold text-white"
+            className="mt-2 inline-flex w-fit items-center gap-2.5 rounded-full bg-accent-brand px-5 py-2.5 text-sm font-semibold text-white"
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white">
               <svg
-                className="h-3 w-3 text-accent-red"
+                className="h-3 w-3 text-accent-brand"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2.5}

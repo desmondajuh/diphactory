@@ -8,6 +8,7 @@ import { SectionWithItems } from "@/lib/db/schema";
 import { SectionFormModal } from "../components/section-form-modal";
 import { SectionDeleteModal } from "../components/section-delete-modal";
 import { authClient } from "@/lib/auth-client";
+import { PlusIcon } from "lucide-react";
 
 const TYPE_LABELS: Record<string, string> = {
   hero: "Hero",
@@ -81,9 +82,12 @@ export function SectionsAdminView({ initialSections }: Props) {
         </div>
         <button
           onClick={() => setCreating(true)}
-          className="rounded-full bg-white text-[#0e0e0e] px-6 py-2.5 text-sm font-bold hover:bg-white/90 transition-all"
+          className="flex gap-2 items-center rounded-full bg-white/30 text-white p-1 sm:p-2 text-sm font-bold hover:bg-white/90 transition-all"
         >
-          + New section
+          <div className="flex items-center justify-center h-7 w-7 rounded-full bg-accent-brand text-white">
+            <PlusIcon size="18" className="font-bold" />
+          </div>
+          <span className="hidden sm:block mr-1">New section</span>
         </button>
       </div>
 
@@ -98,7 +102,7 @@ export function SectionsAdminView({ initialSections }: Props) {
               {pageSections.map((section) => (
                 <div
                   key={section.id}
-                  className="h-full rounded-2xl border border-white/8 bg-white/3 p-5"
+                  className="flex flex-col justify-between sm:h-full rounded-2xl border border-white/8 bg-white/3 p-5"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0 space-y-1.5">

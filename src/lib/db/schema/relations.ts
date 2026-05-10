@@ -9,6 +9,8 @@ import { clients } from "./clients";
 import { leads } from "./leads";
 import { albumImages } from "./album-images";
 import { gallery } from "./gallery";
+import { accounts } from "./account";
+import { sessions } from "./session";
 import { sections, statItems, featureItems } from "./components";
 import { blogPosts, blogCategories, blogTags, blogPostTags } from "./blog";
 import {
@@ -17,10 +19,24 @@ import {
   bookingTimeSlots,
 } from "./bookings";
 
+export const userRelations = relations(users, ({ many }) => ({}));
+
 export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+  accounts: many(accounts),
+
   ownedAlbums: many(albums, { relationName: "owner" }),
   collections: many(albums, { relationName: "collectionOwner" }),
-  clientRecords: many(clients),
+  // clientRecords: many(clients),
+
+  photographerClients: many(clients, {
+    relationName: "photographerClients",
+  }),
+
+  linkedClients: many(clients, {
+    relationName: "linkedUserClients",
+  }),
+
   uploadedImages: many(images),
   albumAccesses: many(albumAccesses),
 }));
@@ -92,10 +108,12 @@ export const clientRecordsRelations = relations(clients, ({ one, many }) => ({
   photographer: one(users, {
     fields: [clients.photographerId],
     references: [users.id],
+    relationName: "photographerClients",
   }),
   linkedUser: one(users, {
     fields: [clients.linkedUserId],
     references: [users.id],
+    relationName: "linkedUserClients",
   }),
   albums: many(albums),
 }));

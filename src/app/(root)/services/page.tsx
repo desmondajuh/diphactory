@@ -1,73 +1,36 @@
 import type { Metadata } from "next";
 import ServicesPage from "@/features/services/views/services-view";
-import { BUSINESS_NAME, BUSINESS_URL } from "@/constants";
+import { buildSEO } from "@/lib/seo/engine";
+import { JsonLd } from "@/components/seo/json-ld";
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "Service",
-  serviceType: "Photography and Videography",
-  provider: {
-    "@type": "LocalBusiness",
-    name: BUSINESS_NAME,
-    url: BUSINESS_URL,
-  },
-  areaServed: {
-    "@type": "Place",
-    name: "United States",
-  },
-  description:
-    "Professional photography and videography services including weddings, events, portraits, and commercial shoots.",
-  offers: {
-    "@type": "Offer",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-  },
-};
-
-export const metadata: Metadata = {
-  title: "DIP Photography & Videography Services",
-  description:
-    "Explore our professional photography and videography services including weddings, events, portraits, and commercial shoots. Tailored packages available.",
-  keywords: [
-    "photography services",
-    "videography services",
-    "wedding packages",
-    "event photography",
-    "studio sessions",
-  ],
-  openGraph: {
-    title: "Photography & Videography Services",
+export async function generateMetadata(): Promise<Metadata> {
+  const { metadata } = await buildSEO({
+    title: "DIP Photography & Videography Services",
     description:
-      "Discover tailored photography and videography services for every occasion.",
-    url: "/services",
-    images: [
-      {
-        url: "/og/services.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Photography services",
-      },
+      "Explore our professional photography and videography services including weddings, events, portraits, and commercial shoots. Tailored packages available.",
+    keywords: [
+      "photography services",
+      "videography services",
+      "wedding packages",
+      "event photography",
+      "studio sessions",
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Photography & Videography Services",
-    description:
-      "Discover tailored photography and videography services for every occasion.",
-    images: ["/og/services.jpg"],
-  },
-};
+    path: "/services",
+  });
 
-export default function Page() {
+  return metadata;
+}
+
+export default async function Page() {
+  const { jsonLd } = await buildSEO({
+    title: "Bookings | Book a Photography Session",
+    image: "https://www.diphactory.com/images/bg/bride-bg.jpg", 
+    path: "/bookings",
+  });
   return (
     <>
       <ServicesPage />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
-        }}
-      />
+      <JsonLd data={jsonLd} />
     </>
   );
 }

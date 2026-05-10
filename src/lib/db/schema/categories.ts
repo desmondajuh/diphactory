@@ -16,8 +16,11 @@ export const categoriesRelations = relations(categories, ({ many, one }) => ({
   parent: one(categories, {
     fields: [categories.parentId],
     references: [categories.id],
+    relationName: "categoryHierarchy",
   }),
-  children: many(categories),
+  children: many(categories, {
+    relationName: "categoryHierarchy",
+  }),
 }));
 
 export const insertCategorySchema = z.object({

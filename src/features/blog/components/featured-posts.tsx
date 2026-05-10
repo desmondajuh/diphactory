@@ -10,19 +10,19 @@ export function FeaturedPosts({ posts }: { posts: BlogPostFeatured[] }) {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <p className="text-accent-red text-xs uppercase tracking-[0.22em] font-semibold mb-3">
+            <p className="text-accent-brand text-xs uppercase tracking-[0.22em] font-semibold mb-3">
               Blog
             </p>
             <h2
               className="font-black text-black leading-none"
               style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
             >
-              Latest Insights<span className="text-accent-red">*</span>
+              Latest Insights<span className="text-accent-brand">*</span>
             </h2>
           </div>
           <Link
             href="/blog"
-            className="hidden sm:flex items-center gap-2 rounded-full bg-accent-red px-5 py-2.5 text-sm font-bold text-white hover:bg-accent-red/90 transition-all"
+            className="hidden sm:flex items-center gap-2 rounded-full bg-accent-brand px-5 py-2.5 text-sm font-bold text-white hover:bg-accent-brand/90 transition-all"
           >
             View articles <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -71,7 +71,7 @@ export function FeaturedPosts({ posts }: { posts: BlogPostFeatured[] }) {
 
         <Link
           href="/blog"
-          className="sm:hidden mt-8 flex items-center justify-center gap-2 rounded-full bg-accent-red px-5 py-2.5 text-sm font-bold text-white"
+          className="sm:hidden mt-8 flex items-center justify-center gap-2 rounded-full bg-accent-brand px-5 py-2.5 text-sm font-bold text-white"
         >
           View all articles <ArrowRight className="w-3.5 h-3.5" />
         </Link>

@@ -14,7 +14,7 @@ export const Sidebar = () => {
         ].map(({ Icon, label, value }) => (
           <div key={label} className="mb-5 flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
-              <Icon className="h-3.5 w-3.5 text-accent-red" />
+              <Icon className="h-3.5 w-3.5 text-accent-brand" />
             </div>
             <div>
               <p className="text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
@@ -34,7 +34,7 @@ export const Sidebar = () => {
           {["Instagram", "YouTube", "LinkedIn"].map((s) => (
             <button
               key={s}
-              className="rounded-full border border-border bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-accent-red hover:text-accent-red"
+              className="rounded-full border border-border bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-accent-brand hover:text-accent-brand"
             >
               {s}
             </button>

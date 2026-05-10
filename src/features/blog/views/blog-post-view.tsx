@@ -36,7 +36,7 @@ export function BlogPostView({ post }: { post: BlogPostFull }) {
         {/* Meta */}
         <div className="flex items-center gap-3 flex-wrap mb-6">
           {post.category && (
-            <span className="rounded-full bg-accent-red/10 border border-accent-red/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent-red">
+            <span className="rounded-full bg-accent-brand/10 border border-accent-brand/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent-brand">
               {post.category.name}
             </span>
           )}
@@ -90,7 +90,7 @@ export function BlogPostView({ post }: { post: BlogPostFull }) {
 
         {/* Body */}
         <div
-          className="prose prose-invert max-w-none text-white/70 prose-headings:text-white prose-a:text-accent-red prose-img:rounded-xl prose-blockquote:border-white/20 prose-blockquote:text-white/40"
+          className="prose prose-invert max-w-none text-white/70 prose-headings:text-white prose-a:text-accent-brand prose-img:rounded-xl prose-blockquote:border-white/20 prose-blockquote:text-white/40"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 

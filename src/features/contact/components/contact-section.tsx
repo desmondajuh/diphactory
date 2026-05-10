@@ -44,7 +44,7 @@ export const ContactSection = () => {
                 {tab === t && (
                   <motion.span
                     layoutId="tab-indicator"
-                    className="absolute inset-0 bg-accent-red"
+                    className="absolute inset-0 bg-accent-brand"
                     style={{ borderRadius: "inherit" }}
                   />
                 )}
@@ -91,7 +91,7 @@ export const ContactSection = () => {
 
 const inputCls = `w-full rounded-lg border border-border bg-muted px-3.5 py-2.5 text-sm
   text-foreground outline-none placeholder:text-muted-foreground/50
-  focus:border-accent-red focus:ring-2 focus:ring-accent-red/10 transition-shadow`;
+  focus:border-accent-brand focus:ring-2 focus:ring-accent-brand/10 transition-shadow`;
 
 // ── CONTACT FORM ─────────────────────────────────────────────
 
@@ -147,7 +147,7 @@ const BookingForm = ({
             className={`rounded-lg border py-2.5 text-sm transition-all
               ${
                 selectedService === s
-                  ? "border-accent-red bg-accent-red/8 text-accent-red"
+                  ? "border-accent-brand bg-accent-brand/8 text-accent-brand"
                   : "border-border bg-muted text-muted-foreground hover:border-border/80"
               }`}
           >

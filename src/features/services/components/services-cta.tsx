@@ -173,7 +173,7 @@ export const ServicesCTA = () => {
             <Button
               size="lg"
               variant="outline"
-              className="sc-button rounded-full cursor-pointer bg-transparent text-accent-red text-lg border-current"
+              className="sc-button rounded-full cursor-pointer bg-transparent text-accent-brand text-lg border-current"
             >
               Book a Session
             </Button>

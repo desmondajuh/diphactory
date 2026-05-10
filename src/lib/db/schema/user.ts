@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import {
   boolean,
   pgEnum,
@@ -13,8 +12,6 @@ import {
   createUpdateSchema,
 } from "drizzle-zod";
 import { z } from "zod";
-import { accounts } from "./account";
-import { sessions } from "./session";
 
 export const userRoleEnum = pgEnum("user_role", [
   "photographer",
@@ -43,11 +40,6 @@ export const users = pgTable("users", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
-
-export const userRelations = relations(users, ({ many }) => ({
-  sessions: many(sessions),
-  accounts: many(accounts),
-}));
 
 export const userSelectSchema = createSelectSchema(users);
 export const userInsertSchema = createInsertSchema(users);

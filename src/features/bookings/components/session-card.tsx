@@ -17,7 +17,7 @@ export function SessionCard({ session, selected, onSelect }: Props) {
       className={cn(
         "group relative rounded-2xl border p-5 text-left transition-all duration-200",
         selected
-          ? "border-accent-red bg-accent-red/8"
+          ? "border-accent-brand bg-accent-brand/8"
           : "border-white/8 bg-white/3 hover:border-white/20",
       )}
     >
@@ -53,13 +53,13 @@ export function SessionCard({ session, selected, onSelect }: Props) {
 //       className={cn(
 //         "group relative w-full rounded-2xl border p-5 text-left transition-all duration-300",
 //         selected
-//           ? "border-accent-red bg-accent-red/8"
+//           ? "border-accent-brand bg-accent-brand/8"
 //           : "border-white/10 bg-white/4 hover:border-white/25 hover:bg-white/7",
 //       )}
 //     >
 //       {/* Selected indicator */}
 //       {selected && (
-//         <div className="absolute right-4 top-4 flex h-5 w-5 items-center justify-center rounded-full bg-accent-red">
+//         <div className="absolute right-4 top-4 flex h-5 w-5 items-center justify-center rounded-full bg-accent-brand">
 //           <svg
 //             width="10"
 //             height="10"
@@ -81,7 +81,7 @@ export function SessionCard({ session, selected, onSelect }: Props) {
 //         className={cn(
 //           "mb-3 transition-colors duration-200",
 //           selected
-//             ? "text-accent-red"
+//             ? "text-accent-brand"
 //             : "text-white/50 group-hover:text-white/75",
 //         )}
 //       >

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+import LogoIcon from "@/components/icons/logo-icon";
+import LogoText from "@/components/icons/logo-text";
 
 interface LogoProps {
   className?: string;
@@ -12,28 +13,18 @@ export function Logo({ className = "", logoUrl }: LogoProps) {
     <Link
       href={logoUrl || "/"}
       className={cn(
-        "relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black",
+        "relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-accent-brand",
         className,
       )}
     >
-      {/* <Gem className="h-5 w-5 text-emerald-400" /> */}
-      <Image
-        src="/logos/logo.png"
-        alt="DIP"
-        width={32}
-        height={32}
-        className="object-contain w-8 h-8"
+      <LogoIcon
+        // color="#b9862b"
+        size={35}
       />
-      <span
-        className="font-medium text-3xl text-accent-red dark:text-white uppercase"
-        style={{
-          fontFamily: "var(--font-display)",
-          // fontSize: "clamp(4rem, 14vw, 13rem)",
-          lineHeight: 0.88,
-        }}
-      >
-        DIP
-      </span>
+      <LogoText
+        // color="#b9862b"
+        size={90}
+      />
     </Link>
   );
 }

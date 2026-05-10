@@ -136,7 +136,9 @@ export async function AdminControlCenterView({
                 className="flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-background/50 px-4 py-3"
               >
                 <div className="space-y-1">
-                  <p className="font-medium">{album.title}</p>
+                  <p className="font-medium">
+                    {album.title} | {album.slug}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {album.owner.name ?? album.owner.email}
                   </p>
@@ -156,7 +158,8 @@ export async function AdminControlCenterView({
           <CardHeader className="border-b border-border/70 py-5">
             <CardTitle>Latest gallery access activity</CardTitle>
             <CardDescription>
-              The clearest signal that shared galleries are being opened and reviewed.
+              The clearest signal that shared galleries are being opened and
+              reviewed.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 p-5">
@@ -191,14 +194,18 @@ export async function AdminControlCenterView({
                   <CameraIcon className="size-4 text-foreground" />
                   Photographers
                 </span>
-                <strong className="text-foreground">{data.stats.photographers}</strong>
+                <strong className="text-foreground">
+                  {data.stats.photographers}
+                </strong>
               </div>
               <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/40 px-4 py-3">
                 <span className="inline-flex items-center gap-2">
                   <UserRoundIcon className="size-4 text-foreground" />
                   Clients
                 </span>
-                <strong className="text-foreground">{data.stats.clientsCount}</strong>
+                <strong className="text-foreground">
+                  {data.stats.clientsCount}
+                </strong>
               </div>
               <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/40 px-4 py-3">
                 <span className="inline-flex items-center gap-2">
@@ -208,7 +215,7 @@ export async function AdminControlCenterView({
                 <strong className="text-foreground">{data.stats.admins}</strong>
               </div>
               <Link
-                href="/dashboard/bookings"
+                href="/dashboard/admin/bookings"
                 className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/40 px-4 py-3 text-sm transition hover:border-foreground/20"
               >
                 <span className="inline-flex items-center gap-2">
@@ -225,9 +232,19 @@ export async function AdminControlCenterView({
               <CardTitle>Control center intent</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 p-5 text-sm text-muted-foreground">
-              <p>Users represent photographers, clients, admins, and anonymous guest sessions.</p>
-              <p>Albums are the core product object: photographers deliver with them, clients review through them, and admins monitor overall usage through them.</p>
-              <p>Access logs and favorites show how far each gallery moved from delivery into real client engagement.</p>
+              <p>
+                Users represent photographers, clients, admins, and anonymous
+                guest sessions.
+              </p>
+              <p>
+                Albums are the core product object: photographers deliver with
+                them, clients review through them, and admins monitor overall
+                usage through them.
+              </p>
+              <p>
+                Access logs and favorites show how far each gallery moved from
+                delivery into real client engagement.
+              </p>
             </CardContent>
           </Card>
         </div>

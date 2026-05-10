@@ -21,7 +21,7 @@ export const UserAvatar = ({ name, email, image, className }: Props) => {
     <div className="flex items-center gap-2">
       <Avatar className={cn("h-9 w-9", !open && "h-5 w-5", className)}>
         <AvatarImage src={image || ""} />
-        <AvatarFallback className="bg-accent-red text-white">
+        <AvatarFallback className="bg-accent-brand text-white">
           {name[0].toUpperCase()}
         </AvatarFallback>
       </Avatar>

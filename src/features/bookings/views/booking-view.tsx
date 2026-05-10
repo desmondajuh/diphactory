@@ -139,13 +139,13 @@ export function BookingPage({
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0e0e0e] px-6">
         <div className="flex max-w-md flex-col items-center text-center gap-6">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-accent-red/30 bg-accent-red/10">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-accent-brand/30 bg-accent-brand/10">
             <svg
               width="32"
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="var(--color-accent-red)"
+              stroke="var(--color-accent-brand)"
               strokeWidth={2}
             >
               <path
@@ -168,7 +168,7 @@ export function BookingPage({
               }}
             >
               See you soon
-              <span style={{ color: "var(--color-accent-red)" }}>*</span>
+              <span className="text-accent-brand">*</span>
             </h2>
           </div>
           <p className="text-sm leading-relaxed text-white/50">
@@ -226,7 +226,7 @@ export function BookingPage({
           href="/"
           className="xhidden items-center gap-1.5 text-xs font-medium text-white/35 transition-colors hover:text-white sm:flex"
         >
-          <div className="flex sm:hidden p-1 items-center justify-center rounded-full text-md font-bold transition-all duration-300 border border-white/20 bg-accent-red">
+          <div className="flex sm:hidden p-1 items-center justify-center rounded-full text-md font-bold transition-all duration-300 border border-white/20 bg-accent-brand">
             <HomeIcon className="text-white/70" size="18" />
           </div>
           <CircleArrowLeft className="hidden sm:block" />
@@ -264,7 +264,7 @@ export function BookingPage({
                     "Almost There",
                   ][step]
                 }
-                <span style={{ color: "var(--color-accent-red)" }}>*</span>
+                <span className="text-accent-brand">*</span>
               </h1>
             </div>
 
@@ -288,7 +288,7 @@ export function BookingPage({
                 {/* Date picker */}
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-white/40">
-                    Preferred Date <span className="text-accent-red">*</span>
+                    Preferred Date <span className="text-accent-brand">*</span>
                   </label>
                   <input
                     type="date"
@@ -350,7 +350,7 @@ export function BookingPage({
                             isBooked
                               ? "cursor-not-allowed border-white/5 text-white/15 line-through"
                               : isSelected
-                                ? "border-accent-red bg-accent-red/10 text-white"
+                                ? "border-accent-brand bg-accent-brand/10 text-white"
                                 : "border-white/10 bg-white/4 text-white/60 hover:border-white/25 hover:text-white",
                           )}
                         >
@@ -553,8 +553,8 @@ export function BookingPage({
                   className={cn(
                     "flex items-center gap-2.5 rounded-full px-8 py-3 text-sm font-bold text-white shadow-lg transition-all duration-300",
                     isSubmitting
-                      ? "cursor-not-allowed bg-accent-red/50 shadow-accent-red/10"
-                      : "bg-accent-red shadow-accent-red/25 hover:bg-accent-red/90 hover:shadow-accent-red/40",
+                      ? "cursor-not-allowed bg-accent-brand/50 shadow-accent-brand/10"
+                      : "bg-accent-brand shadow-accent-brand/25 hover:bg-accent-brand/90 hover:shadow-accent-brand/40",
                   )}
                 >
                   {isSubmitting ? "Submitting..." : "Confirm Booking"}
@@ -589,7 +589,7 @@ export function BookingPage({
                 <div className="px-6 py-5 space-y-5">
                   {selectedSession ? (
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-red/12 text-accent-red text-xs font-bold">
+                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-brand/12 text-accent-brand text-xs font-bold">
                         {selectedSession.label[0]}
                       </div>
                       <div>

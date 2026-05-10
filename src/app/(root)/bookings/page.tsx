@@ -1,53 +1,26 @@
 import type { Metadata } from "next";
-import { BUSINESS_NAME, BUSINESS_TYPE, BUSINESS_URL } from "@/constants";
 import { BookingPage } from "@/features/bookings/views/booking-view";
 import { client } from "@/lib/orpc";
-import Script from "next/script";
+import { buildSEO } from "@/lib/seo/engine";
+import { JsonLd } from "@/components/seo/json-ld";
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "BookingsPage",
-  name: "Bookings",
-  url: `${BUSINESS_URL}/bookings`,
-  description: "Get in touch to book your photography or videography session.",
-  publisher: {
-    "@type": BUSINESS_TYPE,
-    name: BUSINESS_NAME,
-  },
-};
-
-export const metadata: Metadata = {
-  title: "Bookings | Book a Photography Session",
-  description:
-    "Book your photography session with DIP. Portrait, outdoor, event, editorial, product, and automotive photography. Schedule your session today and capture your special moments with us.",
-  keywords: [
-    "contact photographer",
-    "book photography session",
-    "hire photographer",
-    "photography inquiry",
-  ],
-  openGraph: {
-    title: "Bookings",
+// 🔥 Replace static metadata with dynamic
+export async function generateMetadata(): Promise<Metadata> {
+  const { metadata } = await buildSEO({
+    title: "Bookings | Book a Photography Session",
     description:
-      "Reach out to book your next photography or videography session.",
-    url: "/bookings",
-    images: [
-      {
-        url: "/og/bookings.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Book photography studio",
-      },
+      "Book your photography session with DIP. Portrait, outdoor, event, editorial, product, and automotive photography. Schedule your session today and capture your special moments with us.",
+    keywords: [
+      "contact photographer",
+      "book photography session",
+      "hire photographer",
+      "photography inquiry",
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Bookings",
-    description:
-      "Reach out to book your next photography or videography session.",
-    images: ["/og/bookings.jpg"],
-  },
-};
+    path: "/bookings",
+  });
+
+  return metadata;
+}
 
 type PageProps = {
   searchParams: Promise<{
@@ -65,6 +38,12 @@ export default async function Page({ searchParams }: PageProps) {
     client.bookings.getBookedDates(),
   ]);
 
+  const { jsonLd } = await buildSEO({
+    title: "Bookings | Book a Photography Session",
+    image: "https://www.diphactory.com/images/bg/bride-bg.jpg", // 🔥 real content
+    path: "/bookings",
+  });
+
   return (
     <>
       <BookingPage
@@ -73,13 +52,7 @@ export default async function Page({ searchParams }: PageProps) {
         timeSlots={timeSlots}
         bookedDates={bookedDates}
       />
-      <Script
-        id="structured-data-bookings"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
-        }}
-      />
+      <JsonLd data={jsonLd} />
     </>
   );
 }

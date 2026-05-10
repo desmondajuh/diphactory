@@ -134,21 +134,21 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
         <Link
           onMouseEnter={() => setHovered(idx)}
           onClick={onItemClick}
-          className="relative flex items-start gap-0.5 px-4 py-2 text-neutral-500 dark:text-neutral-300 tracking-wide text-nav-link transition-colors duration-200 hover:text-white text-sm font-medium"
+          className="group relative flex items-start gap-0.5 px-4 py-2 text-neutral-500 dark:text-neutral-300 tracking-wide text-nav-link transition-colors duration-200 hover:text-accent-brand text-sm font-medium"
           key={`link-${idx}`}
           href={item.link}
         >
           {hovered === idx && (
             <motion.div
               layoutId="hovered"
-              className="absolute inset-0 h-full w-full xrounded-full bg-transparent border-b border-accent-red"
+              className="absolute inset-0 h-full w-full xrounded-full bg-transparent border-b border-accent-brand"
             />
           )}
           {/* <span className="relative z-20">{item.name}</span> */}
-          <span className="relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full">
+          <span className="relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-accent-brand after:transition-all after:duration-300 group-hover:after:w-full">
             {item.name}
           </span>
-          <sup className="text-[9px] font-semibold leading-none text-muted-foreground transition-colors duration-200 group-hover:text-accent-red">
+          <sup className="text-[9px] font-semibold leading-none text-muted-foreground transition-colors duration-200 group-hover:text-accent-brand">
             {item.number}
           </sup>
         </Link>
@@ -180,7 +180,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
       }}
       className={cn(
         "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden",
-        visible && "bg-white/80 dark:bg-accent-red/5",
+        visible && "bg-white/80 dark:bg-accent-brand/5",
         className,
       )}
     >
@@ -259,7 +259,7 @@ export const NavbarLogo = () => {
         className="object-contain w-8 h-8"
       />
       <span
-        className="font-medium text-3xl text-accent-red dark:text-white uppercase"
+        className="font-medium text-3xl text-accent-brand dark:text-white uppercase"
         style={{
           fontFamily: "var(--font-display)",
           // fontSize: "clamp(4rem, 14vw, 13rem)",
@@ -288,7 +288,7 @@ export function NavLink({ href, label, number, className = "" }: NavLinkProps) {
       <span className="relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full">
         {label}
       </span>
-      <sup className="text-[9px] font-semibold leading-none text-muted-foreground transition-colors duration-200 group-hover:text-accent-red">
+      <sup className="text-[9px] font-semibold leading-none text-muted-foreground transition-colors duration-200 group-hover:text-accent-brand">
         {number}
       </sup>
     </Link>

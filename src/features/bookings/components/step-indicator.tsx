@@ -17,7 +17,7 @@ export function StepIndicator({
               className={cn(
                 "flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold transition-all duration-300",
                 i < current
-                  ? "bg-accent-red text-white"
+                  ? "bg-accent-brand text-white"
                   : i === current
                     ? "bg-white text-[#0e0e0e]"
                     : "border border-white/20 text-white/30",
@@ -59,7 +59,7 @@ export function StepIndicator({
             <div
               className={cn(
                 "h-px w-6 transition-colors duration-300",
-                i < current ? "bg-accent-red" : "bg-white/15",
+                i < current ? "bg-accent-brand" : "bg-white/15",
               )}
             />
           )}

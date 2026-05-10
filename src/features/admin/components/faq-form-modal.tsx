@@ -85,7 +85,7 @@ export function FaqFormModal({ faq, onClose, onSaved }: Props) {
             type="checkbox"
             checked={form.isActive}
             onChange={(e) => setField("isActive", e.target.checked)}
-            className="h-4 w-4 accent-red-500"
+            className="h-4 w-4 accent-brand-500"
           />
           <span className="text-sm text-white/50">Visible on site</span>
         </label>

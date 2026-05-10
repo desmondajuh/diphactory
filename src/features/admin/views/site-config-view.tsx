@@ -376,7 +376,7 @@ export function SiteConfigView({ initialConfig }: Props) {
                 }
                 className={cn(
                   "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200",
-                  form.maintenanceMode ? "bg-accent-red" : "bg-white/15",
+                  form.maintenanceMode ? "bg-accent-brand" : "bg-white/15",
                 )}
               >
                 <span

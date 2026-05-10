@@ -196,7 +196,7 @@ export function RichTextEditor({ value, onChange, placeholder }: Props) {
         .ProseMirror h3 { font-size: 1.2rem; font-weight: 700; color: white; margin: 1.25rem 0 0.5rem; }
         .ProseMirror ul { list-style: disc; padding-left: 1.5rem; }
         .ProseMirror ol { list-style: decimal; padding-left: 1.5rem; }
-        .ProseMirror a { color: var(--color-accent-red); text-decoration: underline; }
+        .ProseMirror a { color: var(--color-accent-brand); text-decoration: underline; }
         .ProseMirror hr { border-color: rgba(255,255,255,0.1); margin: 1.5rem 0; }
       `}</style>
     </div>

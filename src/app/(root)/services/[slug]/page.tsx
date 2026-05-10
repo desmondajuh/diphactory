@@ -12,10 +12,17 @@ import { useRef } from "react";
 import { notFound } from "next/navigation";
 import { services } from "@/lib/data/services";
 
-export default function ServiceDetailPage({ params }: { params: { slug: string } }) {
+export default function ServiceDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const service = services.find((s) => s.slug === params.slug);
   const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   if (!service) return notFound();
@@ -39,10 +46,13 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="font-black leading-none"
-            style={{ fontSize: "clamp(3rem, 8vw, 6rem)", fontFamily: "var(--font-display)" }}
+            style={{
+              fontSize: "clamp(3rem, 8vw, 6rem)",
+              fontFamily: "var(--font-display)",
+            }}
           >
             {service.title}
-            <span className="text-[var(--color-accent-red)]">*</span>
+            <span className="text-accent-brand">*</span>
           </motion.h1>
 
           <p className="mt-4 text-white/70 max-w-xl text-lg">
@@ -77,12 +87,15 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="font-black"
-          style={{ fontSize: "clamp(2rem,5vw,3.5rem)", fontFamily: "var(--font-display)" }}
+          style={{
+            fontSize: "clamp(2rem,5vw,3.5rem)",
+            fontFamily: "var(--font-display)",
+          }}
         >
           Let’s Create Something
           <br />
           Extraordinary
-          <span className="text-[var(--color-accent-red)]">*</span>
+          <span className="text-[var(--color-accent-brand)]">*</span>
         </motion.h2>
 
         <p className="mt-4 text-white/50">
@@ -114,9 +127,7 @@ function RevealBlock({ title, text }: { title: string; text: string }) {
       <h3 className="text-xs uppercase tracking-[0.25em] text-white/40">
         {title}
       </h3>
-      <p className="text-white/70 text-lg leading-relaxed">
-        {text}
-      </p>
+      <p className="text-white/70 text-lg leading-relaxed">{text}</p>
     </motion.div>
   );
 }

@@ -12,6 +12,7 @@ interface HeroSectionProps {
   title?: string;
   subtitle?: string;
   imageSrc?: string;
+  bgImageSrc?: string;
   imageAlt?: string;
   badge?: string;
   sectionData: SectionWithItems | null;
@@ -24,16 +25,10 @@ export function HeroSection({
   title = "DIPHACTORY",
   subtitle = sectionDesc,
   imageSrc = "/images/bg/bride-bg.jpg",
+  bgImageSrc = "/images/bg/bride-bg.jpg",
   imageAlt = "Diphactory – digital designer and 3D renderer",
   badge = "©2026",
-  sectionData,
 }: HeroSectionProps) {
-  // fallback values if section not found in DB
-  // const title = sectionData?.title ?? "DIPHACTORY";
-  // const subtitle = sectionData?.subtitle ?? sectionDesc;
-
-  //  const section = await client.sections.getBySlug({ slug: "contact-hero" });
-
   return (
     <section
       className="relative w-full overflow-hidden bg-(--color-bg-primary)"
@@ -44,12 +39,12 @@ export function HeroSection({
       {/* ── Full-bleed portrait ── */}
       <div className="absolute inset-0 z-0">
         <Image
-          src={imageSrc || "/images/hero-bg.png"}
+          src={bgImageSrc || "/images/hero-bg.png"}
           alt={imageAlt || "Diphactory – digital designer and photographer"}
           fill
           priority
-          sizes="100vw"
-          className="md:hidden object-cover object-top opacity-80"
+          sizes="(max-width: 768px) 100vw, 0px"
+          className="md:hidden object-cover object-top opacity-80 w-full"
           style={{ objectPosition: "50% 15%" }}
         />
         <ParallaxImage
@@ -87,7 +82,7 @@ export function HeroSection({
       {/* ── Bottom content row ── */}
       <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col">
         {/* Copyright line */}
-        <p className="px-6 md:px-10 lg:px-14 text-sm font-medium text-muted-foreground mb-1 md:mb-2">
+        <p className="px-6 md:px-10 lg:px-14 text-2xl font-medium text-muted-foreground mb-1 md:mb-2">
           {badge}
         </p>
 
@@ -106,7 +101,7 @@ export function HeroSection({
               }}
             >
               {title}
-              <span className="xhidden xmd:block text-accent-red">*</span>
+              <span className="xhidden xmd:block text-accent-brand">*</span>
             </h1>
           </BlockRevealAnime>
 
@@ -115,7 +110,7 @@ export function HeroSection({
             <p className="hidden md:block max-w-55 lg:max-w-xs text-right text-sm leading-relaxed text-muted-foreground shrink-0 mb-1 lg:mb-2">
               {subtitle}
               {/* Hi, I am diai
-              <sup className="text-accent-red text-xs mr-1">®</sup> I&apos;m a
+              <sup className="text-accent-brand text-xs mr-1">®</sup> I&apos;m a
               photographer and highly talented visual artist with over a decade
               of experience in the field. */}
             </p>
@@ -126,7 +121,7 @@ export function HeroSection({
         <p className="md:hidden px-6 pb-6 text-sm leading-relaxed text-muted-foreground">
           {subtitle}
           {/* Hi, I am Diai
-          <sup className="text-accent-red text-xs">®</sup> I&apos;m a
+          <sup className="text-accent-brand text-xs">®</sup> I&apos;m a
           photographer and highly talented visual artist with over a decade of
           experience in the field. */}
         </p>

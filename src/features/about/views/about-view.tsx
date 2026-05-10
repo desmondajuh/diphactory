@@ -46,6 +46,7 @@ export default async function AboutPage() {
           subtitle={aboutCtaData?.subtitle || ""}
           ctaText={aboutCtaData?.ctaText || ""}
           ctaLink={aboutCtaData?.ctaLink || ""}
+          className="bg-accent-brand-950"
         />
         <LatestInsights sectionData={insightData} posts={featuredPosts} />
       </div>

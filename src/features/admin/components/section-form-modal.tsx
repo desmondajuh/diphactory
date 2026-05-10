@@ -238,7 +238,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
               onChange={(e) =>
                 setField("sectionType", e.target.value as SectionType)
               }
-              className={cn(inputCls, "text-accent-red")}
+              className={cn(inputCls, "text-accent-brand")}
             >
               {["hero", "about", "stats", "features", "cta"].map((t) => (
                 <option key={t} value={t}>
@@ -611,7 +611,7 @@ export function SectionFormModal({ section, onClose, onSaved }: Props) {
             type="checkbox"
             checked={form.isActive}
             onChange={(e) => setField("isActive", e.target.checked)}
-            className="h-4 w-4 accent-red-500"
+            className="h-4 w-4 accent-brand-500"
           />
           <span className="text-sm text-white/50">Live on site</span>
         </label>

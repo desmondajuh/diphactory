@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "motion/react";
 
 const container = {
@@ -42,7 +43,7 @@ export const ServiceHero = () => {
           Crafted Visual
           <br />
           Experiences
-          <span className="text-accent-red">*</span>
+          <span className="text-accent-brand">*</span>
         </motion.h1>
 
         <motion.p

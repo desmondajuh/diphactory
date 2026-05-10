@@ -121,13 +121,13 @@ export default function AnimatedButton({
       {/* ── Expanding fill — inset 6px on all sides so white gap always shows ── */}
       <span
         ref={fillRef}
-        className="absolute left-1.5 top-1.5 bottom-1.5 rounded-full bg-accent-red pointer-events-none"
+        className="absolute left-1.5 top-1.5 bottom-1.5 rounded-full bg-accent-brand pointer-events-none"
       />
 
       {/* ── Red circle + arrow at rest ── */}
       <span
         ref={circleRef}
-        className="relative z-10 flex items-center justify-center w-9 h-9 rounded-full bg-accent-red shrink-0"
+        className="relative z-10 flex items-center justify-center w-9 h-9 rounded-full bg-accent-brand shrink-0"
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path

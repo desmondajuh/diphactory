@@ -78,7 +78,7 @@ export const PageHeroTwo = ({
         <h1 className="font-display text-[clamp(44px,10vw,88px)] leading-[0.95] tracking-tight">
           <span className="block">{titleObj.first}</span>
           {titleObj.second && (
-            <span className="block text-accent-red">{titleObj.second}</span>
+            <span className="block text-accent-brand">{titleObj.second}</span>
           )}
         </h1>
 

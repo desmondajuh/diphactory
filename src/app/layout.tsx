@@ -4,6 +4,7 @@ import {
   Geist,
   Geist_Mono,
   Inter,
+  Oswald,
   // Anton
 } from "next/font/google";
 import "./globals.css";
@@ -40,6 +41,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const headingFont = Oswald({
+  subsets: ["latin"],
+  variable: "--font-heading2",
+});
+
 const globalStructuredData = {
   "@context": "https://schema.org",
   "@type": BUSINESS_TYPE,
@@ -69,6 +75,7 @@ export default function RootLayout({
         "antialiased",
         geistSans.variable,
         geistMono.variable,
+        headingFont.variable,
         // anton.variable,
         "font-sans",
         inter.variable,

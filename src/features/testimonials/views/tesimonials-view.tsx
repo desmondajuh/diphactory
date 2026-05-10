@@ -33,21 +33,13 @@ export default async function TestimonialsView() {
 
   return (
     <section className="min-h-screen bg-background text-foreground px-6 py-24">
+      <div
+        className="pointer-events-none fixed inset-0 opacity-[0.03] z-50"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+        }}
+      />
       {/* Header */}
-      {/* <div className="max-w-5xl mx-auto text-center mb-16">
-        <p className="text-accent-red text-sm uppercase tracking-widest">
-          Testimonials
-        </p>
-
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-          What Clients Say
-        </h1>
-
-        <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-          Real stories. Real emotions. Real impact. Here’s what people
-          experience working with DIP.
-        </p>
-      </div> */}
       <SectionHeader
         variant="center"
         badge={TestimonialHeroData?.badge || "Testimonials"}

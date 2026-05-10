@@ -1,12 +1,21 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import { gsap } from "gsap";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SectionWithItems } from "@/lib/db/schema";
 import Link from "next/link";
 import { BlogPostFeatured } from "@/types/router-types";
+import { SectionBadge } from "@/components/shared/section-badge";
+import { SectionBg } from "@/components/shared/section-bg";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowRight2,
+} from "@/components/icons/arrow-icons";
+import { SectionTitle } from "@/components/shared/section-title";
+import { BlogPostCard } from "@/features/blog/components/blog-card";
 
 interface InsightsSectionProps {
   sectionData: SectionWithItems | null;
@@ -60,47 +69,46 @@ export default function LatestInsights({
   };
 
   return (
-    <section className="w-full px-8 py-20 overflow-hidden relative bg-white">
-      {/* Background blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -left-20 w-105 h-105 rounded-full bg-gray-100/80" />
-        <div className="absolute -bottom-10 -right-10 w-[320px] h-80 rounded-full bg-gray-100/60" />
-      </div>
+    <section className="w-full px-8 py-20 overflow-hidden relative">
+      {/* Background effects */}
+      <SectionBg className="" />
 
       {/* Header */}
       <div className="relative flex flex-col items-center text-center mb-14">
         {/* Pill badge */}
-        <span className="mb-5 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-red-200 bg-red-50 text-accent-red text-xs font-medium">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <rect
-              x="1"
-              y="3"
-              width="11"
-              height="8"
-              rx="1.5"
-              stroke="currentColor"
-              strokeWidth="1.2"
-            />
-            <path
-              d="M4 3V2M9 3V2"
-              stroke="currentColor"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-          </svg>
-          {sectionData?.badge || "Latest Blogs"}
-        </span>
+        {/* Badge */}
+        <SectionBadge
+          icon={
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <rect
+                x="1"
+                y="3"
+                width="11"
+                height="8"
+                rx="1.5"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
+              <path
+                d="M4 3V2M9 3V2"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+              />
+            </svg>
+          }
+          label={sectionData?.badge || "Latest Updates"}
+          className="w-fit mb-2"
+        />
 
         {/* Title */}
-        <h2
-          className="text-[clamp(48px,7vw,80px)] font-black text-gray-900 leading-none tracking-tight mb-5"
-          style={{ fontFamily: "'Arial Black', Arial, sans-serif" }}
-        >
-          {sectionData?.title || "Latest Insights."}
-        </h2>
+        <SectionTitle
+          title={sectionData?.title || "Latest Insights."}
+          className="text-white"
+        />
 
         {/* Subtitle */}
-        <p className="max-w-md text-sm text-gray-400 leading-relaxed">
+        <p className="max-w-md text-sm text-muted-foreground leading-relaxed">
           {sectionData?.subtitle ||
             "Explore my blog for design tips, industry insights, and creative inspiration. From tutorials to thought pieces, there&apos;s something for every curious mind."}
         </p>
@@ -110,16 +118,8 @@ export default function LatestInsights({
           {/* View articles button */}
           <Link href={sectionData?.ctaLink || "/blog"}>
             <button className="flex items-center gap-2 pl-1.5 pr-5 py-1.5 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-800 shadow-sm hover:shadow-md transition-shadow">
-              <span className="w-8 h-8 rounded-full bg-accent-red flex items-center justify-center shrink-0">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path
-                    d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+              <span className="w-8 h-8 rounded-full bg-accent-brand flex items-center justify-center shrink-0 text-white">
+                <ArrowRight2 />
               </span>
               {sectionData?.ctaText || "View articles"}
             </button>
@@ -130,32 +130,16 @@ export default function LatestInsights({
             <button
               onClick={() => slide("prev")}
               disabled={index === 0}
-              className="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-500 hover:border-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-accent-brand-950 hover:text-gray-500 hover:border-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  d="M9 2.5L4.5 7 9 11.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowLeft />
             </button>
             <button
               onClick={() => slide("next")}
               disabled={index === maxIndex}
-              className="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-500 hover:border-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-accent-brand-950 hover:text-gray-500 hover:border-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  d="M5 2.5L9.5 7 5 11.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowRight />
             </button>
           </div>
         </div>
@@ -164,43 +148,11 @@ export default function LatestInsights({
       {/* Cards */}
       <div
         ref={trackRef}
-        className="max-w-7xl mx-auto
-    flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory
-    md:grid md:grid-cols-2 md:overflow-visible
-    lg:grid-cols-3
+        className="relative max-w-7xl mx-auto flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3 z-30
   "
       >
         {visible.map((post) => (
-          <article
-            key={post.id}
-            className="snap-start flex flex-col cursor-pointer group min-w-[80%] sm:min-w-[60%] md:min-w-0"
-          >
-            {/* Image */}
-            <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden">
-              <Image
-                src={post.coverImage || "/images/fallback/post_image.png"}
-                alt={post.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover  w-full h-full transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-
-            {/* Meta */}
-            <div className="mt-4 flex items-center justify-between">
-              <div>
-                <p className="text-[15px] font-bold text-gray-900">
-                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                </p>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {post.updatedAt.toLocaleDateString()}
-                </p>
-              </div>
-              <span className="text-xs text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors px-4 py-2 rounded-full font-medium shrink-0">
-                {post.category?.name ?? "Uncategorized"}
-              </span>
-            </div>
-          </article>
+          <BlogPostCard key={post.id} post={post} />
         ))}
       </div>
     </section>

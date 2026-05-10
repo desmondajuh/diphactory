@@ -247,7 +247,7 @@ export function BookingsAdminView({
                       e.target.value as Booking["status"],
                     )
                   }
-                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-accent-red outline-none focus:border-white/25 shrink-0"
+                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-accent-brand outline-none focus:border-white/25 shrink-0"
                 >
                   {["pending", "confirmed", "completed", "cancelled"].map(
                     (s) => (

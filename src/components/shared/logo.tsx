@@ -1,44 +1,31 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import LogoIcon from "@/components/icons/logo-icon";
+import LogoText from "@/components/icons/logo-text";
 
 interface LogoProps {
   className?: string;
+  logoUrl?: string;
+  color?: string;
+  variant?: "icon" | "text" | "full";
 }
 
-export const Logo = ({ className }: LogoProps) => {
+export function Logo({
+  className = "",
+  logoUrl,
+  color,
+  variant = "full",
+}: LogoProps) {
   return (
-    <div className={cn("relative h-auto flex item-center gap-2", className)}>
-      <LogoIcon />
-      <LogoText />
-    </div>
+    <Link
+      href={logoUrl || "/"}
+      className={cn(
+        "relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-accent-brand",
+        className,
+      )}
+    >
+      {variant !== "text" && <LogoIcon color={color} size={35} />}
+      {variant !== "icon" && <LogoText color={color} size={90} />}
+    </Link>
   );
-};
-
-export const LogoIcon = ({ className }: LogoProps) => {
-  return (
-    <div className="relative w-24 h-24">
-      <Image
-        src="/logos/logo.png"
-        alt="dip logo icon"
-        // width={24}
-        // height={24}
-        fill
-        className={cn("object-contain", className)}
-      />
-    </div>
-  );
-};
-
-export const LogoText = ({ className }: LogoProps) => {
-  return (
-    <div className={cn("relative w-full flex items-center", className)}>
-      <Image
-        src="/logos/logo-text.png"
-        alt="dip logo text"
-        width={150}
-        height={24}
-        className=""
-      />
-    </div>
-  );
-};
+}

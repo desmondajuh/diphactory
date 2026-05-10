@@ -103,7 +103,7 @@ export function BlogAdminView({ initialPosts, categories, tags }: Props) {
                     {post.status}
                   </span>
                   {post.isFeatured && (
-                    <span className="rounded-full bg-accent-red/10 border border-accent-red/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-red">
+                    <span className="rounded-full bg-accent-brand/10 border border-accent-brand/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-brand">
                       Featured
                     </span>
                   )}

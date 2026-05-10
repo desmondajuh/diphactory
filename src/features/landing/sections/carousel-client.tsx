@@ -69,6 +69,33 @@ export const CarouselClient = ({
       ref={sectionRef}
       className="relative overflow-hidden py-20 min-h-screen"
     >
+      {/* <div className="absolute w-full h-full flex bg-brand" /> */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 60% 40%, rgba(180,120,0,0.15) 0%, transparent 60%)",
+        }}
+      />
+      <Image
+        src="/images/bg/image-cta-bg.jpg"
+        alt="carousel-image background"
+        fill
+        className="object-cover opacity-30"
+      />
+
+      {/* Background image */}
+      {/* <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{
+            backgroundImage: "url('/images/bg/image-cta-bg.jpg')",
+          }}
+        />
+        <div className="absolute inset-0 bg-black/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#b9862b25_0%,transparent_45%)]" />
+      </div> */}
+
       <CarouselTitle
         badge={sectionData?.badge || ""}
         title={sectionData?.title || ""}
@@ -79,7 +106,7 @@ export const CarouselClient = ({
       <div
         // className="mt-16 flex justify-center items-end gap-3 perspective-distant"
         className={cn(
-          "mt-16 flex items-end",
+          "relative mt-16 flex items-end z-30",
           isMobile
             ? "overflow-x-auto gap-4 px-4"
             : "justify-center gap-3 perspective-distant",
@@ -109,25 +136,46 @@ export const CarouselClient = ({
             <motion.div
               key={i}
               // Enhancement 1: entrance animation
+              // initial={{ opacity: 0, y: 60 }}
+              // animate={
+              //   isInView
+              //     ? { opacity: opacityValue, y: 0 }
+              //     : { opacity: 0, y: 60 }
+              // }
+              // transition={{
+              //   duration: 0.65,
+              //   delay: staggerDelay,
+              //   ease: [0.22, 1, 0.36, 1],
+              // }}
+              // // Enhancement 2: smooth opacity transition when active state changes
+              // style={{
+              //   width: card.width,
+              //   zIndex: isActive ? 999 : card.zIndex,
+              //   transformStyle: "preserve-3d",
+              //   cursor: "pointer",
+              //   // Enhancement 6: shadow depth
+              //   filter: `drop-shadow(${boxShadow.split(",")[0].replace("0 ", "0px ")})`,
+              // }}
+              // className={cn("relative rounded-2xl", card.mxValue)}
+              // onClick={() => handleCardClick(i)}
+
+              // Entrance only — never changes after mount
               initial={{ opacity: 0, y: 60 }}
-              animate={
-                isInView
-                  ? { opacity: opacityValue, y: 0 }
-                  : { opacity: 0, y: 60 }
-              }
+              animate={isInView ? { y: 0, opacity: 1 } : { opacity: 0, y: 60 }}
               transition={{
                 duration: 0.65,
                 delay: staggerDelay,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              // Enhancement 2: smooth opacity transition when active state changes
               style={{
                 width: card.width,
                 zIndex: isActive ? 999 : card.zIndex,
                 transformStyle: "preserve-3d",
                 cursor: "pointer",
-                // Enhancement 6: shadow depth
-                filter: `drop-shadow(${boxShadow.split(",")[0].replace("0 ", "0px ")})`,
+                // ✅ Opacity handled in style, not animate — no layout re-trigger
+                opacity: hasActive && !isActive ? 0.45 : 1,
+                transition: "opacity 0.4s ease",
+                // filter: `drop-shadow(${boxShadow.split(",")[0].replace("0 ", "0px ")})`,
               }}
               className={cn("relative rounded-2xl", card.mxValue)}
               onClick={() => handleCardClick(i)}
@@ -190,6 +238,12 @@ export const CarouselClient = ({
                     // transformOrigin: "top center",
                     overflow: "hidden",
                     borderRadius: "0 0 16px 16px",
+                    // ✅ Mask fades from opaque at bottom → transparent at top
+                    // (remember: scaleY(-1) flips the element, so directions are inverted)
+                    WebkitMaskImage:
+                      "linear-gradient(to bottom, transparent 0%, black 60%)",
+                    maskImage:
+                      "linear-gradient(to bottom, transparent 0%, black 60%)",
                   }}
                 >
                   {/* Reflected image */}
@@ -207,15 +261,6 @@ export const CarouselClient = ({
                       className="object-cover object-top"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                       aria-hidden="true"
-                    />
-                    {/* Gradient mask to fade the reflection out */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                          "linear-gradient(to top, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.70) 50%, rgba(255,255,255,1) 100%)",
-                      }}
                     />
                   </div>
                 </div>

@@ -4,6 +4,8 @@ import TextRevealAnime from "@/components/shared/reveal-text-anime";
 import { SectionBadge } from "@/components/shared/section-badge";
 import { SectionSubTitle } from "@/components/shared/section-sub-title";
 import { SectionTitle } from "@/components/shared/section-title";
+// import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -13,6 +15,7 @@ interface CarouselTitleProps {
   subtitle?: string;
   ctaText?: string;
   ctaLink?: string;
+  className?: string;
 }
 
 export const CarouselTitle = ({
@@ -21,9 +24,15 @@ export const CarouselTitle = ({
   subtitle,
   ctaText,
   ctaLink,
+  className,
 }: CarouselTitleProps) => {
   return (
-    <div className="max-w-5xl mx-auto flex flex-col items-center text-center relative z-10 px-3">
+    <div
+      className={cn(
+        "max-w-5xl mx-auto flex flex-col items-center text-center relative z-10 px-3",
+        className,
+      )}
+    >
       {/* Badge */}
       <SectionBadge
         icon={<CameraIcon />}
@@ -34,7 +43,7 @@ export const CarouselTitle = ({
       <BlockRevealAnime>
         <SectionTitle
           title={title || "Every Pixel Clicked."}
-          className="text-black"
+          className="text-gray-950  opacity-90"
         />
       </BlockRevealAnime>
 
@@ -47,14 +56,16 @@ export const CarouselTitle = ({
         <SectionSubTitle className="max-w-2xl" subTitle={subtitle || ""} />
       </TextRevealAnime>
 
-      <Link
-        href={ctaLink || "/bookings"}
-        className="shadow-md px-3 py-3 rounded-full flex items-center gap-3 mx-auto hover:shadow-lg transition text-gray-600 hover:text-accent-red cursor-pointer"
-      >
-        <span className="bg-red-500 text-white w-8 h-8 flex items-center justify-center rounded-full">
-          <ArrowRight size={16} />
-        </span>
-        <span className="mr-2">{ctaText || "Book an appointment"}</span>
+      <Link href={ctaLink || "/bookings"}>
+        <button
+          // href={ctaLink || "/bookings"}
+          className="shadow-md px-3 py-3 rounded-full flex items-center gap-3 mx-auto hover:shadow-lg transition-shadow text-gray-600 hover:text-accent-brand border border-gray-200/30"
+        >
+          <span className="bg-accent-brand text-white w-8 h-8 flex items-center justify-center rounded-full">
+            <ArrowRight size={16} />
+          </span>
+          <span className="mr-2">{ctaText || "Book an appointment"}</span>
+        </button>
       </Link>
     </div>
   );

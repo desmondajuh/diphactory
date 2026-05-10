@@ -5,7 +5,7 @@ export const Footer = () => {
         © 2026 Diphactory. All rights reserved.
       </p>
       <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-        <span className="text-accent-red">⚡</span>
+        <span className="text-accent-brand">⚡</span>
         Typically responds within 24–48 hours
       </span>
     </div>

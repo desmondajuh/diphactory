@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { NoiseBg } from "@/components/shared/effects/noise-bg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -56,12 +57,8 @@ export function ImageCTA({
 
   return (
     /* Outer frame — white bg + padding + rounded border (matches screenshot) */
-    <div
-      className={cn(
-        "relative w-full bg-white p-5 border border-gray-200",
-        className,
-      )}
-    >
+    <div className={cn("relative w-full bg-foreground p-5", className)}>
+      <NoiseBg />
       {/* Inner section — clips the zooming bg */}
       <section
         ref={sectionRef}
@@ -97,7 +94,7 @@ export function ImageCTA({
           >
             <span className="w-fit">{title || "DIAI IMAGE PHACTORY"}</span>
             <span
-              className="hidden md:block text-red-600 ml-0.5 leading-none"
+              className="hidden md:block text-accent-brand ml-0.5 leading-none"
               style={{ fontSize: "0.75em" }}
             >
               ✦
@@ -111,7 +108,7 @@ export function ImageCTA({
 
           {/* CTA Button */}
           <Link href={ctaLink || "/"}>
-            <button className="mt-7 bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white text-[11px] font-bold uppercase tracking-[0.3em] px-9 py-3 rounded-sm cursor-pointer">
+            <button className="mt-7 bg-accent-brand hover:bg-accent-brand-700 transition-colors duration-200 text-white text-[11px] font-bold uppercase tracking-[0.3em] px-9 py-3 rounded-sm cursor-pointer">
               {ctaText || "Book Now"}
             </button>
           </Link>

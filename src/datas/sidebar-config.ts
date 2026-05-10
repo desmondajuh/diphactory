@@ -92,6 +92,11 @@ export const sidebarGroups: SidebarGroupConfig[] = [
         icon: ShieldCheckIcon,
       },
       {
+        title: "Site Settings",
+        url: "/dashboard/admin/settings",
+        icon: ShieldCheckIcon,
+      },
+      {
         title: "Bookings",
         url: "/dashboard/admin/bookings",
         icon: NotebookTabsIcon,

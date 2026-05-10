@@ -72,7 +72,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
             }}
           >
             {project.title}
-            <span className="text-[var(--color-accent-red)]">*</span>
+            <span className="text-accent-brand">*</span>
           </motion.h1>
 
           <p className="mt-4 text-white/70 max-w-xl">{project.description}</p>
@@ -119,7 +119,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
           }}
         >
           Want something like this?
-          <span className="text-[var(--color-accent-red)]">*</span>
+          <span className="text-accent-brand">*</span>
         </motion.h2>
 
         <a
