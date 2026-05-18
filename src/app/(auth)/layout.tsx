@@ -17,12 +17,9 @@ export default function AuthLayout({
       </div>
 
       {/* Logo */}
-      <Link
-        href="/"
-        className="relative z-10 mb-8 flex items-center gap-2 transition-opacity hover:opacity-80"
-      >
+      <div className="relative z-10 mb-8 flex items-center gap-2 transition-opacity hover:opacity-80">
         <Logo />
-      </Link>
+      </div>
 
       {/* Auth card */}
       <div className="glassMain relative z-10 w-full max-w-md overflow-hidden rounded-2xl p-8 sm:p-10">
