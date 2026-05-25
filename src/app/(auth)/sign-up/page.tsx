@@ -7,8 +7,8 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
 export const metadata: Metadata = {
-  title: "Sign Up | LuxeGems",
-  description: "Create your LuxeGems account",
+  title: "Sign Up | DIP",
+  description: "Create your DIP account",
 };
 
 export default async function SignUpPage() {

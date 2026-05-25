@@ -29,6 +29,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { AlbumImageUploader } from "./album-image-uploader";
 import Image from "next/image";
+import { AlbumFavoritesReview } from "./album-favorites-review";
 
 interface AlbumIdDetailsProps {
   albumId: string;
@@ -62,6 +63,8 @@ export const AlbumIdDetails = ({
         const data = await client.albums.getById({ albumId });
         if (active) {
           setAlbum(data);
+          setRevealedCode(data.accessCodePlain ?? null);
+          setIsCodeVisible(false);
           onLoaded?.(data.title);
         }
       } catch (loadError) {
@@ -85,11 +88,6 @@ export const AlbumIdDetails = ({
       active = false;
     };
   }, [albumId, onLoaded, refreshKey]);
-
-  useEffect(() => {
-    setRevealedCode(album?.accessCodePlain ?? null);
-    setIsCodeVisible(false);
-  }, [album?.accessCodePlain]);
 
   const sharedUrl = useMemo(() => {
     if (!album) {
@@ -361,7 +359,6 @@ export const AlbumIdDetails = ({
                     key={item.id}
                     className="relative overflow-hidden rounded-2xl border border-border/60 bg-muted/20 w-1/3 aspect-4/3"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <Image
                       src={item.image.thumbnailUrl || item.image.utUrl}
                       alt={item.image.filename}
@@ -434,6 +431,8 @@ export const AlbumIdDetails = ({
             )}
           </CardContent>
         </Card>
+
+        <AlbumFavoritesReview albumId={albumId} refreshKey={refreshKey} />
       </div>
 
       <Card className="border border-border/70 bg-card/90">

@@ -43,8 +43,8 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         </h1>
         <p className="mt-2 text-sm text-white/60">
           {isSignUp
-            ? "Join LuxeGems for exclusive access to fine jewelry"
-            : "Sign in to your LuxeGems account"}
+            ? "Create a new account to get started with DIP"
+            : "Sign in to your DIP account"}
         </p>
       </div>
 

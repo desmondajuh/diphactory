@@ -1,8 +1,8 @@
 import { ORPCError } from "@orpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
-import { publicProcedure } from "@/orpc/base";
-import { albumAccesses, albumImages, favorites } from "@/lib/db/schema";
+import { photographerProcedure, publicProcedure } from "@/orpc/base";
+import { albumAccesses, albumImages, albums, favorites } from "@/lib/db/schema";
 
 const list = publicProcedure
   .input(z.object({ accessId: z.string().uuid() }))
@@ -69,4 +69,35 @@ const toggle = publicProcedure
     return { favorited: true };
   });
 
-export const favoritesRouter = { list, toggle };
+const listByAlbum = photographerProcedure
+  .input(z.object({ albumId: z.string().uuid() }))
+  .handler(async ({ input, context }) => {
+    const { db, user } = context;
+
+    const album = await db.query.albums.findFirst({
+      where:
+        user.role === "photographer"
+          ? and(eq(albums.id, input.albumId), eq(albums.ownerId, user.id))
+          : eq(albums.id, input.albumId),
+      columns: { id: true },
+    });
+
+    if (!album) {
+      throw new ORPCError("NOT_FOUND");
+    }
+
+    return db.query.albumAccesses.findMany({
+      where: eq(albumAccesses.albumId, input.albumId),
+      with: {
+        favorites: {
+          with: {
+            image: true,
+          },
+          orderBy: (favorite, { asc }) => [asc(favorite.createdAt)],
+        },
+      },
+      orderBy: [desc(albumAccesses.lastAccessedAt)],
+    });
+  });
+
+export const favoritesRouter = { list, toggle, listByAlbum };
